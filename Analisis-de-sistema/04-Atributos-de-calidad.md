@@ -1,0 +1,8 @@
+| ID | Atributo de calidad | Escenario de calidad |
+| :--- | :--- | :--- |
+| **AC01** | **Rendimiento** | Las consultas en tiempo real de calificaciones y la navegación de expedientes deben responder en menos de 2 segundos, incluso durante picos de alta concurrencia como cierres bimestrales y campañas de admisión. |
+| **AC02** | **Disponibilidad** | El portal público de ventanilla virtual (admisión y traslados) y los servicios de consulta académica deben mantenerse disponibles el 99.5% del tiempo hábil durante el ciclo lectivo y periodos de matrícula escolar. |
+| **AC03** | **Escalabilidad** | La arquitectura debe soportar incrementos masivos y simultáneos de accesos de estudiantes, docentes y apoderados sin saturar el motor transaccional, aislando las cargas pesadas (generación de documentos PDF y Excel) en servicios de background. |
+| **AC04** | **Seguridad y Privacidad** | Los datos de filiación, expedientes probatorios (DNI, partidas) y notas de menores de edad deben resguardarse de accesos no autorizados mediante autenticación JWT, RBAC estricto, cifrado en reposo AES-256 y URLs prefirmadas de corta duración (TTL 15 min), cumpliendo con la Ley de Protección de Datos Personales. |
+| **AC05** | **Integridad y No Repudio** | El sistema debe garantizar transacciones ACID estrictas y registrar una bitácora de auditoría inmutable que capture fecha, hora, usuario e IP en cada inserción, modificación de calificaciones o cambio de estado en trámites documentales. |
+| **AC06** | **Mantenibilidad** | El sistema debe construirse bajo una arquitectura modular desacoplada que permita realizar ajustes a las reglas de evaluación pedagógica, catálogos escolares o servicios de almacenamiento sin afectar el núcleo del sistema ni otras áreas funcionales. |

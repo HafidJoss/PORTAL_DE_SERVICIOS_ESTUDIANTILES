@@ -1,0 +1,10 @@
+| Actor | ¿Qué necesita realizar? |
+| :--- | :--- |
+| **Estudiante** | Consultar en tiempo real sus calificaciones periódicas, promedios consolidados por competencias pedagógicas, plana docente asignada y descargar su libreta de notas en PDF. |
+| **Padre de Familia / Apoderado** | Gestionar y consultar la situación académica de múltiples hijos bajo una cuenta única (vista familiar multi-hijo), realizar solicitudes de admisión y traslado en línea, cargar requisitos probatorios y monitorear el estado de sus trámites. |
+| **Docente (Titular / Suplente)** | Acceder a su panel privado, registrar calificaciones masivamente mediante una cuadrícula interactiva por competencias según la escala oficial (CNEB), validar notas y cerrar formalmente los periodos lectivos asignados. |
+| **Secretaría Académica** | Aperturar y gestionar estados de periodos lectivos, auditar expedientes de admisión y traslados desde una bandeja centralizada, emitir dictámenes (Pendiente, Observado con observaciones técnicas, Aprobado y Rechazado), generar pre-matrículas y emitir reportes/actas institucionales. |
+| **Administrador** | Configurar el catálogo escolar (niveles educativos, grados, secciones y asignaturas curriculares), administrar usuarios y credenciales, aplicar políticas estrictas de control de acceso (RBAC) y auditar la bitácora de eventos críticos. |
+| **SIAGIE (Sistema Externo MINEDU)** | Recibir información oficial consolidada mediante plantillas y sábanas de notas exportadas en formato Excel (.xlsx) estructuradas reglamentariamente para su posterior registro o transcripción ministerial. |
+| **Servicio de Almacenamiento Seguro (MinIO / S3)** | Almacenar y custodiar los expedientes digitales probatorios (DNI, partidas de nacimiento, certificados de estudio) mediante nombres UUID ofuscados, cifrado AES-256 en reposo y URLs prefirmadas temporales (TTL 15 min). |
+| **Motor de Reportes y Documentos (Redis + Worker)** | Procesar en segundo plano de manera asíncrona la compilación y emisión de libretas de calificaciones membretadas en PDF, actas consolidadas y tickets de seguimiento sin afectar el rendimiento transaccional. |
