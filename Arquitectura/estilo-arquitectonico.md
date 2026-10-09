@@ -1,76 +1,112 @@
 # Estilo Arquitectónico del Sistema: Portal de Servicios Estudiantiles (MVP)
 
 ## 1. Descripción General
-En este documento se define el estilo arquitectónico seleccionado para el proyecto Portal de Servicios Estudiantiles de la I.E. Emblemática Mariscal Cáceres. Se optó por una arquitectura **N-Tier (Multicapa) Desacoplada y Distribuida** con servicios de soporte especializados:
+Se optó por una arquitectura **N-Tier (multicapa) desacoplada**, desplegada en contenedores, con un tier de aplicación sin estado y servicios de soporte especializados. Este documento describe la vista de **despliegue** (qué se ejecuta y cómo escala). La estructura **modular** del backend está en [arquitectura-inicial.md](arquitectura-inicial.md) y la organización interna **limpia** de cada módulo en [enfoque/enfoque-arquitectonico.md](enfoque/enfoque-arquitectonico.md). Las decisiones se registran en [07-Decisiones-arquitectonicas.md](../Analisis-de-sistema/07-Decisiones-arquitectonicas.md).
 
-- **Organización lógica:** Basada en capas independientes (Presentación Web, Lógica de Negocio/APIs REST, Persistencia Transaccional, Almacenamiento Seguro de Objetos y Procesamiento en Background).
-- **Unidad de despliegue del núcleo:** Un servicio de backend en Node.js v18+ LTS (o Python FastAPI) alojado tras un proxy inverso Nginx con HTTPS/TLS obligatorio, simplificando la infraestructura y asegurando un despliegue viable en el horizonte estipulado de 3 meses (12 semanas).
-- **Aislamiento de cargas pesadas:** Desacoplamiento de la compilación de documentos mediante cola Redis y worker dedicado, evitando caídas o degradación de rendimiento durante el cierre masivo de bimestres.
+- **Presentación:** SPA responsiva (HTML5, JS y CSS) servida como archivos estáticos por Nginx.
+- **Aplicación:** API REST en Python 3.12+ (soporte hasta oct-2028) con FastAPI, sin estado de sesión (JWT) y con al menos 2 instancias detrás de Nginx.
+- **Datos:** PostgreSQL 16+ (transacciones ACID y triggers de auditoría), Redis de caché y almacenamiento de objetos MinIO/S3 privado.
+- **Procesamiento asíncrono:** cola Redis y worker Python (WeasyPrint para PDF y openpyxl para .xlsx) que comparten la base de código de la API.
+- **Borde:** Nginx es el único componente expuesto a Internet: termina TLS (HTTPS obligatorio), balancea entre las instancias de la API, sirve la SPA y aplica límites de tasa en las rutas públicas. PostgreSQL, Redis y el worker solo son accesibles desde la red interna; el storage se alcanza únicamente con URLs prefirmadas.
+- **Unidad de despliegue:** una sola base de código backend (monolito modular) que se ejecuta como API y como worker, orquestada con Docker Compose. Es viable dentro de las 12 semanas del MVP.
 
 ---
 
-## 2. Diagrama de Arquitectura (Mermaid)
+## 2. Diagrama de Despliegue (Mermaid)
 
 ```mermaid
-graph TD
-    %% Usuarios
-    subgraph Usuarios ["👥 Clientes Institucionales (Navegadores Web / Móviles)"]
-        Users["Alumnos | Apoderados (Vista Multi-Hijo) | Docentes | Secretaría | Directivos"]
+flowchart LR
+    U["Usuarios<br/>(navegador / móvil)"]
+
+    subgraph EDGE["Borde"]
+        NG["Nginx<br/>TLS · balanceo · SPA estática<br/>rate limiting en rutas públicas"]
     end
 
-    %% Borde de Red / Proxy
-    subgraph DMZ ["Capa de Borde Perimetral"]
-        Nginx["Proxy Inverso Nginx<br/>(Terminación SSL/TLS HTTPS | Puerto 443)"]
+    subgraph APP["Tier de aplicación (sin estado, 2 instancias o más)"]
+        direction TB
+        API1["API FastAPI #1"]
+        API2["API FastAPI #2"]
     end
 
-    %% Servidor de Aplicaciones
-    subgraph ServidorApp ["🖥️ SERVIDOR DE APLICACIONES WEB (Backend REST API)"]
-        subgraph CapaPres ["1. Capa de Controladores y Rutas"]
-            Routes["Rutas REST:<br/>/auth | /estudiantes | /admision | /notas | /reportes"]
-        end
-
-        subgraph CapaSeguridad ["2. Capa de Seguridad Perimetral"]
-            RBAC["Middleware RBAC & Validación de Tokens JWT"]
-        end
-
-        subgraph CapaLogica ["3. Capa de Lógica del Negocio Escolar"]
-            Services["Servicios de Negocio:<br/>• Servicio de Admisión y Expedientes<br/>• Servicio de Calificaciones CNEB (AD, A, B, C)<br/>• Servicio de Gestión de Periodos y Catálogo"]
-        end
-
-        Routes --> RBAC
-        RBAC --> CapaLogica
+    subgraph ASYNC["Procesamiento asíncrono"]
+        direction TB
+        RQ[("Redis cola<br/>persistente, sin evicción")]
+        WK["Worker Python<br/>WeasyPrint · openpyxl"]
     end
 
-    %% Servicios de Soporte e Infraestructura
-    subgraph InfraDatos ["🗄️ SERVIDOR DE BASE DE DATOS TRANSACCIONAL"]
-        Postgres[("PostgreSQL v15+ LTS<br/>• Extensión pgcrypto<br/>• Triggers de Auditoría<br/>• Transacciones ACID")]
+    subgraph DATA["Datos"]
+        direction TB
+        RC[("Redis caché<br/>LRU + TTL")]
+        PG[("PostgreSQL 16+<br/>auditoría por triggers")]
+        PGS[("Standby / réplica<br/>(evolución)")]
     end
 
-    subgraph InfraStorage ["📦 REPOSITORIO DE ALMACENAMIENTO SEGURO (STORAGE)"]
-        Minio["MinIO / AWS S3 Compliant<br/>• Nombres UUID ofuscados<br/>• URLs prefirmadas temporales (TTL 15 min)<br/>• Cifrado en reposo AES-256"]
+    subgraph STORE["Almacenamiento"]
+        direction TB
+        S3[("MinIO / S3 privado<br/>AES-256 · UUID")]
+        BK[("Respaldo diario<br/>PostgreSQL y bucket")]
     end
 
-    subgraph InfraWorkers ["⚡ MOTOR DE GENERACIÓN DOCUMENTAL (ASÍNCRONO)"]
-        RedisQueue["Cola de Mensajes Redis"]
-        DocWorker["Worker Headless Chromium / WeasyPrint<br/>• Libretas de Notas PDF<br/>• Plantillas Excel compatibles con SIAGIE"]
-        RedisQueue --> DocWorker
-    end
+    U -->|HTTPS| NG
+    NG -->|"/api<br/>balanceo y health checks"| APP
+    APP -->|cache-aside| RC
+    APP -->|SQL| PG
+    APP -->|encolar| RQ
+    RQ --> WK
+    WK -->|lee| PG
+    WK -->|"PDF / XLSX"| S3
+    PG -.->|replicación| PGS
+    PG -.->|respaldo| BK
+    S3 -.->|respaldo| BK
+    U -.->|"URL prefirmada<br/>subida y descarga"| S3
 
-    %% Flujos de Red
-    Users -->|HTTPS / REST| Nginx
-    Nginx --> Routes
-    CapaLogica --> Postgres
-    CapaLogica -->|Subida validada de probatorios <= 5MB| Minio
-    CapaLogica -->|Encolar trabajo de libreta/acta| RedisQueue
-    DocWorker -->|Lee registros consolidados| Postgres
-    DocWorker -->|Guarda comprobante o entrega binario| Minio
-
-    %% Estilos
-    style ServidorApp fill:#f8f9fa,stroke:#333,stroke-width:2px
-    style CapaPres fill:#e3f2fd,stroke:#1565c0
-    style CapaSeguridad fill:#ffebee,stroke:#c62828
-    style CapaLogica fill:#e8f5e9,stroke:#2e7d32
-    style InfraDatos fill:#fff3e0,stroke:#ef6c00
-    style InfraStorage fill:#f3e5f5,stroke:#7b1fa2
-    style InfraWorkers fill:#e0f7fa,stroke:#00838f
+    classDef cEdge fill:#e3f2fd,stroke:#1565c0
+    classDef cApp fill:#e8f5e9,stroke:#2e7d32
+    classDef cAsync fill:#e0f7fa,stroke:#00838f
+    classDef cData fill:#fff3e0,stroke:#ef6c00
+    classDef cStore fill:#f3e5f5,stroke:#7b1fa2
+    class NG cEdge
+    class API1,API2 cApp
+    class RQ,WK cAsync
+    class RC,PG,PGS cData
+    class S3,BK cStore
 ```
+
+El navegador sube y descarga documentos directamente del storage con URLs prefirmadas (línea punteada). El storage se publica en un subdominio propio, detrás de Nginx y preservando el encabezado `Host`, para que la firma de la URL sea válida. La standby/réplica es evolución y no se construye en el MVP; el respaldo diario sí forma parte del MVP.
+
+---
+
+## 3. Escalabilidad y Disponibilidad ante los Picos
+
+**Dimensionamiento supuesto** (se valida con la prueba de carga de AC01): unos 1,000 usuarios simultáneos, con ≈ 15 s entre acciones y ≈ 3 llamadas por acción, generan ≈ 200 peticiones/s sostenidas y ráfagas de ≈ 3× (≈ 600 peticiones/s). Con aciertos de caché que responden en milisegundos, dos contenedores de API cubren ese pico con margen; la base de datos solo recibe los fallos de caché.
+
+| Pico | Táctica | Decisión |
+|---|---|---|
+| Publicación de notas: miles de lecturas casi idénticas | API sin estado ×2 · caché cache-aside (TTL 30–60 s, invalidación al confirmar notas, TTL largo al consolidar, jitter y bloqueo contra estampida) · endpoint agregado por apoderado · pool de conexiones acotado · índices por (estudiante, periodo) | ADR-006 |
+| Inicios de sesión masivos: el hash de contraseña consume CPU | Token de acceso corto y refresco rotativo (no se vuelve a iniciar sesión) · límite de tasa en el login · CPU dimensionada para el hash | ADR-004 |
+| Descarga de libretas: el PDF consume CPU | Pre-generar al consolidar el periodo (lote por sección en cola y worker) y servir desde el storage con URL prefirmada; la generación bajo demanda queda como respaldo | ADR-003 |
+| Campaña de admisión: subidas de hasta 5 MB desde móviles y tráfico anónimo | Subida directa al storage con POST prefirmado · límites de tasa en rutas públicas · verificación del tipo real en el worker | ADR-002 |
+| Cierre de periodo: escrituras masivas con auditoría | Una transacción por hoja de notas; usuario e IP hacia el trigger con `SET LOCAL` | ADR-005 |
+| Caída de un proceso o del servidor | Al menos 2 contenedores de API con health checks · respaldo diario con restauración probada | ADR-007 |
+| La evicción de la caché podría borrar trabajos | Dos instancias de Redis: caché (LRU, sin persistencia) y cola (persistente, sin evicción) | ADR-003, ADR-006 |
+
+---
+
+## 4. Tácticas por Atributo de Calidad
+
+| Atributo | Táctica | Componente en el diagrama | Decisión |
+|---|---|---|---|
+| AC01 Rendimiento | Caché cache-aside, endpoint agregado, índices y pre-generación de libretas | Redis caché, API FastAPI, PostgreSQL, Worker | ADR-006, ADR-003 |
+| AC02 Disponibilidad | 2 instancias de API con health checks y respaldo diario con restauración probada | Nginx, API FastAPI #1 y #2, Respaldo diario | ADR-007 |
+| AC03 Escalabilidad | API sin estado; cola y worker para la carga pesada | API FastAPI, Redis cola, Worker | ADR-001, ADR-003, ADR-004 |
+| AC04 Seguridad y Privacidad | TLS en el borde, RBAC y propiedad, bucket privado con URLs prefirmadas, cifrado en reposo y límites de tasa en rutas públicas | Nginx, API FastAPI, MinIO / S3 | ADR-002, ADR-004 |
+| AC05 Integridad y Trazabilidad | Transacciones ACID y triggers de auditoría con usuario e IP por transacción | PostgreSQL | ADR-005 |
+| AC06 Mantenibilidad | Monolito modular con Clean Architecture por módulo y adaptadores intercambiables | API FastAPI y Worker (misma base de código) | ADR-008 |
+
+---
+
+## 5. MVP, Evolución y Riesgos Aceptados
+
+- **MVP (12 semanas):** todo lo del diagrama, excepto la standby/réplica.
+- **Evolución:** standby o réplica de lectura de PostgreSQL, PgBouncer cuando las conexiones superen unas 100, CDN para los estáticos, segundo nodo con balanceador, captcha ante abuso en las rutas públicas, antivirus en las subidas y hash encadenado en la bitácora de auditoría.
+- **Riesgos aceptados:** el servidor único es punto único de falla (se mitiga con respaldo diario y restauración probada; RTO de hasta 2 h) y las calificaciones en caché pueden estar desfasadas hasta 60 s.
