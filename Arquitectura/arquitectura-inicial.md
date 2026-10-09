@@ -1,88 +1,186 @@
-# Propuesta de Arquitectura en Capas Inicial: Portal de Servicios Estudiantiles
+# Propuesta de Arquitectura Inicial: Portal de Servicios Estudiantiles
 
-A continuación se presenta la propuesta de arquitectura organizada en capas según los módulos, actores y flujos identificados en el análisis del sistema escolar:
+Esta es la vista **lógica y modular** del sistema: qué módulos existen, qué requisitos cubre cada uno, cómo dependen entre sí y cómo fluyen las operaciones críticas durante los picos. El despliegue está en [estilo-arquitectonico.md](estilo-arquitectonico.md) y la organización interna de cada módulo (arquitectura limpia) en [enfoque/enfoque-arquitectonico.md](enfoque/enfoque-arquitectonico.md).
 
 ---
 
 ## 1. Organización de Capas y Responsabilidades
 
-| Capa | Pregunta que responde | Responsabilidades y Módulos |
+| Capa | Pregunta que responde | Responsabilidades y componentes |
 | :--- | :--- | :--- |
-| **Presentación** | ¿Cómo interactúa la comunidad escolar? | • **Interfaz Web Responsiva (Frontend):** Vistas para Alumnos, Docentes, Secretaría, Administradores y Vista Familiar Multi-Hijo para Apoderados.<br>• **Ventanilla Virtual Pública:** Formulario de admisión, traslados y consulta de estado por ticket.<br>• **API Gateway / Proxy Inverso:** Nginx gestionando terminación SSL/TLS (HTTPS) y balanceo perimetral. |
-| **Servicios y Lógica de Negocio** | ¿Qué hace el sistema escolar? | Módulos encargados de orquestar las reglas del negocio educativo:<br>• **Seguridad y RBAC:** Autenticación JWT, verificación de roles y aislamiento de accesos.<br>• **Gestión Académica:** Catálogo escolar, asignación docente y máquina de estados de periodos lectivos.<br>• **Evaluación y Calificaciones:** Cuadrícula de captura masiva, motor de cálculo CNEB (AD, A, B, C y vigesimal) y validación previa de cierre.<br>• **Ventanilla Virtual y Dictamen:** Recepción de solicitudes, emisión de tickets únicos, bandeja de secretaría y generación de pre-matrículas.<br>• **Auditoría:** Registro de trazabilidad para cambios de notas y estados. |
-| **Persistencia de Datos e Integridad** | ¿Dónde se almacena la información estructurada? | • **Base de Datos Relacional (PostgreSQL v15+):** Almacenamiento seguro del modelo escolar, tablas de auditoría, constraints de clave foránea y transacciones ACID.<br>• **Extensión pgcrypto:** Cifrado y hashing seguro de credenciales. |
-| **Almacenamiento Documental y Workers** | ¿Dónde se custodian los probatorios y compilan reportes? | • **Object Storage Seguro (MinIO / S3):** Custodia de expedientes probatorios (DNI, partidas, certificados) con UUIDs y URLs prefirmadas (TTL 15 min).<br>• **Motor de Tareas en Background (Redis + Worker):** Procesamiento asíncrono para la compilación de libretas de notas oficiales en PDF y actas en Excel compatibles con SIAGIE. |
+| **Presentación** | ¿Cómo interactúa la comunidad escolar? | • **SPA responsiva:** vistas para Estudiantes, Docentes, Secretaría, Administradores y la Vista Familiar Multi-Hijo para Apoderados.<br>• **Ventanilla Virtual Pública:** formulario de admisión, traslados y consulta de estado por ticket.<br>• **Proxy inverso Nginx:** terminación TLS (HTTPS), balanceo entre las instancias de la API, SPA estática y límites de tasa en rutas públicas. |
+| **Servicios y lógica de negocio** | ¿Qué hace el sistema escolar? | Monolito modular (API REST y worker) con cinco módulos que orquestan las reglas del negocio educativo: **identidad_acceso**, **academico**, **evaluacion**, **admision** y **auditoria** (ver sección 2). |
+| **Persistencia y almacenamiento seguro** | ¿Dónde se guarda y se consulta la información? | • **PostgreSQL 16+:** modelo escolar con un esquema por módulo, tablas de auditoría con triggers, claves foráneas y transacciones ACID.<br>• **Redis de caché:** lecturas calientes (vista familiar y calificaciones confirmadas).<br>• **Object Storage seguro (MinIO / S3):** expedientes probatorios y libretas con nombres UUID, cifrado en reposo y URLs prefirmadas (TTL 15 min). |
+| **Procesamiento asíncrono** | ¿Dónde se compilan los documentos pesados? | **Redis de cola y worker Python:** libretas PDF (WeasyPrint), actas y sábanas Excel (openpyxl) y verificación de documentos subidos, sin afectar la atención de peticiones. |
 
 ---
 
-## 2. Diagrama Estructural de la Arquitectura en Capas
+## 2. Módulos y Reglas de Modularidad
+
+Cada requisito funcional tiene un único módulo propietario. Los cinco módulos se despliegan juntos (un solo monolito) pero se mantienen con fronteras explícitas.
+
+| Módulo | Responsabilidad | Requisitos funcionales |
+| :--- | :--- | :--- |
+| `identidad_acceso` | Autenticación, RBAC, usuarios y credenciales | RF14 |
+| `academico` | Catálogo escolar, periodos lectivos, asignación docente, estudiantes y vínculo apoderado–estudiante, legajo | RF02, RF03, RF04, RF05 |
+| `evaluacion` | Cuadrícula de notas, cálculo CNEB, confirmación, vista familiar, libretas y actas | RF01, RF06, RF07, RF08, RF15, RF16 |
+| `admision` | Preinscripción, traslados, documentos probatorios, dictamen, ticket y reportes de control | RF09, RF10, RF11, RF12, RF13, RF17 |
+| `auditoria` | Bitácora de auditoría (los triggers registran; el módulo consulta) | RF18 |
+
+**Reglas de modularidad:**
+1. Un módulo solo se usa a través de su **fachada** (capa de aplicación); nunca se importan el dominio, los repositorios ni las tablas de otro módulo.
+2. Dependencias permitidas: `evaluacion → academico` y `admision → academico`, sin ciclos. El resto de módulos no depende de ninguno. Todos usan `compartido` (usuario actual, contexto de auditoría y tipos base, sin reglas de negocio).
+3. Los efectos entre módulos viajan como **eventos de dominio en proceso** (`PeriodoConsolidado`, `SolicitudAprobada`, `NotasConfirmadas`), no como tablas compartidas.
+4. Cada módulo es dueño de su esquema PostgreSQL; las claves foráneas entre esquemas solo apuntan al módulo del que se depende.
+
+---
+
+## 3. Diagrama de la Vista Modular (Mermaid)
 
 ```mermaid
-graph TD
-    %% Clientes
-    subgraph Actores ["👥 Comunidad Educativa (Clientes Web y Móviles)"]
-        A_Est["Estudiante"]
-        A_Pad["Apoderado (Vista Multi-Hijo)"]
-        A_Doc["Docente"]
-        A_Sec["Secretaría Académica"]
-        A_Adm["Administrador"]
+flowchart LR
+    subgraph ENT["Puntos de entrada"]
+        API["API REST · FastAPI"]
+        WKR["Worker de tareas"]
     end
 
-    %% Capa de Presentación
-    subgraph CapaPres ["1. CAPA DE PRESENTACIÓN (Frontend Web & Nginx)"]
-        Nginx["Proxy Inverso Nginx (HTTPS / SSL/TLS)"]
-        UI_Web["Interfaz Web Responsiva (HTML5 / JS / CSS)<br/>• Portal de Admisión Pública<br/>• Panel Docente de Notas<br/>• Tablero de Dictamen de Secretaría<br/>• Vista Familiar Multi-Hijo"]
+    subgraph MOD["Módulos: cada uno con presentación, aplicación, dominio e infraestructura"]
+        M_ID["identidad_acceso<br/>autenticación · RBAC · usuarios"]
+        M_AC["academico<br/>catálogo · periodos · estudiantes"]
+        M_EV["evaluacion<br/>notas · cálculo CNEB · libretas"]
+        M_AD["admision<br/>solicitudes · documentos · dictamen"]
+        M_AU["auditoria<br/>bitácora"]
     end
 
-    %% Capa de Negocio
-    subgraph CapaNegocio ["2. CAPA DE SERVICIOS Y LÓGICA DE NEGOCIO (Backend API REST)"]
-        AuthModule["Seguridad & RBAC (JWT Token Validation)"]
-        AcademicModule["Gestión Académica & Periodos Lectivos"]
-        EvaluationModule["Evaluación & Motor de Cálculo CNEB (AD, A, B, C)"]
-        AdmissionModule["Ventanilla Virtual, Admisión & Dictamen de Expedientes"]
-        AuditModule["Módulo de Trazabilidad & Auditoría"]
+    SK["compartido<br/>usuario actual · contexto de auditoría · tipos base"]
+    DB[("PostgreSQL<br/>un esquema por módulo")]
+
+    API --> M_ID
+    API --> M_AC
+    API --> M_EV
+    API --> M_AD
+    API --> M_AU
+    WKR --> M_EV
+    WKR --> M_AD
+    M_EV -->|"fachada y eventos"| M_AC
+    M_AD -->|"fachada y eventos"| M_AC
+    MOD -.->|usa| SK
+    MOD --> DB
+
+    classDef cEnt fill:#e3f2fd,stroke:#1565c0
+    classDef cMod fill:#e8f5e9,stroke:#2e7d32
+    classDef cShared fill:#fff8e1,stroke:#f57f17
+    classDef cData fill:#fff3e0,stroke:#ef6c00
+    class API,WKR cEnt
+    class M_ID,M_AC,M_EV,M_AD,M_AU cMod
+    class SK cShared
+    class DB cData
+```
+
+La API y el worker son puntos de entrada de la misma base de código: ambos ejecutan casos de uso de los módulos, de modo que las reglas del cálculo CNEB no se duplican.
+
+---
+
+## 4. Flujos Críticos en Pico
+
+### 4.1. Consulta de calificaciones (publicación de notas)
+Es el flujo más frecuente: miles de apoderados consultan notas casi a la vez. La autorización (rol y propiedad apoderado–hijo) se evalúa siempre antes de leer la caché, y la base de datos solo recibe los fallos de caché.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Ap as Apoderado
+    participant NG as Nginx
+    participant API as API FastAPI
+    participant UC as evaluacion · ConsultarVistaFamiliar
+    participant AC as academico (fachada)
+    participant RC as Redis caché
+    participant PG as PostgreSQL
+
+    Ap->>NG: GET /calificaciones/familia (JWT)
+    NG->>API: proxy hacia una instancia disponible
+    API->>API: valida el JWT y el rol Apoderado
+    API->>UC: ejecuta el caso de uso
+    UC->>AC: hijos del apoderado
+    AC-->>UC: estudiantes vinculados (propiedad verificada)
+    UC->>RC: lee calificaciones por estudiante y periodo
+    alt acierto de caché
+        RC-->>UC: calificaciones confirmadas
+    else fallo de caché
+        UC->>PG: consulta agregada (índice estudiante, periodo)
+        PG-->>UC: filas
+        UC->>RC: guarda con TTL de 30 a 60 s, largo si el periodo está Consolidado
     end
+    UC-->>API: vista familiar
+    API-->>Ap: 200 JSON comprimido
+```
 
-    %% Capa de Persistencia y Almacenamiento
-    subgraph CapaDatos ["3. CAPA DE PERSISTENCIA Y ALMACENAMIENTO SEGURO"]
-        DB[("🗄️ PostgreSQL v15+ LTS<br/>• Transacciones ACID<br/>• Triggers de Auditoría<br/>• Extensión pgcrypto")]
-        Storage["📦 Object Storage (MinIO / AWS S3)<br/>• Expedientes PDF/Imágenes<br/>• Nombres UUID ofuscados<br/>• URLs prefirmadas (TTL 15 min)"]
+### 4.2. Libretas pre-generadas (consolidación del periodo)
+Al consolidar el periodo se generan las libretas en segundo plano, de modo que el pico de descargas sea lectura de archivos y no cómputo de PDF. La generación bajo demanda queda como respaldo.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Sec as Secretaría
+    actor Ap as Apoderado
+    participant API as API FastAPI
+    participant AC as academico
+    participant EV as evaluacion
+    participant RQ as Redis cola
+    participant WK as Worker
+    participant PG as PostgreSQL
+    participant S3 as MinIO / S3
+
+    Sec->>API: consolidar el periodo
+    API->>AC: CambiarEstadoPeriodo (Consolidado)
+    AC->>PG: actualiza el estado (transacción con auditoría)
+    AC-->>EV: evento PeriodoConsolidado
+    EV->>RQ: encola un lote de libretas por sección
+    API-->>Sec: 202 Aceptado (id de lote)
+    loop por cada estudiante, con concurrencia limitada
+        WK->>RQ: toma el trabajo
+        WK->>EV: GenerarLibretaNotas
+        EV->>PG: lee las calificaciones consolidadas
+        EV->>S3: guarda el PDF (nombre UUID)
+        EV->>PG: marca la libreta como lista
     end
+    Ap->>API: GET /libretas (periodo y estudiante)
+    API->>API: valida JWT y propiedad
+    API-->>Ap: 302 a una URL prefirmada de 15 min
+    Ap->>S3: descarga directa del PDF
+```
 
-    %% Capa de Generación Asíncrona
-    subgraph CapaAsync ["4. MOTOR DE GENERACIÓN ASÍNCRONA (Background)"]
-        Queue["Cola de Tareas (Redis)"]
-        Worker["Worker de Renderizado (Headless Chromium / WeasyPrint)<br/>• Libretas de Notas en PDF<br/>• Actas y Sábanas en Excel (.xlsx)"]
-    end
+### 4.3. Subida de probatorios (campaña de admisión)
+Los archivos viajan directamente del navegador al storage; la API no maneja bytes de archivos. El límite de 5 MB y los tipos permitidos se fijan en la política prefirmada y el worker verifica el tipo real por el contenido.
 
-    %% Relaciones
-    Actores -->|Peticiones HTTPS| Nginx
-    Nginx --> UI_Web
-    UI_Web -->|Llamadas Asíncronas REST| AuthModule
-    AuthModule --> AcademicModule
-    AuthModule --> EvaluationModule
-    AuthModule --> AdmissionModule
-    AuthModule --> AuditModule
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Ap as Apoderado
+    participant NG as Nginx
+    participant API as API FastAPI
+    participant AD as admision
+    participant S3 as MinIO / S3
+    participant PG as PostgreSQL
+    participant RQ as Redis cola
+    participant WK as Worker
 
-    AcademicModule --> DB
-    EvaluationModule --> DB
-    AdmissionModule --> DB
-    AuditModule --> DB
-
-    AdmissionModule -->|Carga de Probatorios <= 5MB| Storage
-    EvaluationModule -->|Encolar reporte| Queue
-    AdmissionModule -->|Encolar ticket| Queue
-    Queue --> Worker
-    Worker --> Storage
-    Worker -->|Descarga final| Actores
+    Ap->>NG: POST /documentos/subida (tipo y tamaño declarados)
+    NG->>API: aplica límite de tasa y reenvía
+    API->>AD: SolicitarSubidaDocumento
+    AD->>AD: valida el ticket, el tipo permitido y el máximo de 5 MB
+    AD-->>Ap: política POST prefirmada (hasta 5 MB, tipo y 15 min)
+    Ap->>S3: sube el archivo directamente
+    Ap->>API: POST /documentos/confirmacion (clave del objeto)
+    API->>AD: ConfirmarSubidaDocumento
+    AD->>PG: registra el documento (estado por verificar)
+    AD->>RQ: encola la verificación
+    WK->>RQ: toma el trabajo
+    WK->>S3: lee la cabecera del archivo (tipo real)
+    WK->>PG: marca el documento como verificado o rechazado
 ```
 
 ---
 
-## 3. Descripción de Componentes e Integraciones
-
-* **Capa de Presentación:** Atiende a los cinco roles mediante vistas altamente responsivas y desacopladas del servidor central a través de Nginx como terminador SSL/TLS y proxy inverso.
-* **Capa de Lógica de Negocio:** Expone una **API RESTful** segura. Encapsula las reglas del Ministerio de Educación (escala CNEB, ponderaciones, periodos lectivos y bloqueo de notas extemporáneas), el control RBAC y la emisión automática de tickets de expedientes.
-* **Capa de Persistencia de Datos:** Gestiona la integridad referencial y las transacciones escolares en PostgreSQL. Dispone de triggers de base de datos para garantizar auditoría inalterable de cada calificación ingresada o modificada.
-* **Almacenamiento Documental Seguro:** Aísla los documentos sensibles de menores de edad en MinIO / AWS S3 bajo cifrado AES-256, restringiendo el acceso únicamente mediante URLs prefirmadas de corta duración (TTL 15 minutos).
-* **Integración y Compatibilidad SIAGIE:** Al estar fuera de alcance una conexión API directa por disposición ministerial, el sistema provee una exportación de sábanas y actas en Excel (.xlsx) estructuradas idénticamente al formato oficial para la carga o transcripción manual en secretaría.
+## 5. Integración y Compatibilidad SIAGIE
+Por decisión de alcance del MVP (RC06) no existe una conexión API directa con SIAGIE. El sistema exporta sábanas y actas en Excel (.xlsx) con la estructura de la plantilla oficial vigente para que Secretaría las cargue o transcriba manualmente.
