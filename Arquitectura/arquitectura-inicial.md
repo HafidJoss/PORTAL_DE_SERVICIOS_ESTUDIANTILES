@@ -86,99 +86,12 @@ La API y el worker son puntos de entrada de la misma base de código: ambos ejec
 ### 4.1. Consulta de calificaciones (publicación de notas)
 Es el flujo más frecuente: miles de apoderados consultan notas casi a la vez. La autorización (rol y propiedad apoderado–hijo) se evalúa siempre antes de leer la caché, y la base de datos solo recibe los fallos de caché.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Ap as Apoderado
-    participant NG as Nginx
-    participant API as API FastAPI
-    participant UC as evaluacion · ConsultarVistaFamiliar
-    participant AC as academico (fachada)
-    participant RC as Redis caché
-    participant PG as PostgreSQL
-
-    Ap->>NG: GET /calificaciones/familia (JWT)
-    NG->>API: proxy hacia una instancia disponible
-    API->>API: valida el JWT y el rol Apoderado
-    API->>UC: ejecuta el caso de uso
-    UC->>AC: hijos del apoderado
-    AC-->>UC: estudiantes vinculados (propiedad verificada)
-    UC->>RC: lee calificaciones por estudiante y periodo
-    alt acierto de caché
-        RC-->>UC: calificaciones confirmadas
-    else fallo de caché
-        UC->>PG: consulta agregada (índice estudiante, periodo)
-        PG-->>UC: filas
-        UC->>RC: guarda con TTL de 30 a 60 s, largo si el periodo está Consolidado
-    end
-    UC-->>API: vista familiar
-    API-->>Ap: 200 JSON comprimido
-```
-
 ### 4.2. Libretas pre-generadas (consolidación del periodo)
 Al consolidar el periodo se generan las libretas en segundo plano, de modo que el pico de descargas sea lectura de archivos y no cómputo de PDF. La generación bajo demanda queda como respaldo.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Sec as Secretaría
-    actor Ap as Apoderado
-    participant API as API FastAPI
-    participant AC as academico
-    participant EV as evaluacion
-    participant RQ as Redis cola
-    participant WK as Worker
-    participant PG as PostgreSQL
-    participant S3 as MinIO / S3
-
-    Sec->>API: consolidar el periodo
-    API->>AC: CambiarEstadoPeriodo (Consolidado)
-    AC->>PG: actualiza el estado (transacción con auditoría)
-    AC-->>EV: evento PeriodoConsolidado
-    EV->>RQ: encola un lote de libretas por sección
-    API-->>Sec: 202 Aceptado (id de lote)
-    loop por cada estudiante, con concurrencia limitada
-        WK->>RQ: toma el trabajo
-        WK->>EV: GenerarLibretaNotas
-        EV->>PG: lee las calificaciones consolidadas
-        EV->>S3: guarda el PDF (nombre UUID)
-        EV->>PG: marca la libreta como lista
-    end
-    Ap->>API: GET /libretas (periodo y estudiante)
-    API->>API: valida JWT y propiedad
-    API-->>Ap: 302 a una URL prefirmada de 15 min
-    Ap->>S3: descarga directa del PDF
-```
 
 ### 4.3. Subida de probatorios (campaña de admisión)
 Los archivos viajan directamente del navegador al storage; la API no maneja bytes de archivos. El límite de 5 MB y los tipos permitidos se fijan en la política prefirmada y el worker verifica el tipo real por el contenido.
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Ap as Apoderado
-    participant NG as Nginx
-    participant API as API FastAPI
-    participant AD as admision
-    participant S3 as MinIO / S3
-    participant PG as PostgreSQL
-    participant RQ as Redis cola
-    participant WK as Worker
-
-    Ap->>NG: POST /documentos/subida (tipo y tamaño declarados)
-    NG->>API: aplica límite de tasa y reenvía
-    API->>AD: SolicitarSubidaDocumento
-    AD->>AD: valida el ticket, el tipo permitido y el máximo de 5 MB
-    AD-->>Ap: política POST prefirmada (hasta 5 MB, tipo y 15 min)
-    Ap->>S3: sube el archivo directamente
-    Ap->>API: POST /documentos/confirmacion (clave del objeto)
-    API->>AD: ConfirmarSubidaDocumento
-    AD->>PG: registra el documento (estado por verificar)
-    AD->>RQ: encola la verificación
-    WK->>RQ: toma el trabajo
-    WK->>S3: lee la cabecera del archivo (tipo real)
-    WK->>PG: marca el documento como verificado o rechazado
-```
 
 ---
 

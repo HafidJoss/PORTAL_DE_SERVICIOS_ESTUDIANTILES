@@ -18,22 +18,6 @@ Este documento describe la organización **interna** del backend: cada módulo (
 
 El backend es un monolito modular en Python; este árbol es solo el del backend. La SPA vive aparte y consume la API REST (RC03). Cada módulo tiene las mismas cuatro carpetas que `evaluacion`, que se muestra completo como ejemplo.
 
-```text
-src/app/
-├── compartido/            # usuario actual, contexto de auditoría y tipos base (sin reglas de negocio)
-├── identidad_acceso/
-├── academico/
-├── evaluacion/
-│   ├── domain/            # entidades, servicios de dominio (cálculo CNEB) y puertos
-│   ├── application/       # casos de uso y fachada pública del módulo
-│   ├── infrastructure/    # repositorios PostgreSQL, caché, cola, storage y generadores PDF/Excel
-│   └── presentation/      # controladores REST, esquemas (DTO) y tareas del worker
-├── admision/
-├── auditoria/
-├── api.py                 # punto de entrada HTTP: arma las dependencias
-└── worker.py              # punto de entrada del worker: ejecuta los mismos casos de uso
-```
-
 **Regla de la dependencia (dentro de cada módulo):** presentación → aplicación → dominio ← infraestructura. El Dominio no importa frameworks ni librerías de infraestructura; los puertos (interfaces) viven en el Dominio y los adaptadores concretos en Infraestructura. Entre módulos solo se permiten las dependencias y los eventos de dominio descritos en las reglas de modularidad de [arquitectura-inicial.md](../arquitectura-inicial.md).
 
 ---

@@ -76,23 +76,7 @@ El navegador sube y descarga documentos directamente del storage con URLs prefir
 
 ---
 
-## 3. Escalabilidad y Disponibilidad ante los Picos
-
-**Dimensionamiento supuesto** (se valida con la prueba de carga de AC01): unos 1,000 usuarios simultáneos, con ≈ 15 s entre acciones y ≈ 3 llamadas por acción, generan ≈ 200 peticiones/s sostenidas y ráfagas de ≈ 3× (≈ 600 peticiones/s). Con aciertos de caché que responden en milisegundos, dos contenedores de API cubren ese pico con margen; la base de datos solo recibe los fallos de caché.
-
-| Pico | Táctica | Decisión |
-|---|---|---|
-| Publicación de notas: miles de lecturas casi idénticas | API sin estado ×2 · caché cache-aside (TTL 30–60 s, invalidación al confirmar notas, TTL largo al consolidar, jitter y bloqueo contra estampida) · endpoint agregado por apoderado · pool de conexiones acotado · índices por (estudiante, periodo) | ADR-006 |
-| Inicios de sesión masivos: el hash de contraseña consume CPU | Token de acceso corto y refresco rotativo (no se vuelve a iniciar sesión) · límite de tasa en el login · CPU dimensionada para el hash | ADR-004 |
-| Descarga de libretas: el PDF consume CPU | Pre-generar al consolidar el periodo (lote por sección en cola y worker) y servir desde el storage con URL prefirmada; la generación bajo demanda queda como respaldo | ADR-003 |
-| Campaña de admisión: subidas de hasta 5 MB desde móviles y tráfico anónimo | Subida directa al storage con POST prefirmado · límites de tasa en rutas públicas · verificación del tipo real en el worker | ADR-002 |
-| Cierre de periodo: escrituras masivas con auditoría | Una transacción por hoja de notas; usuario e IP hacia el trigger con `SET LOCAL` | ADR-005 |
-| Caída de un proceso o del servidor | Al menos 2 contenedores de API con health checks · respaldo diario con restauración probada | ADR-007 |
-| La evicción de la caché podría borrar trabajos | Dos instancias de Redis: caché (LRU, sin persistencia) y cola (persistente, sin evicción) | ADR-003, ADR-006 |
-
----
-
-## 4. Tácticas por Atributo de Calidad
+## 3 Tácticas por Atributo de Calidad
 
 | Atributo | Táctica | Componente en el diagrama | Decisión |
 |---|---|---|---|
@@ -105,7 +89,7 @@ El navegador sube y descarga documentos directamente del storage con URLs prefir
 
 ---
 
-## 5. MVP, Evolución y Riesgos Aceptados
+## 4 MVP, Evolución y Riesgos Aceptados
 
 - **MVP (12 semanas):** todo lo del diagrama, excepto la standby/réplica.
 - **Evolución:** standby o réplica de lectura de PostgreSQL, PgBouncer cuando las conexiones superen unas 100, CDN para los estáticos, segundo nodo con balanceador, captcha ante abuso en las rutas públicas, antivirus en las subidas y hash encadenado en la bitácora de auditoría.
