@@ -1,3 +1,7 @@
+# Historias de usuario
+
+Necesidades de cada actor expresadas como «Como…, quiero…, para…». Cada historia se traza a requisitos funcionales en [03-Requisitos-funcionales.md](03-Requisitos-funcionales.md).
+
 | ID | Historia de usuario |
 | :--- | :--- |
 | **HU01** | Como apoderado, quiero acceder a una vista familiar multi-hijo centralizada, para supervisar el rendimiento académico de todos mis hijos con un único perfil y credencial de acceso. |

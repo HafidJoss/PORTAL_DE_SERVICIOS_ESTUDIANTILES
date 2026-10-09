@@ -1,3 +1,7 @@
+# Actores del sistema
+
+Actores que interactúan con el sistema y lo que necesita realizar cada uno.
+
 | Actor | ¿Qué necesita realizar? |
 | :--- | :--- |
 | **Estudiante** | Consultar en tiempo real sus calificaciones periódicas, promedios consolidados por competencias pedagógicas, plana docente asignada y descargar su libreta de notas en PDF. |

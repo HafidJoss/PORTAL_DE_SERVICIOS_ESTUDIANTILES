@@ -1,3 +1,7 @@
+# Decisiones arquitectónicas (ADR)
+
+Decisiones de arquitectura, el driver que responde cada una, su justificación y el resultado adoptado.
+
 | ID | Decisión arquitectónica | Driver relacionado | Justificación | Resultado |
 |---|---|---|---|---|
 | ADR-001 | Arquitectura N-Tier (Multicapa) Desacoplada y Distribuida | DA01 - Escalabilidad; DA04 - API REST | Separar la presentación web, la API de servicios y el motor relacional para permitir escalabilidad independiente y mantenimiento modular dentro del horizonte de 3 meses. | Capa de Presentación Web, Capa de Lógica Backend (Node.js/FastAPI) y Capa de Persistencia (PostgreSQL). |

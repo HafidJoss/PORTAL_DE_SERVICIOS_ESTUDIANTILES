@@ -1,3 +1,7 @@
+# Drivers arquitectónicos
+
+Requisitos, atributos de calidad y restricciones con mayor impacto en la arquitectura, y por qué la condicionan.
+
 | ID | Driver arquitectónico | Origen | ¿Por qué influye en la arquitectura? |
 | :--- | :--- | :--- | :--- |
 | **DA01** | El sistema debe soportar alta demanda en picos bimestrales y admisión sin saturar el flujo web. | AC01 – Rendimiento; AC03 – Escalabilidad | Exige desacoplar la generación intensiva de reportes y libretas PDF a una cola asíncrona (Redis + Worker) y optimizar el motor PostgreSQL con índices relacionales. |

@@ -1,4 +1,6 @@
-### REQUISITOS FUNCIONALES
+# Requisitos funcionales
+
+Capacidades que debe ofrecer el sistema y su trazabilidad con las historias de usuario.
 
 | ID | Requisito funcional |
 | :--- | :--- |
@@ -20,7 +22,7 @@
 | **RF16** | El sistema debe permitir la generación de actas preliminares de evaluación y cuadros de mérito consolidados por sección exportables a formato Excel (.xlsx) y PDF, facilitando la compatibilidad reglamentaria con SIAGIE. |
 | **RF17** | El sistema debe emitir reportes de control administrativo: relación de postulantes por estado de expediente, estadísticas de vacantes ocupadas/disponibles y listado de alumnos no evaluados. |
 
-### RELACIÓN ENTRE HU Y REQUISITOS FUNCIONALES
+## Relación entre historias de usuario y requisitos funcionales
 
 | Historia de usuario | Requisitos funcionales relacionados |
 | :--- | :--- |

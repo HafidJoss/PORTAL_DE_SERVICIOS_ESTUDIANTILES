@@ -1,3 +1,7 @@
+# Restricciones
+
+Condiciones técnicas, normativas y de plazo que acotan el diseño del sistema.
+
 | ID | Restricción | Descripción |
 | :--- | :--- | :--- |
 | **RC01** | **Aplicación web multiplataforma** | El sistema debe desarrollarse como una aplicación web responsiva accesible mediante navegadores web modernos de escritorio (Chrome, Firefox, Edge, Safari) y smartphones móviles (resolución mínima 360x640). |

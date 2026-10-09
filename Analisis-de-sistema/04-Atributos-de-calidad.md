@@ -1,3 +1,7 @@
+# Atributos de calidad
+
+Escenarios de calidad que debe cumplir el sistema y que guían las decisiones de arquitectura.
+
 | ID | Atributo de calidad | Escenario de calidad |
 | :--- | :--- | :--- |
 | **AC01** | **Rendimiento** | Las consultas en tiempo real de calificaciones y la navegación de expedientes deben responder en menos de 2 segundos, incluso durante picos de alta concurrencia como cierres bimestrales y campañas de admisión. |
