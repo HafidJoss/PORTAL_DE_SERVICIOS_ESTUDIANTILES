@@ -58,12 +58,7 @@ La composición de dependencias ocurre en los puntos de entrada `api.py` y `work
 
 ---
 
-## 4. Autorización de Grano Fino
-El middleware de presentación resuelve solo el **rol**. Las reglas que dependen del dato (el apoderado solo consulta a sus hijos; el docente solo registra notas de sus cursos y solo mientras el periodo está En Evaluación) son reglas de aplicación y dominio: se verifican en los casos de uso, consultando la fachada de `academico`, antes de leer la caché o la base de datos.
-
----
-
-## 5. Diagrama de Enfoque Arquitectónico (Mermaid)
+## 4 Diagrama de Enfoque Arquitectónico (Mermaid)
 
 El diagrama muestra el módulo `evaluacion` como ejemplo; los demás módulos siguen la misma estructura.
 
