@@ -34,7 +34,7 @@ Capacidades que debe ofrecer el sistema y su trazabilidad con las historias de u
 | **HU03 Preinscripción y traslados** | RF09, RF10, RF11 |
 | **HU04 Carga de probatorios** | RF02, RF12 |
 | **HU05 Bandeja de dictamen y secretaría** | RF02, RF13, RF17, RF18 |
-| **HU06 Consulta de notas y libreta PDF** | RF01, RF07, RF15 |
+| **HU06 Consulta de notas y libreta PDF** | RF01, RF07, RF08, RF15 |
 | **HU07 Reportes y exportación SIAGIE** | RF16, RF17 |
-| **HU08 Configuración del catálogo escolar** | RF03, RF04, RF14, RF18 |
+| **HU08 Configuración del catálogo escolar** | RF03, RF04, RF14 |
 | **HU09 Estados de los periodos lectivos** | RF05 |

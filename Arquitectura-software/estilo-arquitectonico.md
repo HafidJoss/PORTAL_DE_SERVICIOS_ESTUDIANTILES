@@ -1,7 +1,7 @@
 # Estilo Arquitectónico del Sistema: Portal de Servicios Estudiantiles (MVP)
 
 ## 1. Descripción General
-Se optó por una arquitectura **N-Tier (multicapa) desacoplada**, desplegada en contenedores, con un tier de aplicación sin estado y servicios de soporte especializados. Este documento describe la vista de **despliegue** (qué se ejecuta y cómo escala). La estructura **modular** del backend está en [arquitectura-inicial.md](arquitectura-inicial.md) y la organización interna **limpia** de cada módulo en [enfoque/enfoque-arquitectonico.md](enfoque/enfoque-arquitectonico.md). Las decisiones se registran en [07-Decisiones-arquitectonicas.md](../Analisis-de-sistema/07-Decisiones-arquitectonicas.md).
+Se optó por una arquitectura **N-Tier (multicapa) desacoplada**, desplegada en contenedores, con un tier de aplicación sin estado y servicios de soporte especializados. Este documento describe la vista de **despliegue** (qué se ejecuta y cómo escala). La estructura **modular** del backend está en [arquitectura-inicial.md](arquitectura-inicial.md) y la organización interna **limpia** de cada módulo en [enfoque-arquitectonico.md](enfoque-arquitectonico.md). Las decisiones se registran en [07-Decisiones-arquitectonicas.md](../Analisis-de-sistema/07-Decisiones-arquitectonicas.md).
 
 - **Presentación:** SPA responsiva (HTML5, JS y CSS) servida como archivos estáticos por Nginx.
 - **Aplicación:** API REST en Python 3.12+ (soporte hasta oct-2028) con FastAPI, sin estado de sesión (JWT) y con al menos 2 instancias detrás de Nginx.
@@ -76,7 +76,7 @@ El navegador sube y descarga documentos directamente del storage con URLs prefir
 
 ---
 
-## 3 Tácticas por Atributo de Calidad
+## 3. Tácticas por Atributo de Calidad
 
 | Atributo | Táctica | Componente en el diagrama | Decisión |
 |---|---|---|---|
@@ -89,7 +89,7 @@ El navegador sube y descarga documentos directamente del storage con URLs prefir
 
 ---
 
-## 4 MVP, Evolución y Riesgos Aceptados
+## 4. MVP, Evolución y Riesgos Aceptados
 
 - **MVP (12 semanas):** todo lo del diagrama, excepto la standby/réplica.
 - **Evolución:** standby o réplica de lectura de PostgreSQL, PgBouncer cuando las conexiones superen unas 100, CDN para los estáticos, segundo nodo con balanceador, captcha ante abuso en las rutas públicas, antivirus en las subidas y hash encadenado en la bitácora de auditoría.

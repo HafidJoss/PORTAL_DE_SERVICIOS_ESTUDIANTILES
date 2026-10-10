@@ -1,6 +1,6 @@
 # Enfoque Arquitectónico del Sistema: Clean Architecture (Arquitectura Limpia)
 
-Este documento describe la organización **interna** del backend: cada módulo (ver [arquitectura-inicial.md](../arquitectura-inicial.md)) aplica Clean Architecture y todos se despliegan según [estilo-arquitectonico.md](../estilo-arquitectonico.md). La decisión está registrada en ADR-008 de [07-Decisiones-arquitectonicas.md](../../Analisis-de-sistema/07-Decisiones-arquitectonicas.md).
+Este documento describe la organización **interna** del backend: cada módulo (ver [arquitectura-inicial.md](arquitectura-inicial.md)) aplica Clean Architecture y todos se despliegan según [estilo-arquitectonico.md](estilo-arquitectonico.md). La decisión está registrada en ADR-008 de [07-Decisiones-arquitectonicas.md](../Analisis-de-sistema/07-Decisiones-arquitectonicas.md).
 
 ## 1. Información General
 
@@ -18,7 +18,7 @@ Este documento describe la organización **interna** del backend: cada módulo (
 
 El backend es un monolito modular en Python; este árbol es solo el del backend. La SPA vive aparte y consume la API REST (RC03). Cada módulo tiene las mismas cuatro carpetas que `evaluacion`, que se muestra completo como ejemplo.
 
-**Regla de la dependencia (dentro de cada módulo):** presentación → aplicación → dominio ← infraestructura. El Dominio no importa frameworks ni librerías de infraestructura; los puertos (interfaces) viven en el Dominio y los adaptadores concretos en Infraestructura. Entre módulos solo se permiten las dependencias y los eventos de dominio descritos en las reglas de modularidad de [arquitectura-inicial.md](../arquitectura-inicial.md).
+**Regla de la dependencia (dentro de cada módulo):** presentación → aplicación → dominio ← infraestructura. El Dominio no importa frameworks ni librerías de infraestructura; los puertos (interfaces) viven en el Dominio y los adaptadores concretos en Infraestructura. Entre módulos solo se permiten las dependencias y los eventos de dominio descritos en las reglas de modularidad de [arquitectura-inicial.md](arquitectura-inicial.md).
 
 ---
 
@@ -58,7 +58,7 @@ La composición de dependencias ocurre en los puntos de entrada `api.py` y `work
 
 ---
 
-## 4 Diagrama de Enfoque Arquitectónico (Mermaid)
+## 4. Diagrama de Enfoque Arquitectónico (Mermaid)
 
 El diagrama muestra el módulo `evaluacion` como ejemplo; los demás módulos siguen la misma estructura.
 

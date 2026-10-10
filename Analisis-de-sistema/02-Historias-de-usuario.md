@@ -13,3 +13,4 @@ Necesidades de cada actor expresadas como «Como…, quiero…, para…». Cada 
 | **HU07** | Como personal de secretaría, quiero exportar actas de evaluación y cuadros de mérito por sección en formato Excel (.xlsx) y PDF, para disponer de información compatible para la transcripción al sistema oficial SIAGIE. |
 | **HU08** | Como administrador, quiero configurar el catálogo escolar (niveles, grados, secciones y asignaturas) y asignar docentes titulares y suplentes a cursos y secciones, para que la estructura académica esté definida antes de iniciar las evaluaciones. |
 | **HU09** | Como personal de secretaría, quiero controlar los estados de los periodos lectivos (Aperturado, En Evaluación, Cierre Preliminar, Consolidado), para restringir la edición de notas fuera de fecha. |
+| **HU10** | Como estudiante, quiero ver mis notas en tiempo real, asi como las observaciones y pendientes de mi maestro. |

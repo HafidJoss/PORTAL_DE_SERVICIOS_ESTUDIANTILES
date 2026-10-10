@@ -1,6 +1,6 @@
 # Propuesta de Arquitectura Inicial: Portal de Servicios Estudiantiles
 
-Esta es la vista **lógica y modular** del sistema: qué módulos existen, qué requisitos cubre cada uno, cómo dependen entre sí y cómo fluyen las operaciones críticas durante los picos. El despliegue está en [estilo-arquitectonico.md](estilo-arquitectonico.md) y la organización interna de cada módulo (arquitectura limpia) en [enfoque/enfoque-arquitectonico.md](enfoque/enfoque-arquitectonico.md).
+Esta es la vista **lógica y modular** del sistema: qué módulos existen, qué requisitos cubre cada uno, cómo dependen entre sí y cómo fluyen las operaciones críticas durante los picos. El despliegue está en [estilo-arquitectonico.md](estilo-arquitectonico.md) y la organización interna de cada módulo (arquitectura limpia) en [enfoque-arquitectonico.md](enfoque-arquitectonico.md).
 
 ---
 

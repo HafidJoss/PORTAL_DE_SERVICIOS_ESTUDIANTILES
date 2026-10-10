@@ -25,6 +25,6 @@ El sistema debe atender picos de consulta de unos 1,000 usuarios simultáneos (A
 | 5 | [05-Restricciones](Analisis-de-sistema/05-Restricciones.md) | ¿Qué límites tiene el diseño y quién los impone? |
 | 6 | [06-Driver-arquitectonico](Analisis-de-sistema/06-Driver-arquitectonico.md) | ¿Qué condiciona más a la arquitectura? |
 | 7 | [07-Decisiones-arquitectonicas](Analisis-de-sistema/07-Decisiones-arquitectonicas.md) | ¿Qué se decidió, con qué alternativas y consecuencias? |
-| 8 | [estilo-arquitectonico](Arquitectura/estilo-arquitectonico.md) | Vista **en capas**: despliegue, escalabilidad y disponibilidad |
-| 9 | [arquitectura-inicial](Arquitectura/arquitectura-inicial.md) | Vista **modular**: módulos, dependencias y flujos críticos en pico |
-| 10 | [enfoque-arquitectonico](Arquitectura/enfoque/enfoque-arquitectonico.md) | Organización **limpia** de cada módulo: capas, puertos y adaptadores |
+| 8 | [estilo-arquitectonico](Arquitectura-software/estilo-arquitectonico.md) | Vista **en capas**: despliegue, escalabilidad y disponibilidad |
+| 9 | [arquitectura-inicial](Arquitectura-software/arquitectura-inicial.md) | Vista **modular**: módulos, dependencias y flujos críticos en pico |
+| 10 | [enfoque-arquitectonico](Arquitectura-software/enfoque-arquitectonico.md) | Organización **limpia** de cada módulo: capas, puertos y adaptadores |
