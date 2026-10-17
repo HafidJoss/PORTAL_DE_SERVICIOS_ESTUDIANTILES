@@ -10,11 +10,11 @@ Apaza Sulca Hafid Joseph
 ## Fecha
 2026-10-03
 ## Descripción
-Propuesta técnica y de arquitectura de software para el Portal de Servicios Estudiantiles (MVP), orientada a modernizar y centralizar los procesos de vida académica (calificaciones y asignación docente) y ventanilla virtual (admisión, traslados y mesa de partes digital, entendida como la recepción en línea de los documentos de admisión y traslado).
+Propuesta técnica y de arquitectura de software para el Portal de Servicios Estudiantiles (MVP), orientada a modernizar y centralizar los procesos de vida académica (calificaciones, asistencia y asignación docente) y ventanilla virtual (admisión, traslados y mesa de partes digital, entendida como la recepción en línea de los documentos de admisión y traslado).
 ## Curso
 Arquitectura de Software
 ## Mapa de lectura
-El sistema debe atender picos de consulta de unos 1,000 usuarios simultáneos (AC01). Su arquitectura combina tres ideas, una por documento: **en capas** (estilo), **modular** (arquitectura inicial) y **limpia** (enfoque). Orden recomendado:
+El sistema debe atender picos de consulta de unos 1,000 usuarios simultáneos (AC01). Su arquitectura combina tres ideas, una por documento: **en capas** (estilo), **modular** (arquitectura inicial) y **en capas estricta** (enfoque). Orden recomendado:
 
 | # | Documento | Qué responde |
 | :--- | :--- | :--- |
@@ -27,4 +27,4 @@ El sistema debe atender picos de consulta de unos 1,000 usuarios simultáneos (A
 | 7 | [07-Decisiones-arquitectonicas](Analisis-de-sistema/07-Decisiones-arquitectonicas.md) | ¿Qué se decidió, con qué alternativas y consecuencias? |
 | 8 | [estilo-arquitectonico](Arquitectura-software/estilo-arquitectonico.md) | Vista **en capas**: despliegue, escalabilidad y disponibilidad |
 | 9 | [arquitectura-inicial](Arquitectura-software/arquitectura-inicial.md) | Vista **modular**: módulos, dependencias y flujos críticos en pico |
-| 10 | [enfoque-arquitectonico](Arquitectura-software/enfoque-arquitectonico.md) | Organización **limpia** de cada módulo: capas, puertos y adaptadores |
+| 10 | [enfoque-arquitectonico](Arquitectura-software/enfoque-arquitectonico.md) | Organización **en capas estricta** de cada módulo: router, service y repository |

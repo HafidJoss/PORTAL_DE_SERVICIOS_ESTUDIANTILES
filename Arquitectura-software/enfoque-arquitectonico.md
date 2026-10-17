@@ -1,60 +1,56 @@
-# Enfoque Arquitectónico del Sistema: Clean Architecture (Arquitectura Limpia)
+# Enfoque Arquitectónico del Sistema: Arquitectura en Capas Estricta
 
-Este documento describe la organización **interna** del backend: cada módulo (ver [arquitectura-inicial.md](arquitectura-inicial.md)) aplica Clean Architecture y todos se despliegan según [estilo-arquitectonico.md](estilo-arquitectonico.md). La decisión está registrada en ADR-008 de [07-Decisiones-arquitectonicas.md](../Analisis-de-sistema/07-Decisiones-arquitectonicas.md).
+Este documento describe la organización **interna** del backend: cada módulo (ver [arquitectura-inicial.md](arquitectura-inicial.md)) aplica una arquitectura en capas estricta y todos se despliegan según [estilo-arquitectonico.md](estilo-arquitectonico.md). La decisión está registrada en ADR-008 de [07-Decisiones-arquitectonicas.md](../Analisis-de-sistema/07-Decisiones-arquitectonicas.md).
 
 ## 1. Información General
 
 | Elemento | Descripción aplicada al Portal de Servicios Estudiantiles |
 | :--- | :--- |
-| **Patrón / Enfoque Arquitectónico** | Clean Architecture (Arquitectura Limpia) aplicada por módulo dentro de un monolito modular |
-| **Objetivo Principal** | Separar las responsabilidades del negocio educativo y controlar que las dependencias internas de cada módulo apunten siempre hacia su Dominio. |
-| **¿Qué problema resuelve?** | Evita el acoplamiento rígido entre la API REST, las reglas pedagógicas del CNEB (escalas AD, A, B, C, promedios, cierre de actas) y las tecnologías externas (PostgreSQL, almacenamiento MinIO/S3, Redis, WeasyPrint y openpyxl). |
-| **Capas Definidas** | Presentación, Aplicación, Dominio e Infraestructura (dentro de cada módulo). |
-| **Beneficios** | • Las reglas de evaluación se prueban sin base de datos ni red.<br>• Cambiar la cola, el motor de PDF/Excel o el almacenamiento toca solo un adaptador de infraestructura.<br>• La API y el worker reutilizan los mismos casos de uso, por lo que el cálculo CNEB no se duplica.<br>• La complejidad se mantiene acotada: un solo despliegue y capas completas solo donde hay lógica de negocio (evaluación y admisión); los módulos de CRUD simple pueden usar capas delgadas. |
+| **Patrón / Enfoque Arquitectónico** | Arquitectura en capas estricta aplicada por módulo dentro de un monolito modular |
+| **Objetivo Principal** | Que cada capa solo llame a la inmediatamente inferior: router → service → repository. |
+| **¿Qué problema resuelve?** | Evita mezclar la API REST, las reglas pedagógicas del CNEB (escalas AD, A, B, C, cierre de actas) y el acceso a datos. Se eligió sobre MVC (no define dónde viven las reglas de negocio en una API) y sobre Clean Architecture completa (demasiada ceremonia para un solo desarrollador). |
+| **Capas Definidas** | Presentación, Negocio y Acceso a datos (dentro de cada módulo), más Infraestructura transversal en `core/`. |
+| **Beneficios** | • Las reglas de evaluación se prueban sin base de datos.<br>• Cambiar el almacenamiento, la cola o el motor de PDF/Excel toca solo `core/`.<br>• Las reglas son simples de seguir para los agentes de IA y se verifican con import-linter en el CI. |
 
 ---
 
 ## 2. Estructura Modular
 
-El backend es un monolito modular en Python; este árbol es solo el del backend. La SPA vive aparte y consume la API REST (RC03). Cada módulo tiene las mismas cuatro carpetas que `evaluacion`, que se muestra completo como ejemplo.
-
-**Regla de la dependencia (dentro de cada módulo):** presentación → aplicación → dominio ← infraestructura. El Dominio no importa frameworks ni librerías de infraestructura; los puertos (interfaces) viven en el Dominio y los adaptadores concretos en Infraestructura. Entre módulos solo se permiten las dependencias y los eventos de dominio descritos en las reglas de modularidad de [arquitectura-inicial.md](arquitectura-inicial.md).
+```
+backend/app/
+  core/              → config, database, security, storage, pdf, errors, logging
+  modules/
+    evaluacion/
+      router.py, schemas.py, dependencies.py   → presentación
+      service.py, reglas.py, exceptions.py     → negocio
+      repository.py, models.py                 → acceso a datos
+    (identidad, institucion, personas, matriculas, admision,
+     documentos, asistencia, reportes, auditoria: misma estructura)
+frontend/src/
+  api/generated/     → cliente Orval, no se edita a mano
+  features/          → espejo de los módulos del backend
+```
 
 ---
 
 ## 3. Capas y Responsabilidades (dentro de cada módulo)
 
-### 3.1. Capa de Dominio (`domain`)
-Es el núcleo del módulo y contiene la lógica pura e invariable del negocio escolar:
-* **Entidades y objetos de valor** con validaciones intrínsecas (ej. `Estudiante`, `Apoderado`, `PeriodoLectivo` y `CursoSeccion` en `academico`; `CalificacionCompetencia` en `evaluacion`; `ExpedienteAdmision` en `admision`).
-* **Servicios de dominio:** el cálculo CNEB (escalas AD, A, B, C y vigesimal, y promedios) vive en `evaluacion`.
-* **Puertos (interfaces):** lo que el dominio requiere del exterior sin conocer su implementación: `RepositorioEstudiantes`, `RepositorioExpedientes`, `RepositorioCalificaciones`, `ServicioAlmacenamientoDocumental`, `CacheLecturas`, `PublicadorTareas`, `GeneradorLibreta` y `GeneradorActa`. `ServicioNotificacion` queda previsto para después del MVP, porque ningún requisito lo exige todavía.
+| Capa | Archivos | Responsabilidad | Nunca debe |
+| :--- | :--- | :--- | :--- |
+| Presentación | `router.py`, `schemas.py`, `dependencies.py` | Endpoints, validación de formato con Pydantic, autenticación, permisos y pertenencia | Contener reglas de negocio ni llamar al repositorio |
+| Negocio | `service.py`, `reglas.py`, `exceptions.py` | Reglas del colegio y del MINEDU, casos de uso, auditoría, errores de dominio | Importar FastAPI, lanzar errores HTTP ni hacer commit |
+| Acceso a datos | `repository.py`, `models.py` | Modelos SQLAlchemy, consultas, paginación | Decidir nada ni llamar a un service |
+| Infraestructura (transversal) | `core/` | Configuración, sesión de BD, seguridad, storage, PDF/Excel, logging, manejador de errores | — |
 
-### 3.2. Capa de Aplicación (`application`)
-Contiene los casos de uso del Portal Escolar de la I.E. Emblemática Mariscal Cáceres y la **fachada pública** del módulo, que es lo único que otros módulos pueden usar. Los casos de uso publican eventos de dominio (`NotasConfirmadas`, `PeriodoConsolidado`, `SolicitudAprobada`) que otros módulos o la infraestructura (por ejemplo, para invalidar la caché) consumen en proceso.
+**Reglas de disciplina:**
+1. La capa de negocio no conoce HTTP: lanza errores propios (`PeriodoCerradoError`) y un manejador global los traduce a Problem Details (RFC 9457).
+2. Las reglas complejas (calificación, transiciones de estado) van en funciones puras en `reglas.py`, testeables sin base de datos.
+3. Una transacción por petición: el commit ocurre una sola vez al final, nunca dentro de un service.
+4. El backend nunca devuelve modelos SQLAlchemy: usa esquemas de entrada y salida separados (`NotaCreate`, `NotaOut`), de los que se genera el cliente TypeScript.
 
-| Módulo | Casos de uso (ejemplos) |
-| :--- | :--- |
-| `identidad_acceso` | `IniciarSesionUseCase`, `RenovarSesionUseCase` |
-| `academico` | `CambiarEstadoPeriodoUseCase`, `ObtenerHijosDeApoderadoUseCase` |
-| `evaluacion` | `RegistrarNotasPorCompetenciaUseCase`, `ConfirmarNotasUseCase`, `ConsultarVistaFamiliarUseCase`, `GenerarLibretaNotasUseCase` |
-| `admision` | `RegistrarPreinscripcionUseCase`, `SolicitarSubidaDocumentoUseCase`, `ConfirmarSubidaDocumentoUseCase`, `DictaminarExpedienteUseCase` |
-| `auditoria` | `ConsultarBitacoraUseCase` |
+**Patrones complementarios:** Repository, Unit of Work por petición, Strategy para las reglas de calificación por nivel, máquinas de estado para expedientes y periodos, inyección de dependencias con `Depends` y bloqueo optimista (columna `version`) en notas.
 
-### 3.3. Capa de Presentación (`presentation`)
-Es la entrada de cada módulo y no contiene reglas de negocio:
-* **Controladores REST y DTOs** (routers de FastAPI): `AdmisionController`, `CalificacionesController`, `PeriodosController`, `EstudiantesController`.
-* **Middleware de autenticación y autorización por rol** (tokens JWT y RBAC) y validación de esquemas.
-* **Tareas del worker:** invocan los mismos casos de uso (generar libretas y actas, verificar documentos subidos).
-* No hay vistas: la interfaz es una SPA separada que consume la API REST.
-
-### 3.4. Capa de Infraestructura (`infrastructure`)
-Contiene las implementaciones técnicas concretas y las comunicaciones con el exterior:
-* **Repositorios:** `RepositorioEstudiantesPostgres`, `RepositorioExpedientesPostgres`, `RepositorioCalificacionesPostgres`.
-* **Adaptadores de servicios externos:** `ServicioAlmacenamientoMinIO` (URLs prefirmadas), `CacheLecturasRedis`, `PublicadorColasRedis`, `GeneradorLibretaWeasyPrint` y `GeneradorActaOpenpyxl`.
-* **Configuración técnica:** conexión a PostgreSQL con pool acotado, transacciones ACID y triggers de auditoría (como migraciones).
-
-La composición de dependencias ocurre en los puntos de entrada `api.py` y `worker.py`, que crean los adaptadores y los inyectan en los casos de uso.
+**Recorrido de una petición (docente registra una nota):** Pydantic valida el formato → `Depends` verifica token, rol y que el docente enseñe en esa sección → el service consulta el estado del periodo con `reglas.py` → el repositorio guarda → se registra la auditoría → commit → la respuesta sale como `NotaOut`.
 
 ---
 
@@ -64,56 +60,41 @@ El diagrama muestra el módulo `evaluacion` como ejemplo; los demás módulos si
 
 ```mermaid
 flowchart LR
-    subgraph ENT["Puntos de entrada"]
-        API["API REST · FastAPI<br/>autenticación y rol (middleware)"]
-        WKR["Worker de tareas<br/>(misma base de código)"]
-    end
-
-    CR["Composición de dependencias<br/>api.py · worker.py"]
+    API["API REST · FastAPI"]
 
     subgraph EV["Módulo evaluacion (ejemplo)"]
-        subgraph PRES["presentation"]
-            RT["Routers REST y esquemas (DTO)<br/>tareas del worker"]
+        subgraph PRES["Presentación"]
+            RT["router.py · schemas.py<br/>dependencies.py (rol y pertenencia)"]
         end
-        subgraph APPL["application"]
-            UC["Casos de uso<br/>RegistrarNotasPorCompetenciaUseCase<br/>ConfirmarNotasUseCase<br/>ConsultarVistaFamiliarUseCase<br/>GenerarLibretaNotasUseCase"]
+        subgraph NEG["Negocio"]
+            SV["service.py<br/>casos de uso · auditoría"]
+            RG["reglas.py<br/>cálculo CNEB (funciones puras)"]
         end
-        subgraph DOM["domain"]
-            ENTD["Entidades y servicios de dominio<br/>CalificacionCompetencia · cálculo CNEB"]
-            PRT["Puertos<br/>RepositorioCalificaciones · CacheLecturas<br/>PublicadorTareas · GeneradorLibreta · GeneradorActa<br/>ServicioAlmacenamientoDocumental"]
-        end
-        subgraph INF["infrastructure"]
-            AD["Adaptadores<br/>RepositorioCalificacionesPostgres · CacheLecturasRedis<br/>PublicadorColasRedis · ServicioAlmacenamientoMinIO<br/>GeneradorLibretaWeasyPrint · GeneradorActaOpenpyxl"]
+        subgraph DAT["Acceso a datos"]
+            RP["repository.py · models.py"]
         end
     end
 
-    ACF["academico<br/>fachada y eventos"]
+    OTRO["service de otro módulo<br/>(institucion, matriculas, auditoria)"]
+    CORE["core/<br/>BD · seguridad · storage · PDF/Excel · errores"]
     PG[("PostgreSQL")]
-    RC[("Redis caché")]
-    RQ[("Redis cola")]
-    S3[("MinIO / S3")]
 
     API --> RT
-    WKR --> RT
-    RT --> UC
-    UC --> ENTD
-    UC --> PRT
-    UC -->|"fachada y eventos"| ACF
-    AD -.->|implementa| PRT
-    CR -.->|"inyecta adaptadores"| UC
-    AD --> PG
-    AD --> RC
-    AD --> RQ
-    AD --> S3
+    RT --> SV
+    SV --> RG
+    SV --> RP
+    SV -->|service| OTRO
+    RP --> PG
+    EV -.->|usa| CORE
 
     classDef cEnt fill:#e3f2fd,stroke:#1565c0
     classDef cApp fill:#e8f5e9,stroke:#2e7d32
     classDef cDom fill:#fff8e1,stroke:#f57f17
     classDef cInf fill:#f3e5f5,stroke:#7b1fa2
     classDef cExt fill:#fff3e0,stroke:#ef6c00
-    class API,WKR,RT cEnt
-    class UC cApp
-    class ENTD,PRT cDom
-    class AD cInf
-    class PG,RC,RQ,S3,ACF cExt
+    class API,RT cEnt
+    class SV,RG cApp
+    class RP cDom
+    class CORE cInf
+    class PG,OTRO cExt
 ```

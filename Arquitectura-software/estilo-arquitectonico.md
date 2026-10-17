@@ -1,14 +1,14 @@
 # Estilo Arquitectónico del Sistema: Portal de Servicios Estudiantiles (MVP)
 
 ## 1. Descripción General
-Se optó por una arquitectura **N-Tier (multicapa) desacoplada**, desplegada en contenedores, con un tier de aplicación sin estado y servicios de soporte especializados. Este documento describe la vista de **despliegue** (qué se ejecuta y cómo escala). La estructura **modular** del backend está en [arquitectura-inicial.md](arquitectura-inicial.md) y la organización interna **limpia** de cada módulo en [enfoque-arquitectonico.md](enfoque-arquitectonico.md). Las decisiones se registran en [07-Decisiones-arquitectonicas.md](../Analisis-de-sistema/07-Decisiones-arquitectonicas.md).
+Se optó por una arquitectura **N-Tier (multicapa) desacoplada** sobre servicios gestionados de Google Cloud, con un tier de aplicación sin estado. Este documento describe la vista de **despliegue** (qué se ejecuta y cómo escala). La estructura **modular** del backend está en [arquitectura-inicial.md](arquitectura-inicial.md) y la organización interna **en capas estricta** de cada módulo en [enfoque-arquitectonico.md](enfoque-arquitectonico.md). Las decisiones se registran en [07-Decisiones-arquitectonicas.md](../Analisis-de-sistema/07-Decisiones-arquitectonicas.md).
 
-- **Presentación:** SPA responsiva (HTML5, JS y CSS) servida como archivos estáticos por Nginx.
-- **Aplicación:** API REST en Python 3.12+ (soporte hasta oct-2028) con FastAPI, sin estado de sesión (JWT) y con al menos 2 instancias detrás de Nginx.
-- **Datos:** PostgreSQL 16+ (transacciones ACID y triggers de auditoría), Redis de caché y almacenamiento de objetos MinIO/S3 privado.
-- **Procesamiento asíncrono:** cola Redis y worker Python (WeasyPrint para PDF y openpyxl para .xlsx) que comparten la base de código de la API.
-- **Borde:** Nginx es el único componente expuesto a Internet: termina TLS (HTTPS obligatorio), balancea entre las instancias de la API, sirve la SPA y aplica límites de tasa en las rutas públicas. PostgreSQL, Redis y el worker solo son accesibles desde la red interna; el storage se alcanza únicamente con URLs prefirmadas.
-- **Unidad de despliegue:** una sola base de código backend (monolito modular) que se ejecuta como API y como worker, orquestada con Docker Compose. Es viable dentro de las 12 semanas del MVP.
+- **Presentación:** SPA en React + TypeScript servida por Firebase Hosting, que además redirige `/api/**` a la API.
+- **Aplicación:** API REST en Python 3.12+ con FastAPI, en un contenedor Docker sobre Cloud Run, sin estado de sesión (JWT) y con escalado horizontal automático.
+- **Datos:** PostgreSQL 16+ en Cloud SQL (transacciones ACID, backups automáticos y recuperación a un punto en el tiempo) y Cloud Storage privado para documentos.
+- **Procesamiento asíncrono:** Cloud Tasks invoca un segundo servicio Cloud Run con la misma imagen (WeasyPrint para PDF y openpyxl para .xlsx).
+- **Borde:** Firebase Hosting y Cloud Run terminan TLS (HTTPS obligatorio). Cloud SQL no es accesible desde Internet; el storage se alcanza únicamente con URLs firmadas. Los secretos viven en Secret Manager.
+- **Unidad de despliegue:** una sola imagen backend (monolito modular) que se ejecuta como API y como servicio de tareas.
 
 ---
 
@@ -18,61 +18,47 @@ Se optó por una arquitectura **N-Tier (multicapa) desacoplada**, desplegada en 
 flowchart LR
     U["Usuarios<br/>(navegador / móvil)"]
 
-    subgraph EDGE["Borde"]
-        NG["Nginx<br/>TLS · balanceo · SPA estática<br/>rate limiting en rutas públicas"]
+    subgraph EDGE["Presentación"]
+        FH["Firebase Hosting<br/>SPA estática · rewrite /api/**"]
     end
 
-    subgraph APP["Tier de aplicación (sin estado, 2 instancias o más)"]
+    subgraph APP["Aplicación (Cloud Run, sin estado)"]
         direction TB
-        API1["API FastAPI #1"]
-        API2["API FastAPI #2"]
+        API["Servicio api<br/>FastAPI · autoescalado"]
+        TK["Servicio tareas<br/>misma imagen · WeasyPrint · openpyxl"]
     end
 
-    subgraph ASYNC["Procesamiento asíncrono"]
-        direction TB
-        RQ[("Redis cola<br/>persistente, sin evicción")]
-        WK["Worker Python<br/>WeasyPrint · openpyxl"]
-    end
+    CT[["Cloud Tasks"]]
 
     subgraph DATA["Datos"]
         direction TB
-        RC[("Redis caché<br/>LRU + TTL")]
-        PG[("PostgreSQL 16+<br/>auditoría por triggers")]
-        PGS[("Standby / réplica<br/>(evolución)")]
+        PG[("Cloud SQL<br/>PostgreSQL 16+<br/>backups + PITR")]
+        GCS[("Cloud Storage<br/>bucket privado · UUID")]
     end
 
-    subgraph STORE["Almacenamiento"]
-        direction TB
-        S3[("MinIO / S3 privado<br/>AES-256 · UUID")]
-        BK[("Respaldo diario<br/>PostgreSQL y bucket")]
-    end
+    SM[("Secret Manager")]
 
-    U -->|HTTPS| NG
-    NG -->|"/api<br/>balanceo y health checks"| APP
-    APP -->|cache-aside| RC
-    APP -->|SQL| PG
-    APP -->|encolar| RQ
-    RQ --> WK
-    WK -->|lee| PG
-    WK -->|"PDF / XLSX"| S3
-    PG -.->|replicación| PGS
-    PG -.->|respaldo| BK
-    S3 -.->|respaldo| BK
-    U -.->|"URL prefirmada<br/>subida y descarga"| S3
+    U -->|HTTPS| FH
+    FH -->|"/api/**"| API
+    API -->|SQL| PG
+    API <-->|"encolar / ejecutar"| CT
+    CT <--> TK
+    TK -->|SQL| PG
+    TK -->|"PDF / XLSX"| GCS
+    API -.->|secretos| SM
+    U -.->|"URL firmada<br/>subida y descarga"| GCS
 
     classDef cEdge fill:#e3f2fd,stroke:#1565c0
     classDef cApp fill:#e8f5e9,stroke:#2e7d32
     classDef cAsync fill:#e0f7fa,stroke:#00838f
     classDef cData fill:#fff3e0,stroke:#ef6c00
-    classDef cStore fill:#f3e5f5,stroke:#7b1fa2
-    class NG cEdge
-    class API1,API2 cApp
-    class RQ,WK cAsync
-    class RC,PG,PGS cData
-    class S3,BK cStore
+    class FH cEdge
+    class API,TK cApp
+    class CT cAsync
+    class PG,GCS,SM cData
 ```
 
-El navegador sube y descarga documentos directamente del storage con URLs prefirmadas (línea punteada). El storage se publica en un subdominio propio, detrás de Nginx y preservando el encabezado `Host`, para que la firma de la URL sea válida. La standby/réplica es evolución y no se construye en el MVP; el respaldo diario sí forma parte del MVP.
+El navegador sube y descarga documentos directamente de Cloud Storage con URLs firmadas (línea punteada); es el único tráfico que no pasa por la API. Cloud Tasks recibe tareas de la API y vuelve a llamar al servicio de tareas para ejecutarlas.
 
 ---
 
@@ -80,17 +66,18 @@ El navegador sube y descarga documentos directamente del storage con URLs prefir
 
 | Atributo | Táctica | Componente en el diagrama | Decisión |
 |---|---|---|---|
-| AC01 Rendimiento | Caché cache-aside, endpoint agregado, índices y pre-generación de libretas | Redis caché, API FastAPI, PostgreSQL, Worker | ADR-006, ADR-003 |
-| AC02 Disponibilidad | 2 instancias de API con health checks y respaldo diario con restauración probada | Nginx, API FastAPI #1 y #2, Respaldo diario | ADR-007 |
-| AC03 Escalabilidad | API sin estado; cola y worker para la carga pesada | API FastAPI, Redis cola, Worker | ADR-001, ADR-003, ADR-004 |
-| AC04 Seguridad y Privacidad | TLS en el borde, RBAC y propiedad, bucket privado con URLs prefirmadas, cifrado en reposo y límites de tasa en rutas públicas | Nginx, API FastAPI, MinIO / S3 | ADR-002, ADR-004 |
-| AC05 Integridad y Trazabilidad | Transacciones ACID y triggers de auditoría con usuario e IP por transacción | PostgreSQL | ADR-005 |
-| AC06 Mantenibilidad | Monolito modular con Clean Architecture por módulo y adaptadores intercambiables | API FastAPI y Worker (misma base de código) | ADR-008 |
+| AC01 Rendimiento | Notas consolidadas precalculadas, endpoint agregado, índices y caché del cliente | Servicio api, Cloud SQL | ADR-006 |
+| AC02 Disponibilidad | Instancias reemplazables y backups automáticos con recuperación a un punto en el tiempo; tope de instancias y pool de conexiones para limitar la demanda | Cloud Run, Cloud SQL | ADR-007 |
+| AC03 Escalabilidad | Escalado horizontal con balanceo integrado; carga pesada en Cloud Tasks y archivos fuera del servidor | Servicio api, Cloud Tasks, servicio tareas, Cloud Storage | ADR-001, ADR-002, ADR-003 |
+| AC04 Seguridad y Privacidad | HTTPS, JWT en cookie httpOnly, RBAC y pertenencia, bucket privado con URLs firmadas de 15 min, cifrado en reposo y Secret Manager | Firebase Hosting, servicio api, Cloud Storage, Secret Manager | ADR-002, ADR-004 |
+| AC05 Integridad y Trazabilidad | Transacciones ACID y bitácora append-only escrita desde la capa de negocio | Servicio api, Cloud SQL | ADR-005 |
+| AC06 Mantenibilidad | Monolito modular con capas estrictas e infraestructura aislada en `core/` | Servicio api y servicio tareas (misma imagen) | ADR-008 |
 
 ---
 
 ## 4. MVP, Evolución y Riesgos Aceptados
 
-- **MVP (12 semanas):** todo lo del diagrama, excepto la standby/réplica.
-- **Evolución:** standby o réplica de lectura de PostgreSQL, PgBouncer cuando las conexiones superen unas 100, CDN para los estáticos, segundo nodo con balanceador, captcha ante abuso en las rutas públicas, antivirus en las subidas y hash encadenado en la bitácora de auditoría.
-- **Riesgos aceptados:** el servidor único es punto único de falla (se mitiga con respaldo diario y restauración probada; RTO de hasta 2 h) y las calificaciones en caché pueden estar desfasadas hasta 60 s.
+- **MVP (12 semanas):** todo lo del diagrama, en el escenario B gestionado y optimizado (ADR-007). Cloud Run escala a 0 fuera de los picos y mantiene 1 instancia mínima en cierre de bimestre, publicación de notas y admisión.
+- **Evolución:** Redis (Memorystore) si la latencia del pico supera el umbral de AC01, Application Load Balancer con Cloud Armor si se requiere firewall de aplicación, y Cloud SQL en alta disponibilidad según presupuesto.
+- **Riesgos aceptados:** el tope de instancias × pool de conexiones debe quedar bajo el límite de conexiones de Cloud SQL; el arranque en frío afecta a la primera petición cuando hay 0 instancias; el token JWT no se revoca antes de expirar.
+- **Pendientes:** presupuesto mensual y región de alojamiento de los datos (Ley N.º 29733).
