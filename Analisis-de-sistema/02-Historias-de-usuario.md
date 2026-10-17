@@ -14,3 +14,5 @@ Necesidades de cada actor expresadas como «Como…, quiero…, para…». Cada 
 | **HU08** | Como administrador, quiero configurar el catálogo escolar (niveles, grados, secciones y asignaturas) y asignar docentes titulares y suplentes a cursos y secciones, para que la estructura académica esté definida antes de iniciar las evaluaciones. |
 | **HU09** | Como personal de secretaría, quiero controlar los estados de los periodos lectivos (Aperturado, En Evaluación, Cierre Preliminar, Consolidado), para restringir la edición de notas fuera de fecha. |
 | **HU10** | Como estudiante, quiero ver mis notas en tiempo real, asi como las observaciones y pendientes de mi maestro. |
+| **HU11** | Como docente, quiero registrar la asistencia diaria de mis secciones, para dejar constancia oficial de presentes, faltas y tardanzas. |
+| **HU12** | Como apoderado o estudiante, quiero consultar la asistencia registrada, para detectar a tiempo faltas y tardanzas. |

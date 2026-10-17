@@ -17,11 +17,13 @@ Capacidades que debe ofrecer el sistema y su trazabilidad con las historias de u
 | **RF11** | El sistema debe proveer un módulo para el registro de solicitudes formales de traslado (ingreso y salida institucional) con especificación de motivos justificados y colegio de origen/destino. | Debería |
 | **RF12** | El sistema debe ofrecer un repositorio seguro para la subida de documentos probatorios digitalizados (DNI del menor y apoderado, partida de nacimiento, certificados de estudio, ficha única de matrícula) en formatos PDF o imagen legible, con validación de tipo MIME y tamaño máximo de 5 MB por archivo. | Debe |
 | **RF13** | El sistema debe proveer una bandeja de revisión centralizada para el personal de Secretaría Académica, con capacidad de dictaminar expedientes mediante estados: 'Pendiente de Revisión', 'Observado', 'Aprobado' y 'Rechazado' (obligando a registrar comentario técnico en caso de 'Observado'). Al aprobar un expediente, el sistema genera la pre-matrícula del estudiante. | Debe |
-| **RF14** | El sistema debe implementar autenticación y control de acceso basado en roles estrictos (RBAC), incluyendo la administración de usuarios y credenciales por parte del Administrador. | Debe |
+| **RF14** | El sistema debe implementar autenticación y control de acceso basado en roles estrictos (RBAC), incluyendo la administración de usuarios y credenciales por parte del Administrador. El usuario es el DNI y, como muchos apoderados no usan correo, Secretaría o el Administrador restablecen las contraseñas. | Debe |
 | **RF15** | El sistema debe permitir la generación y exportación de libretas de calificaciones informativas en formato PDF estandarizado para estudiantes y apoderados. | Debe |
 | **RF16** | El sistema debe permitir la generación de actas preliminares de evaluación y cuadros de mérito consolidados por sección exportables a formato Excel (.xlsx) y PDF, facilitando la compatibilidad reglamentaria con SIAGIE. | Debería |
 | **RF17** | El sistema debe emitir reportes de control administrativo: relación de solicitudes por estado de expediente, estadísticas de vacantes ocupadas/disponibles y listado de alumnos no evaluados. | Podría |
 | **RF18** | El sistema debe registrar en una bitácora de auditoría los eventos críticos (fecha, hora, usuario e IP de las modificaciones de notas y de los cambios de estado en trámites) y permitir su consulta al Administrador. | Debe |
+| **RF19** | El sistema debe permitir al docente registrar la asistencia diaria de sus secciones (presente, falta, tardanza, falta justificada). | Debe |
+| **RF20** | El sistema debe permitir al estudiante y al apoderado consultar la asistencia registrada, dentro de la vista familiar multi-hijo. | Debe |
 
 **Prioridad (MoSCoW):** *Debe* = imprescindible para el MVP; *Debería* = importante, se pospone solo si el plazo aprieta; *Podría* = deseable si sobra tiempo.
 
@@ -38,3 +40,6 @@ Capacidades que debe ofrecer el sistema y su trazabilidad con las historias de u
 | **HU07 Reportes y exportación SIAGIE** | RF16, RF17 |
 | **HU08 Configuración del catálogo escolar** | RF03, RF04, RF14 |
 | **HU09 Estados de los periodos lectivos** | RF05 |
+| **HU10 Notas y observaciones del estudiante** | RF07, RF08 |
+| **HU11 Registro de asistencia diaria** | RF19 |
+| **HU12 Consulta de asistencia** | RF01, RF20 |
