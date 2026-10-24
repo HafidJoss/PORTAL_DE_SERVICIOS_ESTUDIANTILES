@@ -1,28 +1,84 @@
+# Fuente única de contexto y reglas para las skills de OpenSpec.
+# Actualizar aquí cuando cambien los ADR o la arquitectura. Las skills de .claude/ no se editan a mano:
+# las regenera `openspec update`.
 schema: spec-driven
 
 context: |
-  Language: Spanish
-  All artifacts must be written in Spanish.
-  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+  IDIOMA
+  - Todo en español. Mantener en inglés los encabezados estructurales de OpenSpec (Requirement, Scenario, ADDED/MODIFIED/REMOVED Requirements), SHALL/MUST y GIVEN/WHEN/THEN.
+  - Nombres de cambios en kebab-case y en español (ej. institucion-estados-periodo).
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always state what is out of scope
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  PROYECTO
+  - Portal de Servicios Estudiantiles (MVP de 12 semanas) de la I.E. Emblemática Mariscal Cáceres, Ayacucho. Un desarrollador apoyado en agentes de IA.
+  - Cubre calificaciones CNEB, asistencia, admisión y traslados, y documentos de menores (Ley N.º 29733).
+  - Meta de diseño: unos 1,000 usuarios simultáneos en los picos (publicación de notas, admisión) con p95 < 2 s (AC01).
 
-# Per-operation guidance (optional)
-# Add advisory guidance for how apply and archive work should be conducted.
-# This is separate from artifact rules above.
-# Example:
-#   operations:
-#     apply:
-#       guidance:
-#         - Keep test summaries concise
-#     archive:
-#       guidance:
-#         - Summarize the archive outcome before finishing
+  DOCUMENTACIÓN DE REFERENCIA (leer lo relevante antes de redactar; no copiarla)
+  - Analisis-de-sistema/: 01 actores, 02 historias (HU), 03 requisitos (RF) con prioridad, 04 atributos de calidad (AC), 05 restricciones (RC), 06 drivers (DA), 07 decisiones (ADR-001 a ADR-008).
+  - Arquitectura-software/: estilo-arquitectonico (despliegue), arquitectura-inicial (módulos y flujos), enfoque-arquitectonico (capas por módulo).
+  - Si un artefacto de OpenSpec choca con esos documentos, avisarlo en vez de decidir en silencio.
+
+  STACK
+  - Backend: Python 3.12+, FastAPI, Pydantic, SQLAlchemy, PostgreSQL 16+ (Cloud SQL), Cloud Run, Cloud Tasks (servicio de tareas con la misma imagen), Cloud Storage privado (URLs firmadas de 15 min; subida directa con política POST firmada, máximo 5 MB), WeasyPrint (PDF), openpyxl (.xlsx), Secret Manager.
+  - Frontend: React + TypeScript + Vite en Firebase Hosting, TanStack Query, cliente TypeScript generado con Orval desde el contrato OpenAPI (no se edita a mano).
+  - No hay Redis ni caché en servidor (ADR-006): la lectura en pico usa la tabla de notas consolidadas, un endpoint agregado por apoderado, índices por (estudiante, periodo) y caché del cliente.
+  - Pruebas: pytest; PostgreSQL real con testcontainers para repository y API. Calidad: ruff e import-linter (se configuran en el cambio bootstrap-backend).
+
+  ARQUITECTURA (ADR-008)
+  - Monolito modular de 10 módulos en backend/app/modules/<modulo>/: identidad, institucion, personas, matriculas, admision, documentos, evaluacion, asistencia, reportes, auditoria. Infraestructura transversal en backend/app/core/. Frontend en frontend/src/features/ (espejo de los módulos).
+  - Capas por módulo: presentación (router.py, schemas.py, dependencies.py) -> negocio (service.py, reglas.py, exceptions.py) -> acceso a datos (repository.py, models.py). Cada capa solo llama a la inmediatamente inferior.
+  - La capa de negocio no importa FastAPI, no lanza errores HTTP y no hace commit; sus errores se traducen a Problem Details (RFC 9457) en un manejador global.
+  - Las reglas complejas (calificación CNEB, transiciones de estado) son funciones puras en reglas.py, probables sin base de datos.
+  - Un módulo solo llama al service de otro, nunca a su repository ni a sus tablas. Una transacción por petición con un único commit al final. Sin ciclos entre módulos; no agregar dependencias nuevas sin actualizar arquitectura-inicial.md.
+  - El backend nunca devuelve modelos SQLAlchemy: usa esquemas de entrada y salida separados (ej. NotaCreate, NotaOut).
+  - Seguridad (ADR-004): contraseña con argon2, JWT de vida corta en la cookie httpOnly __session, protección CSRF y límite de intentos de inicio de sesión.
+  - Auditoría append-only escrita desde el service dentro de la misma transacción; el rol de la aplicación no tiene UPDATE ni DELETE sobre la bitácora; la IP sale de X-Forwarded-For (ADR-005).
+  - Notas con bloqueo optimista (columna version). Las tareas asíncronas son idempotentes y se encolan después del commit (ADR-003).
+
+  DOMINIO
+  - Roles (5): Administrador, Secretaría Académica, Docente (titular o suplente), Apoderado y Estudiante. El usuario es el DNI. Pertenencia: el apoderado solo ve a sus hijos (relación N:M) y el docente solo sus secciones.
+  - Periodo lectivo: Aperturado -> En Evaluación -> Cierre Preliminar -> Consolidado. Solo Secretaría cambia el estado. Al consolidar se precalculan las notas y se encola la generación de libretas por sección.
+  - Las calificaciones confirmadas por el docente son visibles para el estudiante y su apoderado.
+  - Expediente de admisión: Pendiente de Revisión, Observado (comentario técnico obligatorio), Aprobado, Rechazado. Al aprobar, admision llama a matriculas en la misma transacción y, si falla, la aprobación se revierte.
+  - SIAGIE sin integración por API: solo exportación Excel (RC06). Fuera de alcance (RC08): pagos, biometría, LMS, chat e integración API con SIAGIE.
+
+  TRAZABILIDAD
+  - Usar solo IDs existentes (HU01-HU12, RF01-RF20, AC01-AC06, RC01-RC08, DA01-DA06, ADR-001 a ADR-008). Si un cambio necesita un requisito nuevo, proponer agregarlo a Analisis-de-sistema/ en el mismo cambio.
+  - El dominio de cada spec es un módulo: openspec/specs/<modulo>/spec.md.
+
+rules:
+  proposal:
+    - Indicar qué HU, RF y AC atiende, el módulo propietario y qué queda fuera de alcance (RC08).
+    - Un cambio, una intención que se pueda decir en una frase; preferir un corte vertical (contrato OpenAPI, backend y, si aplica, la feature del frontend).
+    - No contradecir ADR-001 a ADR-008; si el cambio los contradice, proponer un ADR nuevo o modificado en lugar de ignorarlos.
+    - Si el cambio depende de algo sin definir en la documentación (por ejemplo, las escalas CNEB de RF07), declararlo como bloqueo y no inventar la regla.
+  specs:
+    - La ruta de la spec es specs/<modulo>/spec.md, con el nombre exacto del módulo.
+    - Un requirement por comportamiento observable, con los IDs entre paréntesis en el título (por ejemplo, el requirement "Cambio de estado del periodo (RF05, HU09)").
+    - Cada requirement con al menos un escenario GIVEN/WHEN/THEN, más escenarios de error y de permisos (rol incorrecto, pertenencia, periodo cerrado, datos fuera de rango).
+    - Si el requirement modifica notas o estados de trámite, incluir un escenario de auditoría (fecha, hora, usuario e IP).
+    - No incluir detalles de implementación (archivos, librerías, tablas), que van en design.md.
+    - Redactar cada escenario de modo que pueda convertirse directamente en una prueba automatizada.
+  design:
+    - Citar los ADR aplicables y ubicar el código por módulo y capa (router, service, reglas, repository, core).
+    - Listar las dependencias hacia otros módulos y comprobar que respetan arquitectura-inicial.md.
+    - Si toca datos, incluir migración, índices y concurrencia (columna version; pool de conexiones frente al tope de instancias, ADR-007).
+    - Incluir un plan de pruebas por capa, con pruebas unitarias para reglas.py, pruebas unitarias sin BD para service (con repository falso) y pruebas de integración con PostgreSQL en testcontainers para repository y API.
+  tasks:
+    - Seguir TDD. Por cada escenario, una tarea de prueba que falla (rojo) antes de la tarea que la hace pasar (verde), seguida de refactor; no dejar las pruebas para el final.
+    - Ordenar las tareas de adentro hacia afuera, es decir reglas.py, service, repository y migración, router y schemas, regenerar el cliente Orval y frontend.
+    - Tareas de máximo 2 horas. Al cerrar cada grupo, ejecutar pytest e import-linter.
+    - Incluir una tarea de prueba de auditoría por cada endpoint que modifique notas o estados de trámite.
+
+operations:
+  apply:
+    guidance:
+      - Una tarea a la vez. Escribir la prueba, verla fallar por el motivo correcto, implementar lo mínimo, verla pasar y refactorizar; no marcar una tarea como hecha sin pruebas en verde.
+      - En reglas.py y service.py la prueba va siempre antes del código. En router y repository, la prueba de integración se escribe en la misma tarea.
+      - No modificar una prueba para que pase; si el escenario es incorrecto, actualizar primero la spec con /opsx:update.
+      - Respetar las capas y las fronteras entre módulos; si hace falta cruzarlas, detenerse y reportarlo.
+      - Commits locales pequeños con Conventional Commits en español; nunca hacer push.
+  archive:
+    guidance:
+      - Antes de archivar, comprobar que pytest, import-linter y openspec validate --strict estén en verde.
+      - Resumir qué HU y RF quedaron cubiertos y avisar si hay que actualizar la prioridad o los IDs en Analisis-de-sistema/.
