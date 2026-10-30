@@ -1,0 +1,38 @@
+# Secretos y variables locales
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*-service-account*.json
+service-account*.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Node y frontend
+node_modules/
+dist/
+coverage/
+*.log
+
+# Firebase
+.firebase/
+.firebaserc.local
+
+# Editores y sistema operativo
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Claude Code: ajustes locales de cada persona
+.claude/settings.local.json

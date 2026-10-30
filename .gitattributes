@@ -1,0 +1,15 @@
+# Git normaliza los archivos de texto a LF en el repositorio
+* text=auto
+
+# Estos archivos se ejecutan en Linux (Cloud Run): siempre LF
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.py text eol=lf
+
+# Binarios
+*.png binary
+*.jpg binary
+*.pdf binary
+*.xlsx binary
