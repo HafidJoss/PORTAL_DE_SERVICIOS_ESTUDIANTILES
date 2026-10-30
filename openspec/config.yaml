@@ -14,15 +14,16 @@ context: |
   - Meta de diseño: unos 1,000 usuarios simultáneos en los picos (publicación de notas, admisión) con p95 < 2 s (AC01).
 
   DOCUMENTACIÓN DE REFERENCIA (leer lo relevante antes de redactar; no copiarla)
-  - Analisis-de-sistema/: 01 actores, 02 historias (HU), 03 requisitos (RF) con prioridad, 04 atributos de calidad (AC), 05 restricciones (RC), 06 drivers (DA), 07 decisiones (ADR-001 a ADR-008).
-  - Arquitectura-software/: estilo-arquitectonico (despliegue), arquitectura-inicial (módulos y flujos), enfoque-arquitectonico (capas por módulo).
+  - docs/01-analisis-de-sistema/: 01 actores, 02 historias (HU), 03 requisitos (RF) con prioridad, 04 atributos de calidad (AC), 05 restricciones (RC), 06 drivers (DA), 07 decisiones (ADR-001 a ADR-008).
+  - docs/02-arquitectura-software/: estilo-arquitectonico (despliegue), arquitectura-inicial (módulos y flujos), enfoque-arquitectonico (capas por módulo).
+  - docs/03-diseno-de-software/: diseño interno, patrones y principios. docs/04-modelo-c4/: niveles 1 a 4.
   - Si un artefacto de OpenSpec choca con esos documentos, avisarlo en vez de decidir en silencio.
 
   STACK
   - Backend: Python 3.12+, FastAPI, Pydantic, SQLAlchemy, PostgreSQL 16+ (Cloud SQL), Cloud Run, Cloud Tasks (servicio de tareas con la misma imagen), Cloud Storage privado (URLs firmadas de 15 min; subida directa con política POST firmada, máximo 5 MB), WeasyPrint (PDF), openpyxl (.xlsx), Secret Manager.
   - Frontend: React + TypeScript + Vite en Firebase Hosting, TanStack Query, cliente TypeScript generado con Orval desde el contrato OpenAPI (no se edita a mano).
   - No hay Redis ni caché en servidor (ADR-006): la lectura en pico usa la tabla de notas consolidadas, un endpoint agregado por apoderado, índices por (estudiante, periodo) y caché del cliente.
-  - Pruebas: pytest; PostgreSQL real con testcontainers para repository y API. Calidad: ruff e import-linter (se configuran en el cambio bootstrap-backend).
+  - Migraciones: Alembic. Pruebas: pytest; PostgreSQL real con testcontainers para repository y API. Calidad: ruff e import-linter (se configuran en el cambio bootstrap-backend).
 
   ARQUITECTURA (ADR-008)
   - Monolito modular de 10 módulos en backend/app/modules/<modulo>/: identidad, institucion, personas, matriculas, admision, documentos, evaluacion, asistencia, reportes, auditoria. Infraestructura transversal en backend/app/core/. Frontend en frontend/src/features/ (espejo de los módulos).
@@ -43,7 +44,7 @@ context: |
   - SIAGIE sin integración por API: solo exportación Excel (RC06). Fuera de alcance (RC08): pagos, biometría, LMS, chat e integración API con SIAGIE.
 
   TRAZABILIDAD
-  - Usar solo IDs existentes (HU01-HU12, RF01-RF20, AC01-AC06, RC01-RC08, DA01-DA06, ADR-001 a ADR-008). Si un cambio necesita un requisito nuevo, proponer agregarlo a Analisis-de-sistema/ en el mismo cambio.
+  - Usar solo IDs existentes (HU01-HU12, RF01-RF20, AC01-AC06, RC01-RC08, DA01-DA06, ADR-001 a ADR-008). Si un cambio necesita un requisito nuevo, proponer agregarlo a docs/01-analisis-de-sistema/ en el mismo cambio.
   - El dominio de cada spec es un módulo: openspec/specs/<modulo>/spec.md.
 
 rules:
@@ -77,8 +78,8 @@ operations:
       - En reglas.py y service.py la prueba va siempre antes del código. En router y repository, la prueba de integración se escribe en la misma tarea.
       - No modificar una prueba para que pase; si el escenario es incorrecto, actualizar primero la spec con /opsx:update.
       - Respetar las capas y las fronteras entre módulos; si hace falta cruzarlas, detenerse y reportarlo.
-      - Commits locales pequeños con Conventional Commits en español; nunca hacer push.
+      - Nunca hacer commit, push ni merge sin que se pida explícitamente; se trabaja en la rama dev.
   archive:
     guidance:
       - Antes de archivar, comprobar que pytest, import-linter y openspec validate --strict estén en verde.
-      - Resumir qué HU y RF quedaron cubiertos y avisar si hay que actualizar la prioridad o los IDs en Analisis-de-sistema/.
+      - Resumir qué HU y RF quedaron cubiertos y avisar si hay que actualizar la prioridad o los IDs en docs/01-analisis-de-sistema/.
