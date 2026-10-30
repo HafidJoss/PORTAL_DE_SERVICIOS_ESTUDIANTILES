@@ -36,3 +36,5 @@ El sistema debe atender picos de consulta de unos 1,000 usuarios simultáneos (A
 | 16 | [03-nivel3-componentes](docs/04-modelo-c4/03-nivel3-componentes.md) | C4: ¿cómo se divide el backend por dentro? |
 | 17 | [04-nivel4-codigo](docs/04-modelo-c4/04-nivel4-codigo.md) | C4: ¿qué clases forman un módulo? |
 | 18 | [skills-y-comandos](docs/05-guias/skills-y-comandos.md) | Guía en español de las skills y comandos de OpenSpec |
+| 19 | [tdd](docs/06-estandares/tdd.md) | ¿Cómo se aplica el desarrollo guiado por pruebas? |
+| 20 | [git-y-github](docs/06-estandares/git-y-github.md) | ¿Cómo se trabaja con ramas, commits y GitHub? |

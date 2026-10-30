@@ -17,6 +17,7 @@ context: |
   - docs/01-analisis-de-sistema/: 01 actores, 02 historias (HU), 03 requisitos (RF) con prioridad, 04 atributos de calidad (AC), 05 restricciones (RC), 06 drivers (DA), 07 decisiones (ADR-001 a ADR-008).
   - docs/02-arquitectura-software/: estilo-arquitectonico (despliegue), arquitectura-inicial (módulos y flujos), enfoque-arquitectonico (capas por módulo).
   - docs/03-diseno-de-software/: diseño interno, patrones y principios. docs/04-modelo-c4/: niveles 1 a 4.
+  - docs/06-estandares/: estándares obligatorios. El TDD se aplica según docs/06-estandares/tdd.md. Git y GitHub se rigen por docs/06-estandares/git-y-github.md.
   - Si un artefacto de OpenSpec choca con esos documentos, avisarlo en vez de decidir en silencio.
 
   STACK
