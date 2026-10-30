@@ -43,36 +43,49 @@ Cada requisito funcional tiene un único módulo propietario. Los diez módulos 
 ## 3. Diagrama de la Vista Modular (Mermaid)
 
 ```mermaid
-flowchart LR
-    subgraph ENT["Puntos de entrada"]
+flowchart TB
+    subgraph ENT["1. Puntos de entrada"]
         API["API REST · FastAPI"]
         TK["Servicio de tareas"]
     end
 
-    subgraph MOD["Módulos: cada uno con presentación, negocio y acceso a datos"]
-        M_ID["identidad"]
-        M_IN["institucion"]
-        M_PE["personas"]
-        M_MA["matriculas"]
-        M_AD["admision"]
-        M_DO["documentos"]
-        M_EV["evaluacion"]
-        M_AS["asistencia"]
-        M_RE["reportes"]
-        M_AU["auditoria"]
+    subgraph MOD["2. Módulos: cada uno con presentación, negocio y acceso a datos"]
+        subgraph N1["Nivel 1 · inician llamadas"]
+            M_AD["admision"]
+            M_RE["reportes"]
+        end
+        subgraph N2["Nivel 2"]
+            M_DO["documentos"]
+            M_MA["matriculas"]
+            M_EV["evaluacion"]
+            M_AS["asistencia"]
+        end
+        subgraph N3["Nivel 3 · base"]
+            M_IN["institucion"]
+            M_PE["personas"]
+            M_ID["identidad"]
+            M_AU["auditoria"]
+        end
     end
 
-    CORE["core<br/>config · BD · seguridad · storage · PDF/Excel · errores"]
-    DB[("PostgreSQL")]
+    subgraph INF["3. Infraestructura y datos"]
+        CORE["core<br/>config · BD · seguridad<br/>storage · PDF/Excel · errores"]
+        DB[("PostgreSQL")]
+    end
 
     API --> MOD
     TK --> M_RE
     TK --> M_DO
-    M_AD -->|service| M_MA
     M_AD -->|service| M_DO
+    M_AD -->|service| M_MA
     M_MA -->|service| M_PE
     M_RE -->|service| M_EV
     M_RE -->|service| M_AS
+    M_DO ~~~ M_IN
+    M_EV ~~~ M_ID
+    M_AS ~~~ M_AU
+    M_PE ~~~ CORE
+    M_ID ~~~ CORE
     MOD -.->|usa| CORE
     CORE --> DB
 
@@ -87,6 +100,8 @@ flowchart LR
 ```
 
 La API y el servicio de tareas son puntos de entrada de la misma base de código, de modo que las reglas del cálculo CNEB no se duplican. Solo `core/` habla con los servicios de Google Cloud.
+
+Los niveles ordenan las llamadas `service` a `service` dibujadas: cada módulo solo llama a los de niveles inferiores. `institucion`, `identidad` y `auditoria` no tienen llamadas dibujadas todavía y se ubican en la base hasta que se defina la matriz completa de dependencias.
 
 ---
 

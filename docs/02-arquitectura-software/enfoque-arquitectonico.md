@@ -1,6 +1,6 @@
 # Enfoque Arquitectónico del Sistema: Arquitectura en Capas Estricta
 
-Este documento describe la organización **interna** del backend: cada módulo (ver [arquitectura-inicial.md](arquitectura-inicial.md)) aplica una arquitectura en capas estricta y todos se despliegan según [estilo-arquitectonico.md](estilo-arquitectonico.md). La decisión está registrada en ADR-008 de [07-Decisiones-arquitectonicas.md](../Analisis-de-sistema/07-Decisiones-arquitectonicas.md).
+Este documento describe la organización **interna** del backend: cada módulo (ver [arquitectura-inicial.md](arquitectura-inicial.md)) aplica una arquitectura en capas estricta y todos se despliegan según [estilo-arquitectonico.md](estilo-arquitectonico.md). La decisión está registrada en ADR-008 de [07-Decisiones-arquitectonicas.md](../01-analisis-de-sistema/07-Decisiones-arquitectonicas.md).
 
 ## 1. Información General
 
@@ -17,6 +17,9 @@ Este documento describe la organización **interna** del backend: cada módulo (
 ## 2. Estructura Modular
 
 ```
+backend/
+  migrations/        → migraciones de la base de datos con Alembic
+  tests/             → pruebas con pytest
 backend/app/
   core/              → config, database, security, storage, pdf, errors, logging
   modules/
@@ -59,25 +62,27 @@ frontend/src/
 El diagrama muestra el módulo `evaluacion` como ejemplo; los demás módulos siguen la misma estructura.
 
 ```mermaid
-flowchart LR
+flowchart TB
     API["API REST · FastAPI"]
 
     subgraph EV["Módulo evaluacion (ejemplo)"]
-        subgraph PRES["Presentación"]
+        subgraph PRES["1. Presentación"]
             RT["router.py · schemas.py<br/>dependencies.py (rol y pertenencia)"]
         end
-        subgraph NEG["Negocio"]
+        subgraph NEG["2. Negocio"]
             SV["service.py<br/>casos de uso · auditoría"]
             RG["reglas.py<br/>cálculo CNEB (funciones puras)"]
         end
-        subgraph DAT["Acceso a datos"]
+        subgraph DAT["3. Acceso a datos"]
             RP["repository.py · models.py"]
         end
     end
 
-    OTRO["service de otro módulo<br/>(institucion, matriculas, auditoria)"]
-    CORE["core/<br/>BD · seguridad · storage · PDF/Excel · errores"]
-    PG[("PostgreSQL")]
+    subgraph EXT["4. Fuera del módulo"]
+        OTRO["service de otro módulo<br/>(institucion, matriculas, auditoria)"]
+        CORE["core/<br/>BD · seguridad · storage · PDF/Excel · errores"]
+        PG[("PostgreSQL")]
+    end
 
     API --> RT
     RT --> SV

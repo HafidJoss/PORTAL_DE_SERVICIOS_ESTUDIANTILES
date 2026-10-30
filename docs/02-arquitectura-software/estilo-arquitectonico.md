@@ -1,7 +1,7 @@
 # Estilo Arquitectónico del Sistema: Portal de Servicios Estudiantiles (MVP)
 
 ## 1. Descripción General
-Se optó por una arquitectura **N-Tier (multicapa) desacoplada** sobre servicios gestionados de Google Cloud, con un tier de aplicación sin estado. Este documento describe la vista de **despliegue** (qué se ejecuta y cómo escala). La estructura **modular** del backend está en [arquitectura-inicial.md](arquitectura-inicial.md) y la organización interna **en capas estricta** de cada módulo en [enfoque-arquitectonico.md](enfoque-arquitectonico.md). Las decisiones se registran en [07-Decisiones-arquitectonicas.md](../Analisis-de-sistema/07-Decisiones-arquitectonicas.md).
+Se optó por una arquitectura **N-Tier (multicapa) desacoplada** sobre servicios gestionados de Google Cloud, con un tier de aplicación sin estado. Este documento describe la vista de **despliegue** (qué se ejecuta y cómo escala). La estructura **modular** del backend está en [arquitectura-inicial.md](arquitectura-inicial.md) y la organización interna **en capas estricta** de cada módulo en [enfoque-arquitectonico.md](enfoque-arquitectonico.md). Las decisiones se registran en [07-Decisiones-arquitectonicas.md](../01-analisis-de-sistema/07-Decisiones-arquitectonicas.md).
 
 - **Presentación:** SPA en React + TypeScript servida por Firebase Hosting, que además redirige `/api/**` a la API.
 - **Aplicación:** API REST en Python 3.12+ con FastAPI, en un contenedor Docker sobre Cloud Run, sin estado de sesión (JWT) y con escalado horizontal automático.
@@ -15,34 +15,33 @@ Se optó por una arquitectura **N-Tier (multicapa) desacoplada** sobre servicios
 ## 2. Diagrama de Despliegue (Mermaid)
 
 ```mermaid
-flowchart LR
+flowchart TB
     U["Usuarios<br/>(navegador / móvil)"]
 
-    subgraph EDGE["Presentación"]
+    subgraph PRES["1. Presentación"]
         FH["Firebase Hosting<br/>SPA estática · rewrite /api/**"]
     end
 
-    subgraph APP["Aplicación (Cloud Run, sin estado)"]
-        direction TB
+    subgraph APP["2. Aplicación · Cloud Run (sin estado)"]
         API["Servicio api<br/>FastAPI · autoescalado"]
-        TK["Servicio tareas<br/>misma imagen · WeasyPrint · openpyxl"]
     end
 
-    CT[["Cloud Tasks"]]
+    subgraph ASYNC["3. Procesamiento asíncrono"]
+        CT[["Cloud Tasks"]]
+        TK["Servicio tareas<br/>Cloud Run · misma imagen<br/>WeasyPrint · openpyxl"]
+    end
 
-    subgraph DATA["Datos"]
-        direction TB
+    subgraph DATA["4. Datos y soporte"]
         PG[("Cloud SQL<br/>PostgreSQL 16+<br/>backups + PITR")]
         GCS[("Cloud Storage<br/>bucket privado · UUID")]
+        SM[("Secret Manager")]
     end
-
-    SM[("Secret Manager")]
 
     U -->|HTTPS| FH
     FH -->|"/api/**"| API
+    API -->|encolar| CT
+    CT -->|ejecutar| TK
     API -->|SQL| PG
-    API <-->|"encolar / ejecutar"| CT
-    CT <--> TK
     TK -->|SQL| PG
     TK -->|"PDF / XLSX"| GCS
     API -.->|secretos| SM
