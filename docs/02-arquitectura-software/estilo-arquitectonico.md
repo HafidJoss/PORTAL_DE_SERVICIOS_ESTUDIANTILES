@@ -45,7 +45,7 @@ flowchart TB
     TK -->|SQL| PG
     TK -->|"PDF / XLSX"| GCS
     API -.->|secretos| SM
-    U -.->|"URL firmada<br/>subida y descarga"| GCS
+    U -.->|"URL firmada<br/>descarga"| GCS
 
     classDef cEdge fill:#e3f2fd,stroke:#1565c0
     classDef cApp fill:#e8f5e9,stroke:#2e7d32
@@ -57,7 +57,7 @@ flowchart TB
     class PG,GCS,SM cData
 ```
 
-El navegador sube y descarga documentos directamente de Cloud Storage con URLs firmadas (línea punteada); es el único tráfico que no pasa por la API. Cloud Tasks recibe tareas de la API y vuelve a llamar al servicio de tareas para ejecutarlas.
+El navegador descarga libretas y actas directamente de Cloud Storage con URLs firmadas (línea punteada); es el único tráfico que no pasa por la API. La subida directa de documentos queda para cuando vuelva admisión. Cloud Tasks recibe tareas de la API y vuelve a llamar al servicio de tareas para ejecutarlas.
 
 ---
 
@@ -65,18 +65,19 @@ El navegador sube y descarga documentos directamente de Cloud Storage con URLs f
 
 | Atributo | Táctica | Componente en el diagrama | Decisión |
 |---|---|---|---|
-| AC01 Rendimiento | Notas consolidadas precalculadas, endpoint agregado, índices y caché del cliente | Servicio api, Cloud SQL | ADR-006 |
+| AC01 Rendimiento | Endpoint agregado, lectura por estudiante y trimestre con índices, paginación por cursor y caché del cliente | Servicio api, Cloud SQL | ADR-006 |
 | AC02 Disponibilidad | Instancias reemplazables y backups automáticos con recuperación a un punto en el tiempo; tope de instancias y pool de conexiones para limitar la demanda | Cloud Run, Cloud SQL | ADR-007 |
 | AC03 Escalabilidad | Escalado horizontal con balanceo integrado; carga pesada en Cloud Tasks y archivos fuera del servidor | Servicio api, Cloud Tasks, servicio tareas, Cloud Storage | ADR-001, ADR-002, ADR-003 |
 | AC04 Seguridad y Privacidad | HTTPS, JWT en cookie httpOnly, RBAC y pertenencia, bucket privado con URLs firmadas de 15 min, cifrado en reposo y Secret Manager | Firebase Hosting, servicio api, Cloud Storage, Secret Manager | ADR-002, ADR-004 |
-| AC05 Integridad y Trazabilidad | Transacciones ACID y bitácora append-only escrita desde la capa de negocio | Servicio api, Cloud SQL | ADR-005 |
+| AC05 Integridad y Trazabilidad | Transacciones ACID, bitácora append-only escrita desde la capa de negocio y logs estructurados de accesos | Servicio api, Cloud SQL | ADR-005 |
 | AC06 Mantenibilidad | Monolito modular con capas estrictas e infraestructura aislada en `core/` | Servicio api y servicio tareas (misma imagen) | ADR-008 |
+| AC07 Usabilidad docente | Guardado masivo por sección, nivel sugerido y Excel generado de los niveles confirmados | Aplicación web, servicio api | ADR-008 |
 
 ---
 
 ## 4. MVP, Evolución y Riesgos Aceptados
 
-- **MVP (12 semanas):** todo lo del diagrama, en el escenario B gestionado y optimizado (ADR-007). Cloud Run escala a 0 fuera de los picos y mantiene 1 instancia mínima en cierre de bimestre, publicación de notas y admisión.
-- **Evolución:** Redis (Memorystore) si la latencia del pico supera el umbral de AC01, Application Load Balancer con Cloud Armor si se requiere firewall de aplicación, y Cloud SQL en alta disponibilidad según presupuesto.
+- **MVP (12 semanas):** todo lo del diagrama, en el escenario B gestionado y optimizado (ADR-007). Cloud Run escala a 0 fuera del horario de atención y mantiene 1 instancia mínima dentro de él si la prueba de AC01 lo exige.
+- **Evolución:** matrícula, admisión y mesa de partes (con subida directa, ADR-002), Redis (Memorystore) si la latencia del pico supera el umbral de AC01, Application Load Balancer con Cloud Armor si se requiere firewall de aplicación, y Cloud SQL en alta disponibilidad según presupuesto.
 - **Riesgos aceptados:** el tope de instancias × pool de conexiones debe quedar bajo el límite de conexiones de Cloud SQL; el arranque en frío afecta a la primera petición cuando hay 0 instancias; el token JWT no se revoca antes de expirar.
-- **Pendientes:** presupuesto mensual y región de alojamiento de los datos (Ley N.º 29733).
+- **Pendientes:** presupuesto mensual, disponibilidad de los servicios en la región Santiago y garantías del flujo transfronterizo (Ley N.º 29733), porque no hay región de Google Cloud en Perú.
