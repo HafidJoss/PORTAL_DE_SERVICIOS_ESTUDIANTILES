@@ -10,55 +10,59 @@ context: |
 
   PROYECTO
   - Portal de Servicios Estudiantiles (MVP de 12 semanas) de la I.E. Emblemática Mariscal Cáceres, Ayacucho. Un desarrollador apoyado en agentes de IA.
-  - Cubre calificaciones CNEB, asistencia, admisión y traslados, y documentos de menores (Ley N.º 29733).
-  - Meta de diseño: unos 1,000 usuarios simultáneos en los picos (publicación de notas, admisión) con p95 < 2 s (AC01).
+  - Centro del MVP: seguimiento continuo del estudiante por apoderados, estudiantes, docentes y colegio, y reducción de la carga docente con el Excel automático para el SIAGIE. I.E. pública de primaria y secundaria, con año lectivo en 3 trimestres. Datos de menores bajo la Ley N.º 29733.
+  - Meta de diseño: unos 1,000 usuarios simultáneos en el uso diario y al publicar libretas, con p95 < 2 s (AC01). El registro docente debe ser rápido desde el celular (AC07).
 
   DOCUMENTACIÓN DE REFERENCIA (leer lo relevante antes de redactar; no copiarla)
-  - docs/01-analisis-de-sistema/: 01 actores, 02 historias (HU), 03 requisitos (RF) con prioridad, 04 atributos de calidad (AC), 05 restricciones (RC), 06 drivers (DA), 07 decisiones (ADR-001 a ADR-008).
+  - docs/01-analisis-de-sistema/: 01 actores, 02 historias (HU), 03 requisitos (RF) con prioridad, 04 atributos de calidad (AC), 05 restricciones (RC), 06 drivers (DA), 07 decisiones (ADR-001 a ADR-009).
   - docs/02-arquitectura-software/: estilo-arquitectonico (despliegue), arquitectura-inicial (módulos y flujos), enfoque-arquitectonico (capas por módulo).
   - docs/03-diseno-de-software/: diseño interno, patrones y principios. docs/04-modelo-c4/: niveles 1 a 4.
   - docs/06-estandares/: estándares obligatorios. El TDD se aplica según docs/06-estandares/tdd.md. Git y GitHub se rigen por docs/06-estandares/git-y-github.md.
   - Si un artefacto de OpenSpec choca con esos documentos, avisarlo en vez de decidir en silencio.
 
   STACK
-  - Backend: Python 3.12+, FastAPI, Pydantic, SQLAlchemy, PostgreSQL 16+ (Cloud SQL), Cloud Run, Cloud Tasks (servicio de tareas con la misma imagen), Cloud Storage privado (URLs firmadas de 15 min; subida directa con política POST firmada, máximo 5 MB), WeasyPrint (PDF), openpyxl (.xlsx), Secret Manager.
+  - Backend: Python 3.12+, FastAPI, Pydantic, SQLAlchemy, PostgreSQL 16+ (Cloud SQL), Cloud Run, Cloud Tasks (servicio de tareas con la misma imagen), Cloud Storage privado (libretas y actas, URLs firmadas de 15 min; la subida directa queda para cuando vuelva admisión), WeasyPrint (PDF), openpyxl (.xlsx), Secret Manager.
   - Frontend: React + TypeScript + Vite en Firebase Hosting, TanStack Query, cliente TypeScript generado con Orval desde el contrato OpenAPI (no se edita a mano).
-  - No hay Redis ni caché en servidor (ADR-006): la lectura en pico usa la tabla de notas consolidadas, un endpoint agregado por apoderado, índices por (estudiante, periodo) y caché del cliente.
+  - No hay Redis ni caché en servidor (ADR-006): un endpoint agregado en seguimiento lee actividades, niveles y asistencia con índices por (estudiante, trimestre), paginación por cursor y caché del cliente. No hay tabla consolidada por trimestre; solo se guarda la situación final anual.
   - Migraciones: Alembic. Pruebas: pytest; PostgreSQL real con testcontainers para repository y API. Calidad: ruff e import-linter (se configuran en el cambio bootstrap-backend).
 
   ARQUITECTURA (ADR-008)
-  - Monolito modular de 10 módulos en backend/app/modules/<modulo>/: identidad, institucion, personas, matriculas, admision, documentos, evaluacion, asistencia, reportes, auditoria. Infraestructura transversal en backend/app/core/. Frontend en frontend/src/features/ (espejo de los módulos).
+  - Monolito modular de 11 módulos en backend/app/modules/<modulo>/. Activos en el MVP: seguimiento, reportes, evaluacion, asistencia, matriculas, institucion, personas, identidad, auditoria. Diferidos a una versión futura: admision, documentos. seguimiento compone lecturas sin tablas propias, salvo la última visita. Infraestructura transversal en backend/app/core/. Frontend en frontend/src/features/ (espejo de los módulos).
   - Capas por módulo: presentación (router.py, schemas.py, dependencies.py) -> negocio (service.py, reglas.py, exceptions.py) -> acceso a datos (repository.py, models.py). Cada capa solo llama a la inmediatamente inferior.
   - La capa de negocio no importa FastAPI, no lanza errores HTTP y no hace commit; sus errores se traducen a Problem Details (RFC 9457) en un manejador global.
-  - Las reglas complejas (calificación CNEB, transiciones de estado) son funciones puras en reglas.py, probables sin base de datos.
+  - Las reglas complejas (nivel sugerido, conclusiones, promoción, transiciones de estado) son funciones puras en reglas.py, probables sin base de datos.
   - Un módulo solo llama al service de otro, nunca a su repository ni a sus tablas. Una transacción por petición con un único commit al final. Sin ciclos entre módulos; no agregar dependencias nuevas sin actualizar arquitectura-inicial.md.
   - El backend nunca devuelve modelos SQLAlchemy: usa esquemas de entrada y salida separados (ej. NotaCreate, NotaOut).
-  - Seguridad (ADR-004): contraseña con argon2, JWT de vida corta en la cookie httpOnly __session, protección CSRF y límite de intentos de inicio de sesión.
-  - Auditoría append-only escrita desde el service dentro de la misma transacción; el rol de la aplicación no tiene UPDATE ni DELETE sobre la bitácora; la IP sale de X-Forwarded-For (ADR-005).
-  - Notas con bloqueo optimista (columna version). Las tareas asíncronas son idempotentes y se encolan después del commit (ADR-003).
+  - Seguridad (ADR-004): contraseña con argon2, JWT de 30 minutos renovable con máximo de 8 horas en la cookie httpOnly __session, version_sesion que invalida tokens al salir o restablecer, protección CSRF y límite de intentos de inicio de sesión.
+  - Auditoría append-only escrita desde el service dentro de la misma transacción; el rol de la aplicación no tiene UPDATE ni DELETE sobre la bitácora; la IP sale de la posición confiable de X-Forwarded-For. Sesiones, visualizaciones, importaciones y exportaciones van a logs estructurados por al menos 2 años (ADR-005).
+  - Resultados y niveles con bloqueo optimista (columna version). Las tareas asíncronas son idempotentes y se encolan después del commit (ADR-003).
 
   DOMINIO
-  - Roles (5): Administrador, Secretaría Académica, Docente (titular o suplente), Apoderado y Estudiante. El usuario es el DNI. Pertenencia: el apoderado solo ve a sus hijos (relación N:M) y el docente solo sus secciones.
-  - Periodo lectivo: Aperturado -> En Evaluación -> Cierre Preliminar -> Consolidado. Solo Secretaría cambia el estado. Al consolidar se precalculan las notas y se encola la generación de libretas por sección.
-  - Las calificaciones confirmadas por el docente son visibles para el estudiante y su apoderado.
-  - Expediente de admisión: Pendiente de Revisión, Observado (comentario técnico obligatorio), Aprobado, Rechazado. Al aprobar, admision llama a matriculas en la misma transacción y, si falla, la aprobación se revierte.
-  - SIAGIE sin integración por API: solo exportación Excel (RC06). Fuera de alcance (RC08): pagos, biometría, LMS, chat e integración API con SIAGIE.
+  - Roles (7): Administrador, Dirección, Secretaría Académica, Docente (titular, suplente o tutor), Auxiliar, Apoderado y Estudiante. El usuario es el documento de identidad. Pertenencia: el apoderado solo ve a sus hijos (relación N:M), y docente y auxiliar solo sus secciones.
+  - Cuentas: Secretaría, Dirección y el Administrador agregan y editan usuarios y vínculos; Secretaría no crea ni asciende cuentas de Administrador o Dirección. Se activan con un código de un solo uso y solo el Administrador restablece contraseñas.
+  - Catálogo: el Administrador crea asignaturas y competencias; cada competencia pertenece a una asignatura, salvo las transversales, que no cuentan para la situación final.
+  - Nómina (RF21): Secretaría carga la nómina del SIAGIE y asigna la sección. El proceso de matrícula queda fuera del portal.
+  - Asistencia: el auxiliar la registra una vez al día (RF19).
+  - Dos capas en evaluacion: seguimiento diario (actividades, resultados, observaciones y mensajes, en borrador o publicados, sin subir archivos) y nivel del trimestre (dato oficial). El sistema sugiere el nivel con el último calificativo publicado y el docente confirma; no hay promedios ni escala vigesimal (RVM 094-2020 y RVM 048-2024).
+  - Trimestre: Aperturado -> En Evaluación -> Cierre Preliminar -> Cerrado. Solo el Administrador cambia el estado; el registro diario ocurre En Evaluación y en Cierre Preliminar solo se ajustan niveles y conclusiones. Cerrar lo orquesta evaluacion (ADR-009): valida niveles, pide el cambio a institucion y, después del commit, encola por core las libretas por sección, que atiende reportes. Publicar la libreta y reabrir notas son acciones separadas de Administrador y Dirección; reabrir exige motivo y, tras el Acta Oficial, autorización de la UGEL.
+  - Conclusión descriptiva obligatoria con B o C en primaria y con C en secundaria; con C en dos trimestres consecutivos debe explicar la falta de avance. La situación final es PRO, PER o RR y sus condiciones dependen del nivel y grado.
+  - SIAGIE sin integración por API (RC06): el portal carga su nómina y llena la plantilla Excel que él genera. Fuera de alcance (RC08): matrícula, admisión, traslados y mesa de partes (versiones siguientes), pagos y procesos financieros, subida de trabajos, biometría, LMS, chat e integración API con SIAGIE.
 
   TRAZABILIDAD
-  - Usar solo IDs existentes (HU01-HU12, RF01-RF20, AC01-AC06, RC01-RC08, DA01-DA06, ADR-001 a ADR-008). Si un cambio necesita un requisito nuevo, proponer agregarlo a docs/01-analisis-de-sistema/ en el mismo cambio.
+  - Usar solo IDs existentes (HU01-HU17, RF01-RF31, AC01-AC07, RC01-RC08, DA01-DA07, ADR-001 a ADR-009). No construir RF marcados como Pospuesto. Si un cambio necesita un requisito nuevo, proponer agregarlo a docs/01-analisis-de-sistema/ en el mismo cambio.
   - El dominio de cada spec es un módulo: openspec/specs/<modulo>/spec.md.
 
 rules:
   proposal:
     - Indicar qué HU, RF y AC atiende, el módulo propietario y qué queda fuera de alcance (RC08).
     - Un cambio, una intención que se pueda decir en una frase; preferir un corte vertical (contrato OpenAPI, backend y, si aplica, la feature del frontend).
-    - No contradecir ADR-001 a ADR-008; si el cambio los contradice, proponer un ADR nuevo o modificado en lugar de ignorarlos.
-    - Si el cambio depende de algo sin definir en la documentación (por ejemplo, las escalas CNEB de RF07), declararlo como bloqueo y no inventar la regla.
+    - No contradecir ADR-001 a ADR-009; si el cambio los contradice, proponer un ADR nuevo o modificado en lugar de ignorarlos.
+    - Si el cambio depende de algo sin definir en la documentación (por ejemplo, el formato de la plantilla SIAGIE de RC06), declararlo como bloqueo y no inventar la regla.
   specs:
     - La ruta de la spec es specs/<modulo>/spec.md, con el nombre exacto del módulo.
-    - Un requirement por comportamiento observable, con los IDs entre paréntesis en el título (por ejemplo, el requirement "Cambio de estado del periodo (RF05, HU09)").
-    - Cada requirement con al menos un escenario GIVEN/WHEN/THEN, más escenarios de error y de permisos (rol incorrecto, pertenencia, periodo cerrado, datos fuera de rango).
-    - Si el requirement modifica notas o estados de trámite, incluir un escenario de auditoría (fecha, hora, usuario e IP).
+    - Un requirement por comportamiento observable, con los IDs entre paréntesis en el título (por ejemplo, el requirement "Cambio de estado del trimestre (RF05, HU09)").
+    - Cada requirement con al menos un escenario GIVEN/WHEN/THEN, más escenarios de error y de permisos (rol incorrecto, pertenencia, trimestre cerrado, datos fuera de rango).
+    - Si el requirement modifica un dato auditado (RF18), incluir un escenario de auditoría (fecha, hora, usuario, IP y valores).
     - No incluir detalles de implementación (archivos, librerías, tablas), que van en design.md.
     - Redactar cada escenario de modo que pueda convertirse directamente en una prueba automatizada.
   design:
@@ -70,7 +74,7 @@ rules:
     - Seguir TDD. Por cada escenario, una tarea de prueba que falla (rojo) antes de la tarea que la hace pasar (verde), seguida de refactor; no dejar las pruebas para el final.
     - Ordenar las tareas de adentro hacia afuera, es decir reglas.py, service, repository y migración, router y schemas, regenerar el cliente Orval y frontend.
     - Tareas de máximo 2 horas. Al cerrar cada grupo, ejecutar pytest e import-linter.
-    - Incluir una tarea de prueba de auditoría por cada endpoint que modifique notas o estados de trámite.
+    - Incluir una tarea de prueba de auditoría por cada endpoint que modifique un dato auditado (RF18).
 
 operations:
   apply:
