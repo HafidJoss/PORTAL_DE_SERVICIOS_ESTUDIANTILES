@@ -10,11 +10,11 @@
 
 Este documento describe **cómo se organiza el código dentro de un módulo** del backend. Tiene tres objetivos:
 
-- que los diez módulos se construyan con la misma estructura;
+- que todos los módulos se construyan con la misma estructura;
 - que las reglas del colegio y del MINEDU queden en la capa de negocio, separadas de HTTP y de la base de datos;
 - que cualquier persona (o agente de IA) sepa dónde va cada archivo y de qué puede depender.
 
-Se toma `evaluacion` como referencia porque concentra las reglas más delicadas: registro de notas por competencias, estado del periodo, bloqueo optimista y auditoría (RF06, RF07, RF08, RF18).
+Se toma `evaluacion` como referencia porque concentra las reglas más delicadas: registro de notas por competencias, estado del trimestre, bloqueo optimista y auditoría (RF06, RF07, RF08, RF18, RF23).
 
 ---
 
@@ -22,14 +22,14 @@ Se toma `evaluacion` como referencia porque concentra las reglas más delicadas:
 
 ```text
 backend/app/
-├── core/                         Infraestructura transversal (config, BD, seguridad, storage, PDF/Excel, errores, logging)
+├── core/                         Infraestructura transversal (config, BD, seguridad, storage, tareas, PDF/Excel, errores, logging)
 └── modules/
     └── evaluacion/
         ├── router.py             Endpoints /api/v1/evaluacion/...
         ├── schemas.py            Esquemas Pydantic de entrada y salida (NotaCreate, NotaOut)
         ├── dependencies.py       Dependencias de FastAPI: token, rol y pertenencia docente–sección
         ├── service.py            Casos de uso: registrar y confirmar notas, auditar
-        ├── reglas.py             Funciones puras: estado del periodo, validación de calificativos
+        ├── reglas.py             Funciones puras: estado del trimestre, nivel sugerido, conclusiones y promoción
         ├── exceptions.py         Errores de dominio (PeriodoCerradoError, ...)
         ├── repository.py         Consultas SQLAlchemy de notas
         └── models.py             Modelos SQLAlchemy (tabla de notas con columna version)
@@ -101,6 +101,8 @@ classDiagram
     class NotaCreate {
         <<schema>>
         +estudiante_id
+        +seccion_id
+        +trimestre_id
         +competencia_id
         +calificativo
         +version
@@ -127,14 +129,14 @@ classDiagram
     }
     class reglas {
         <<negocio · funciones puras>>
-        +permite_registrar_notas(estado_periodo) bool
+        +permite_registrar_notas(estado_trimestre) bool
     }
     class PeriodoCerradoError {
         <<excepción>>
     }
     class NotaRepository {
         <<acceso a datos>>
-        +obtener(estudiante_id, competencia_id) Nota
+        +obtener(estudiante_id, competencia_id, trimestre_id) Nota
         +guardar(nota) Nota
     }
     class Nota {
@@ -146,11 +148,11 @@ classDiagram
     }
     class PeriodoService {
         <<institucion · service>>
-        +estado_actual(seccion_id)
+        +estado_actual(trimestre_id)
     }
     class AuditoriaService {
         <<auditoria · service>>
-        +registrar(evento, usuario, ip)
+        +registrar(evento, entidad, anterior, nuevo, usuario, ip)
     }
 
     router ..> NotaCreate : recibe
@@ -197,7 +199,7 @@ sequenceDiagram
     R->>DEP: token, rol y docente de la sección
     DEP-->>R: usuario autorizado
     R->>S: registrar_nota(datos, usuario, ip)
-    S->>P: estado_actual(seccion)
+    S->>P: estado_actual(trimestre)
     S->>G: permite_registrar_notas(estado)
     alt periodo cerrado
         G-->>S: no
@@ -207,7 +209,7 @@ sequenceDiagram
         S->>REP: guardar(nota) con version
         REP->>DB: UPDATE con control de version
         S->>A: registrar(evento, usuario, ip)
-        A->>DB: INSERT en la bitácora
+        A->>DB: INSERT en la bitácora con valores anterior y nuevo
         Note over R,DB: un solo commit al final de la petición
         R-->>D: 200 NotaOut
     end
@@ -218,27 +220,27 @@ sequenceDiagram
 | 1 | Docente → `router.py` | Envía la nota; Pydantic valida el formato con `NotaCreate` | Presentación |
 | 2–3 | `router.py` → `dependencies.py` | Verifica token, rol y que el docente enseñe en esa sección | Presentación |
 | 4 | `router.py` → `NotaService` | Ejecuta el caso de uso con el usuario y la IP (`X-Forwarded-For`) | Presentación → Negocio |
-| 5–6 | `NotaService` → `PeriodoService` y `reglas.py` | Consulta el estado del periodo y si permite registrar | Negocio |
+| 5–6 | `NotaService` → `PeriodoService` y `reglas.py` | Consulta el estado del trimestre y si permite registrar | Negocio |
 | 7–9 | Alternativa | Si no lo permite: `PeriodoCerradoError`, que el manejador global traduce a Problem Details | Negocio → Presentación |
 | 10–11 | `NotaService` → `NotaRepository` | Guarda con bloqueo optimista (columna `version`) | Negocio → Acceso a datos |
-| 12–13 | `NotaService` → `AuditoriaService` | Registra fecha, usuario e IP en la bitácora (ADR-005) | Negocio |
+| 12–13 | `NotaService` → `AuditoriaService` | Registra fecha, usuario, IP, entidad y valores en la bitácora (ADR-005) | Negocio |
 | 14 | `router.py` → Docente | Commit único y respuesta `NotaOut` | Presentación |
 
 ---
 
 ## 6. Código de referencia (ilustrativo)
 
-Muestra la forma de cada capa, no una implementación definitiva. Las reglas exactas de calificación CNEB (RF07) siguen pendientes; aquí se asume que solo se registran notas con el periodo **En Evaluación**.
+Muestra la forma de cada capa, no una implementación definitiva. Las reglas exactas de calificación CNEB (RF07) siguen pendientes. Solo se registran notas con el periodo **En Evaluación**, estado que fija el Administrador (RF05).
 
 ### 6.1 Negocio · reglas puras
 
 ```python
 # modules/evaluacion/reglas.py
-ESTADOS_PERIODO = ("Aperturado", "En Evaluación", "Cierre Preliminar", "Consolidado")
+# Los estados del trimestre pertenecen a institucion; aquí solo se interpreta el recibido.
 
-def permite_registrar_notas(estado_periodo: str) -> bool:
+def permite_registrar_notas(estado_trimestre: str) -> bool:
     """Función pura: se prueba sin base de datos ni HTTP."""
-    return estado_periodo == "En Evaluación"
+    return estado_trimestre == "En Evaluación"
 ```
 
 ### 6.2 Negocio · service
@@ -255,11 +257,12 @@ class NotaService:
         self.auditoria = auditoria    # service del módulo auditoria
 
     def registrar_nota(self, datos, usuario, ip):
-        estado = self.periodos.estado_actual(datos.seccion_id)
+        estado = self.periodos.estado_actual(datos.trimestre_id)
         if not reglas.permite_registrar_notas(estado):
             raise PeriodoCerradoError(estado)
+        anterior = self.repo.obtener(datos.estudiante_id, datos.competencia_id, datos.trimestre_id)
         nota = self.repo.guardar(datos)   # falla si la version cambió
-        self.auditoria.registrar("nota_registrada", usuario, ip)
+        self.auditoria.registrar("nota_registrada", "nota", anterior, nota, usuario, ip)
         return nota
 ```
 
@@ -281,3 +284,25 @@ def registrar_nota(datos: NotaCreate,
 ```
 
 > El commit lo hace la dependencia de sesión de `core/database` al terminar la petición (Unit of Work); si algo falla, se revierte todo.
+
+---
+
+## 7. Modelo de seguimiento continuo
+
+El módulo `evaluacion` separa dos capas. El **seguimiento diario** es evidencia formativa visible al publicarse. El **nivel del trimestre** es el dato oficial que alimenta la libreta y el SIAGIE.
+
+| Entidad | Datos principales | Capa | Requisito |
+|---|---|---|---|
+| Actividad | Sección, asignatura, trimestre, título, fecha, fecha de entrega, competencias, estado (borrador o publicado) | Seguimiento diario | RF23 |
+| Resultado | Actividad, estudiante, estado de entrega, calificativo, comentario, `version` | Seguimiento diario | RF23 |
+| Observación | Estudiante, docente, fecha, tipo, texto, estado | Seguimiento diario | RF24 |
+| Mensaje | Docente, sección o estudiante, tipo (tarea o recordatorio), texto, fecha | Seguimiento diario | RF25 |
+| Nivel de trimestre | Estudiante, competencia, trimestre, nivel, conclusión, confirmado, `version` | Nivel oficial | RF07, RF22 |
+| Situación final | Estudiante, año lectivo, PRO, PER o RR, origen (calculada o manual), sustento | Nivel oficial | RF28 |
+
+**Reglas del modelo:**
+
+1. El nivel sugerido es el último calificativo publicado de la competencia; nunca es un promedio y el docente siempre lo confirma.
+2. Los pendientes no se guardan: se derivan de los resultados sin entregar.
+3. Una competencia transversal no pertenece a un área y no cuenta para la situación final.
+4. Corregir algo publicado genera auditoría con valores anterior y nuevo.
