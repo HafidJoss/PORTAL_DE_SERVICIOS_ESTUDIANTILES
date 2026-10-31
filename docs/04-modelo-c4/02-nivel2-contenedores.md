@@ -23,7 +23,7 @@ Abrir la caja «Portal de Servicios Estudiantiles» del nivel 1 y mostrar los **
 
 ```mermaid
 flowchart TB
-    USU["Estudiante · Apoderado · Docente<br/>Secretaría · Administrador<br/>[Personas]"]
+    USU["Estudiante · Apoderado · Docente · Auxiliar<br/>Secretaría · Dirección · Administrador<br/>[Personas]"]
 
     subgraph PORTAL["Portal de Servicios Estudiantiles"]
         SPA["Aplicación web<br/>[SPA · React + TypeScript + Vite]<br/>servida por Firebase Hosting"]
@@ -43,7 +43,7 @@ flowchart TB
     TK -->|SQL| DB
     TK -->|guarda PDF y XLSX| GCS
     API -.->|lee secretos| SM
-    USU -.->|"URL firmada · subida y descarga"| GCS
+    USU -.->|"URL firmada · descarga"| GCS
 
     classDef cPersona fill:#08427b,stroke:#052e56,color:#ffffff
     classDef cCont fill:#438dd5,stroke:#2e6295,color:#ffffff
@@ -59,12 +59,12 @@ flowchart TB
 
 | Contenedor | Tecnología | Responsabilidad | Datos que maneja |
 |---|---|---|---|
-| **Aplicación web** | SPA en React + TypeScript + Vite, servida por Firebase Hosting | Interfaz de todos los roles, incluida la vista familiar multi-hijo y la ventanilla pública. Redirige `/api/**` a la API | Ninguno persistente; caché del cliente con TanStack Query |
+| **Aplicación web** | SPA en React + TypeScript + Vite, servida por Firebase Hosting | Interfaz de todos los roles, incluida la vista familiar multi-hijo y la cuadrícula móvil docente. Redirige `/api/**` a la API | Ninguno persistente; caché del cliente con TanStack Query |
 | **API del portal** | Python 3.12+, FastAPI, sobre Cloud Run | Expone la API REST, aplica reglas de negocio, autenticación y RBAC. Es un **monolito modular** sin estado de sesión | Ninguno propio; usa la base de datos |
-| **Servicio de tareas** | Misma imagen que la API, en otro servicio de Cloud Run | Genera libretas PDF, actas Excel y verifica documentos subidos, sin bloquear las peticiones | Ninguno propio |
+| **Servicio de tareas** | Misma imagen que la API, en otro servicio de Cloud Run | Genera libretas PDF, actas y Excel SIAGIE, sin bloquear las peticiones | Ninguno propio |
 | **Cola de tareas** | Cloud Tasks | Encola trabajos pesados y los entrega al servicio de tareas con reintentos | Trabajos pendientes |
-| **Base de datos** | PostgreSQL 16+ en Cloud SQL | Información permanente del colegio, con backups y recuperación a un punto en el tiempo | Usuarios, catálogo, personas, matrículas, expedientes, notas, asistencia y bitácora |
-| **Almacenamiento de documentos** | Cloud Storage, bucket privado | Custodia probatorios y libretas con nombres UUID y cifrado en reposo | DNI, partidas, certificados, libretas y actas |
+| **Base de datos** | PostgreSQL 16+ en Cloud SQL | Información permanente del colegio, con backups y recuperación a un punto en el tiempo | Usuarios, catálogo, personas, nómina, actividades, niveles, observaciones, asistencia y bitácora |
+| **Almacenamiento de documentos** | Cloud Storage, bucket privado | Custodia libretas y actas con nombres UUID y cifrado en reposo | Libretas, actas y Excel generados |
 | **Secretos** | Secret Manager | Guarda credenciales y claves de la API | Secretos |
 
 ---
@@ -76,11 +76,11 @@ flowchart TB
 | Personas | Aplicación web | Usan el portal desde navegador o móvil | HTTPS |
 | Aplicación web | API del portal | Llama a la API mediante el rewrite `/api/**` | HTTPS/JSON |
 | API del portal | Base de datos | Lee y escribe información | SQL |
-| API del portal | Cola de tareas | Encola libretas, actas y verificaciones después del commit | HTTPS (API de Cloud Tasks) |
+| API del portal | Cola de tareas | Encola libretas y actas después del commit | HTTPS (API de Cloud Tasks) |
 | Cola de tareas | Servicio de tareas | Ejecuta cada tarea | HTTPS con token OIDC |
-| Servicio de tareas | Base de datos | Lee notas consolidadas | SQL |
+| Servicio de tareas | Base de datos | Lee niveles, conclusiones y asistencia | SQL |
 | Servicio de tareas | Almacenamiento de documentos | Guarda PDF y XLSX | HTTPS (API de Cloud Storage) |
-| Personas | Almacenamiento de documentos | Suben y descargan archivos sin pasar por la API | HTTPS con URL firmada de 15 min |
+| Personas | Almacenamiento de documentos | Descargan archivos sin pasar por la API | HTTPS con URL firmada de 15 min |
 | API del portal | Secretos | Lee credenciales | HTTPS (API de Secret Manager) |
 
 ---
@@ -91,9 +91,9 @@ flowchart TB
 |---|---|---|
 | Un único backend (monolito modular) en Cloud Run (ADR-001, ADR-008) | Microservicios | Inviable para un desarrollador en 12 semanas; los módulos permiten separar en el futuro |
 | Frontend separado (SPA + API REST) | Next.js con renderizado en servidor | El SSR no aporta detrás de un login |
-| Subida y descarga directas a Cloud Storage con URLs firmadas (ADR-002) | Pasar los archivos por la API | Evita saturar la API en campañas de admisión |
+| Descarga directa de Cloud Storage con URLs firmadas (ADR-002) | Pasar los archivos por la API | Evita saturar la API al publicar libretas |
 | Cloud Tasks y un segundo servicio para trabajos pesados (ADR-003) | Redis o RabbitMQ con un worker siempre encendido | Pago por uso y compatible con escalar a cero |
-| Lectura en pico sin caché en servidor (ADR-006) | Redis desde el inicio | Sin costo fijo; Redis se activa si la latencia supera AC01 |
+| Lectura sin caché en servidor (ADR-006) | Redis desde el inicio | Sin costo fijo; Redis se activa si la latencia supera AC01 |
 | Servicios gestionados de Google Cloud (ADR-007) | Una VM con Docker Compose | Backups y escalado gestionados con gasto fijo medio-bajo |
 
 ---

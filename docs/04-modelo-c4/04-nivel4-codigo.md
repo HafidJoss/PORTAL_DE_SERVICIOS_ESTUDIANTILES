@@ -36,6 +36,8 @@ classDiagram
     class NotaCreate {
         <<schema>>
         +estudiante_id
+        +seccion_id
+        +trimestre_id
         +competencia_id
         +calificativo
         +version
@@ -54,14 +56,14 @@ classDiagram
     }
     class reglas {
         <<negocio · funciones puras>>
-        +permite_registrar_notas(estado_periodo) bool
+        +permite_registrar_notas(estado_trimestre) bool
     }
     class PeriodoCerradoError {
         <<excepción>>
     }
     class NotaRepository {
         <<acceso a datos>>
-        +obtener(estudiante_id, competencia_id)
+        +obtener(estudiante_id, competencia_id, trimestre_id)
         +guardar(nota)
     }
     class Nota {
@@ -73,11 +75,11 @@ classDiagram
     }
     class PeriodoService {
         <<institucion · service>>
-        +estado_actual(seccion_id)
+        +estado_actual(trimestre_id)
     }
     class AuditoriaService {
         <<auditoria · service>>
-        +registrar(evento, usuario, ip)
+        +registrar(evento, entidad, anterior, nuevo, usuario, ip)
     }
 
     router ..> dependencies : usa
@@ -154,7 +156,7 @@ sequenceDiagram
     R->>DEP: token, rol y docente de la sección
     DEP-->>R: usuario autorizado
     R->>S: registrar_nota(datos, usuario, ip)
-    S->>P: estado_actual(seccion)
+    S->>P: estado_actual(trimestre)
     S->>G: permite_registrar_notas(estado)
     alt periodo no permite registrar
         S-->>R: PeriodoCerradoError
@@ -162,7 +164,7 @@ sequenceDiagram
     else periodo permite registrar
         S->>REP: guardar(nota) con version
         REP->>DB: UPDATE con control de version
-        S->>A: registrar(evento, usuario, ip)
+        S->>A: registrar(evento, entidad, anterior, nuevo, usuario, ip)
         A->>DB: INSERT en la bitácora
         Note over R,DB: commit único al final de la petición
         R-->>D: 200 NotaOut
