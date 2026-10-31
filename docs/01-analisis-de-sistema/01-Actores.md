@@ -1,12 +1,16 @@
 # Actores del sistema
 
-Actores que interactúan con el sistema y lo que necesita realizar cada uno.
+Actores que interactúan con el sistema y lo que necesita realizar cada uno en el MVP de seguimiento continuo.
 
 | Actor | ¿Qué necesita realizar? |
 | :--- | :--- |
-| **Estudiante** | Consultar las calificaciones periódicas confirmadas por el docente y los promedios consolidados por competencias pedagógicas, ver la plana docente asignada, consultar su asistencia y descargar su libreta de notas en PDF. |
-| **Apoderado (padre, madre o tutor)** | Gestionar y consultar la situación académica y la asistencia de múltiples hijos bajo una cuenta única (vista familiar multi-hijo), realizar solicitudes de admisión y traslado en línea, cargar requisitos probatorios y monitorear el estado de sus trámites. Incluye al **postulante**: el apoderado que inicia una solicitud y puede no tener cuenta aún; consulta el estado de su trámite con el código de seguimiento (ticket). |
-| **Docente (Titular / Suplente)** | Acceder a su panel privado, registrar calificaciones masivamente mediante una cuadrícula interactiva por competencias según la escala oficial (CNEB), validar notas, confirmar el cierre del registro de los cursos que tiene asignados y registrar la asistencia diaria de sus secciones. El cambio de estado del periodo lectivo lo realiza Secretaría Académica. |
-| **Secretaría Académica** | Aperturar y cambiar los estados de los periodos lectivos, auditar expedientes de admisión y traslados desde una bandeja centralizada, emitir dictámenes (Pendiente de Revisión, Observado con observaciones técnicas, Aprobado y Rechazado), generar pre-matrículas, emitir reportes/actas institucionales y restablecer contraseñas de apoderados sin correo. |
-| **Administrador** | Configurar el catálogo escolar (niveles educativos, grados, secciones y asignaturas curriculares), administrar usuarios y credenciales, aplicar políticas estrictas de control de acceso (RBAC) y auditar la bitácora de eventos críticos. |
-| **SIAGIE (Sistema Externo MINEDU)** | Sistema externo sin integración automática en el MVP (RC06): Secretaría descarga las plantillas y sábanas de notas consolidadas en formato Excel (.xlsx), estructuradas reglamentariamente, y las transcribe o carga manualmente en SIAGIE. |
+| **Apoderado (padre, madre o tutor legal)** | Seguir de forma continua a sus hijos, y solo a ellos, bajo una cuenta única (vista familiar multi-hijo): novedades, asistencia, trabajos, pendientes, observaciones, mensajes de los docentes, calificaciones y libreta publicada. |
+| **Estudiante** | Seguir su propio avance: trabajos, pendientes, recordatorios, observaciones, calificaciones, asistencia y libreta publicada, y conocer a sus docentes y a su tutor. |
+| **Docente (Titular / Suplente / Tutor)** | Registrar de forma continua trabajos y calificativos por competencia desde una cuadrícula, escribir observaciones, enviar mensajes de tareas y recordatorios, confirmar el nivel de cada trimestre con su conclusión descriptiva y descargar el Excel de sus cursos para el SIAGIE, sin volver a digitar. El tutor consulta además el avance de su sección. |
+| **Auxiliar de educación** | Registrar una vez al día la asistencia de las secciones asignadas (presente, falta, tardanza y sus justificaciones). En primaria, esa asignación puede recaer en el tutor. |
+| **Secretaría Académica** | Cargar la nómina del SIAGIE, asignar estudiantes a sección, agregar y editar usuarios, descargar el Excel de la sección completa y emitir actas preliminares. No crea ni asciende cuentas de Administrador o Dirección y no accede a credenciales. |
+| **Dirección** | Consultar el avance por sección, agregar y editar usuarios, publicar la libreta, reabrir notas para corregirlas y consultar la bitácora. Es responsable del uso del SIAGIE y emite desde él el Acta Oficial de Evaluación. |
+| **Administrador** | Configurar el catálogo escolar (niveles, grados, secciones, asignaturas y competencias), aperturar y cambiar los estados de años y trimestres, administrar cuentas y roles, restablecer contraseñas de forma exclusiva, publicar la libreta, reabrir notas y auditar la bitácora. |
+| **SIAGIE (Sistema Externo MINEDU)** | Sistema externo sin integración automática (RC06): el SIAGIE genera su plantilla Excel, el portal la llena con los niveles confirmados y la institución la carga en él. También aporta la nómina que Secretaría carga en el portal. |
+
+**Versión futura:** el **postulante**, es decir, el apoderado que inicia una solicitud sin tener cuenta, vuelve cuando se incorpore admisión (RF09 a RF13, pospuestos).
