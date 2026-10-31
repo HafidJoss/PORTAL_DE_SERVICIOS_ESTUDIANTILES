@@ -10,11 +10,11 @@ Apaza Sulca Hafid Joseph
 ## Fecha
 2026-10-03
 ## Descripción
-Propuesta técnica y de arquitectura de software para el Portal de Servicios Estudiantiles (MVP), orientada a modernizar y centralizar los procesos de vida académica (calificaciones, asistencia y asignación docente) y ventanilla virtual (admisión, traslados y mesa de partes digital, entendida como la recepción en línea de los documentos de admisión y traslado).
+Propuesta técnica y de arquitectura de software para el Portal de Servicios Estudiantiles (MVP), centrada en el seguimiento continuo del estudiante: padres, estudiantes, docentes y colegio ven notas, trabajos, pendientes, observaciones y asistencia. También reduce la carga docente: lo registrado día a día genera automáticamente el Excel para el SIAGIE. Matrícula, admisión y procesos financieros quedan fuera del MVP, pendientes para versiones siguientes.
 ## Curso
 Arquitectura de Software
 ## Mapa de lectura
-El sistema debe atender picos de consulta de unos 1,000 usuarios simultáneos (AC01). Su arquitectura combina tres ideas, una por documento: **en capas** (estilo), **modular** (arquitectura inicial) y **en capas estricta** (enfoque). Orden recomendado:
+El sistema debe atender el uso diario y los picos de unos 1,000 usuarios simultáneos (AC01). Su arquitectura combina tres ideas, una por documento: **en capas** (estilo), **modular** (arquitectura inicial) y **en capas estricta** (enfoque). Orden recomendado:
 
 | # | Documento | Qué responde |
 | :--- | :--- | :--- |
@@ -26,7 +26,7 @@ El sistema debe atender picos de consulta de unos 1,000 usuarios simultáneos (A
 | 6 | [06-Driver-arquitectonico](docs/01-analisis-de-sistema/06-Driver-arquitectonico.md) | ¿Qué condiciona más a la arquitectura? |
 | 7 | [07-Decisiones-arquitectonicas](docs/01-analisis-de-sistema/07-Decisiones-arquitectonicas.md) | ¿Qué se decidió, con qué alternativas y consecuencias? |
 | 8 | [estilo-arquitectonico](docs/02-arquitectura-software/estilo-arquitectonico.md) | Vista **en capas**: despliegue, escalabilidad y disponibilidad |
-| 9 | [arquitectura-inicial](docs/02-arquitectura-software/arquitectura-inicial.md) | Vista **modular**: módulos, dependencias y flujos críticos en pico |
+| 9 | [arquitectura-inicial](docs/02-arquitectura-software/arquitectura-inicial.md) | Vista **modular**: módulos, dependencias y flujos críticos |
 | 10 | [enfoque-arquitectonico](docs/02-arquitectura-software/enfoque-arquitectonico.md) | Organización **en capas estricta** de cada módulo: router, service y repository |
 | 11 | [01-diseno-interno-de-modulos](docs/03-diseno-de-software/01-diseno-interno-de-modulos.md) | ¿Cómo se organiza el código dentro de un módulo? |
 | 12 | [02-patrones-de-diseno](docs/03-diseno-de-software/02-patrones-de-diseno.md) | ¿Qué patrones de diseño se aplican y dónde? |
