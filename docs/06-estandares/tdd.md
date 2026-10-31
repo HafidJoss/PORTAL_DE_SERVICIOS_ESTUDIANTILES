@@ -59,9 +59,9 @@ Cada escenario se traduce a una prueba: `GIVEN` prepara los datos, `WHEN` ejecut
 ```markdown
 ### Requirement: Cambio de estado del periodo (RF05, HU09)
 
-#### Scenario: Secretaría no puede saltarse un estado
+#### Scenario: El Administrador no puede saltarse un estado
 - GIVEN un periodo en estado Aperturado
-- WHEN se intenta pasarlo a Consolidado
+- WHEN se intenta pasarlo a Cerrado
 - THEN el sistema rechaza el cambio
 ```
 
@@ -69,19 +69,19 @@ Cada escenario se traduce a una prueba: `GIVEN` prepara los datos, `WHEN` ejecut
 
 ```python
 # backend/tests/institucion/test_reglas.py
-# Spec: institucion · Scenario: Secretaría no puede saltarse un estado (RF05, HU09)
+# Spec: institucion · Scenario: El Administrador no puede saltarse un estado (RF05, HU09)
 from app.modules.institucion import reglas
 
 
-def test_no_permite_saltar_de_aperturado_a_consolidado():
-    assert reglas.transicion_valida("Aperturado", "Consolidado") is False
+def test_no_permite_saltar_de_aperturado_a_cerrado():
+    assert reglas.transicion_valida("Aperturado", "Cerrado") is False
 ```
 
 **Verde:** se escribe lo mínimo que la hace pasar.
 
 ```python
 # backend/app/modules/institucion/reglas.py
-ORDEN = ("Aperturado", "En Evaluación", "Cierre Preliminar", "Consolidado")
+ORDEN = ("Aperturado", "En Evaluación", "Cierre Preliminar", "Cerrado")
 
 
 def transicion_valida(actual: str, nuevo: str) -> bool:
@@ -98,7 +98,7 @@ def transicion_valida(actual: str, nuevo: str) -> bool:
 
 | Capa | Qué se prueba | Tipo | Base de datos | ¿Prueba primero? |
 |---|---|---|---|---|
-| `reglas.py` | Funciones puras: estados, validaciones, cálculo CNEB | Unitaria | No | **Siempre** |
+| `reglas.py` | Funciones puras: estados, validaciones, nivel sugerido, conclusiones y promoción | Unitaria | No | **Siempre** |
 | `service.py` | Casos de uso, errores de dominio y llamada a la auditoría, con repositorio y services falsos | Unitaria | No | **Siempre** |
 | `repository.py` | Consultas, restricciones, índices y columna `version` | Integración | PostgreSQL real | Misma tarea |
 | `router.py` y `dependencies.py` | Códigos de respuesta, formato, token, rol y pertenencia | Integración | PostgreSQL real | Misma tarea |
@@ -146,15 +146,18 @@ No se simula lo que se está probando, y en `test_repository.py` y `test_api.py`
 | Tema | Qué debe demostrarse | Referencia |
 |---|---|---|
 | **Permisos** | Sin token, con token inválido y con rol incorrecto la petición se rechaza | ADR-004, AC04 |
-| **Pertenencia** | Un apoderado no accede a otro menor; un docente no accede a otra sección | DA05, AC04 |
-| **Auditoría** | Toda modificación de notas o cambio de estado de trámite genera registro con fecha, usuario e IP | ADR-005, AC05 |
+| **Pertenencia** | Un apoderado no accede a otro menor, ni se mezclan datos entre hermanos; un docente o auxiliar no accede a otra sección | DA05, AC04 |
+| **Auditoría** | Todo cambio de calificativos publicados, niveles, estados, libretas, reaperturas y cuentas genera registro con fecha, usuario, IP y valores | ADR-005, AC05 |
 | **Inalterabilidad** | El rol de la aplicación no puede modificar ni borrar la bitácora | ADR-005 |
 | **Transacciones** | Si falla un paso, no queda ningún cambio parcial | ADR-008, AC05 |
-| **Concurrencia** | Dos ediciones de la misma nota: la segunda se rechaza por la columna `version` | Enfoque arquitectónico |
-| **Estados** | Las transiciones inválidas de periodos y expedientes se rechazan | RF05, RF13 |
+| **Concurrencia** | Dos ediciones del mismo resultado o nivel: la segunda se rechaza por la columna `version` | Enfoque arquitectónico |
+| **Estados** | Las transiciones inválidas de trimestres se rechazan | RF05, RF30 |
 | **Errores** | Los errores de dominio salen como Problem Details | Enfoque arquitectónico |
 | **Tareas asíncronas** | Ejecutar la misma tarea dos veces da el mismo resultado | ADR-003 |
-| **Privacidad** | La consulta pública por ticket no devuelve datos personales | RF10 |
+| **Visibilidad** | Un borrador o una libreta sin publicar no son visibles para estudiantes ni apoderados | RF23, RF27 |
+| **Roles** | Secretaría no crea ni asciende cuentas de Administrador o Dirección; solo el Administrador restablece contraseñas | RF14 |
+| **Sesión** | Un token anterior deja de valer al salir o al restablecer la contraseña | ADR-004 |
+| **Exportación** | Generar dos veces el Excel con los mismos niveles da el mismo contenido | RF16, ADR-003 |
 
 ---
 

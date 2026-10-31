@@ -213,7 +213,7 @@ Todas empiezan con el mismo bloque de reglas:
 ## 6. Flujo típico en este proyecto
 
 ```
-/opsx:explore  ->  ¿qué decisiones faltan? (por ejemplo, RF07)
+/opsx:explore  ->  ¿qué decisiones faltan? (por ejemplo, el formato de RC06)
 /opsx:propose bootstrap-backend  ->  proposal, specs, design y tasks
 (tú revisas el plan)  ->  /opsx:update si hay que corregirlo
 /opsx:apply  ->  implementa tarea por tarea, prueba primero
