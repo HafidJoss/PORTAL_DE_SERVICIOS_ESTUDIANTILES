@@ -1,5 +1,5 @@
 # Fuente única de contexto y reglas para las skills de OpenSpec.
-# Actualizar aquí cuando cambien los ADR o la arquitectura. Las skills de .claude/ no se editan a mano:
+# Actualizar aquí cuando cambien los ADR o la arquitectura. Las skills generadas en .agents/ y .claude/ no se editan a mano:
 # las regenera `openspec update`.
 schema: spec-driven
 
@@ -42,11 +42,11 @@ context: |
   - Cuentas: Secretaría, Dirección y el Administrador agregan y editan usuarios y vínculos; Secretaría no crea ni asciende cuentas de Administrador o Dirección. Se activan con un código de un solo uso y solo el Administrador restablece contraseñas.
   - Catálogo: el Administrador crea asignaturas y competencias; cada competencia pertenece a una asignatura, salvo las transversales, que no cuentan para la situación final.
   - Nómina (RF21): Secretaría carga la nómina del SIAGIE y asigna la sección. El proceso de matrícula queda fuera del portal.
-  - Asistencia: el auxiliar la registra una vez al día (RF19).
-  - Dos capas en evaluacion: seguimiento diario (actividades, resultados, observaciones y mensajes, en borrador o publicados, sin subir archivos) y nivel del trimestre (dato oficial). El sistema sugiere el nivel con el último calificativo publicado y el docente confirma; no hay promedios ni escala vigesimal (RVM 094-2020 y RVM 048-2024).
+  - Asistencia: el auxiliar la registra una vez al día (RF19) y atiende solicitudes de justificación enviadas en texto por el apoderado, sin subida de archivos (RF20).
+  - Dos capas en evaluacion: seguimiento diario (actividades —diferenciando trabajos/evaluaciones y sesiones de clase para la nota del día por criterios/capacidades—, resultados, observaciones y mensajes por hilos con confirmación de lectura y respuestas, en borrador o publicados, sin subir archivos) y nivel del trimestre (dato oficial). El sistema sugiere el nivel de la competencia mediante la mediana de los niveles de sus capacidades (y por sesión mediante la mediana de sus criterios) y el docente confirma; sin promedios aritméticos ni escala vigesimal (escala AD/A/B/C, RVM 094-2020 y RVM 048-2024).
   - Trimestre: Aperturado -> En Evaluación -> Cierre Preliminar -> Cerrado. Solo el Administrador cambia el estado; el registro diario ocurre En Evaluación y en Cierre Preliminar solo se ajustan niveles y conclusiones. Cerrar lo orquesta evaluacion (ADR-009): valida niveles, pide el cambio a institucion y, después del commit, encola por core las libretas por sección, que atiende reportes. Publicar la libreta y reabrir notas son acciones separadas de Administrador y Dirección; reabrir exige motivo y, tras el Acta Oficial, autorización de la UGEL.
   - Conclusión descriptiva obligatoria con B o C en primaria y con C en secundaria; con C en dos trimestres consecutivos debe explicar la falta de avance. La situación final es PRO, PER o RR y sus condiciones dependen del nivel y grado.
-  - SIAGIE sin integración por API (RC06): el portal carga su nómina y llena la plantilla Excel que él genera. Fuera de alcance (RC08): matrícula, admisión, traslados y mesa de partes (versiones siguientes), pagos y procesos financieros, subida de trabajos, biometría, LMS, chat e integración API con SIAGIE.
+  - SIAGIE sin integración por API (RC06): el portal carga su nómina y llena la plantilla Excel que él genera. Fuera de alcance (RC08): matrícula, admisión, traslados y mesa de partes (versiones siguientes), pagos y procesos financieros, subida de trabajos o documentos adjuntos, biometría, LMS, chat en tiempo real e integración API con SIAGIE.
 
   TRAZABILIDAD
   - Usar solo IDs existentes (HU01-HU17, RF01-RF31, AC01-AC07, RC01-RC08, DA01-DA07, ADR-001 a ADR-009). No construir RF marcados como Pospuesto. Si un cambio necesita un requisito nuevo, proponer agregarlo a docs/01-analisis-de-sistema/ en el mismo cambio.

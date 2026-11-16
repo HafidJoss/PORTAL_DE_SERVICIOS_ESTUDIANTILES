@@ -14,10 +14,10 @@ Necesidades de cada actor expresadas como «Como…, quiero…, para…». Cada 
 | **HU08** | Como administrador, quiero configurar el catálogo escolar (niveles, grados, secciones, asignaturas y sus competencias) y asignar titulares, suplentes, tutores y auxiliares a cursos y secciones, para que la estructura académica esté definida antes de iniciar las evaluaciones. |
 | **HU09** | Como administrador, quiero controlar los estados de cada trimestre (Aperturado, En Evaluación, Cierre Preliminar, Cerrado), para restringir la edición de notas fuera de fecha. |
 | **HU10** | Como estudiante, quiero ver mis notas apenas se publiquen, así como las observaciones, conclusiones y pendientes de mis docentes, para saber cómo voy y qué debo mejorar. |
-| **HU11** | Como auxiliar, quiero registrar una vez al día la asistencia de mis secciones, para dejar constancia oficial de presentes, faltas y tardanzas. |
-| **HU12** | Como apoderado o estudiante, quiero consultar la asistencia registrada, para detectar a tiempo faltas y tardanzas. |
+| **HU11** | Como auxiliar, quiero registrar una vez al día la asistencia de mis secciones y revisar las solicitudes de justificación enviadas por los apoderados, para dejar constancia oficial de presentes, faltas, tardanzas y justificaciones. |
+| **HU12** | Como apoderado o estudiante, quiero consultar la asistencia registrada y, como apoderado, enviar solicitudes de justificación al auxiliar, para detectar y sustentar a tiempo faltas y tardanzas. |
 | **HU13** | Como personal de secretaría, quiero cargar la nómina del SIAGIE y asignar a cada estudiante a su sección, para que el seguimiento opere sobre los estudiantes vigentes. |
-| **HU14** | Como docente, quiero registrar trabajos y calificativos a medida que avanzan las clases y que el sistema me sugiera el nivel del trimestre, para confirmar mis notas sin trabajo adicional. |
-| **HU15** | Como docente, quiero enviar mensajes de tareas y recordatorios de pendientes a estudiantes y apoderados, para que sepan qué deben entregar y cuándo. |
+| **HU14** | Como docente, quiero registrar trabajos y sesiones de clase (nota del día) con sus calificativos a medida que avanzan las clases y que el sistema me sugiera el nivel del trimestre mediante la mediana de capacidades, para confirmar mis notas sin trabajo adicional. |
+| **HU15** | Como docente, quiero enviar mensajes de tareas y recordatorios a estudiantes y apoderados, ver su confirmación de lectura y responder sus consultas en el mismo hilo, para mantener un seguimiento claro de lo que deben entregar. |
 | **HU16** | Como apoderado o estudiante, quiero ver las novedades desde mi última visita, para enterarme rápido de lo nuevo sin revisar cada sección. |
 | **HU17** | Como dirección o tutor, quiero consultar el avance y la asistencia por sección, para detectar a tiempo a los estudiantes que necesitan apoyo. |
