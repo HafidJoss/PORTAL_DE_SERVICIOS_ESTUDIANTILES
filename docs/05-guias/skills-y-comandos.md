@@ -1,6 +1,6 @@
 # Guía en español de las skills y comandos de OpenSpec
 
-Esta guía explica qué hace cada skill y cada comando `/opsx:*` instalados en `.claude/`. Sirve para **entenderlos**, no los reemplaza: los archivos originales están en inglés, son los que Claude ejecuta y `openspec update` los regenera, así que no se editan. Describe OpenSpec 1.15.0 con el perfil `core` (6 flujos). Los flujos del perfil ampliado (`new`, `continue`, `ff`, `verify`, `bulk-archive` y `onboard`) no están instalados todavía y esta guía no los cubre.
+Esta guía explica qué hace cada skill y cada comando `/opsx:*` instalados en `.agents/skills/` (para Gemini Antigravity) y en `.claude/` (para Claude Code). Sirve para **entenderlos**, no los reemplaza: los archivos originales están en inglés, son los que ejecuta el agente y `openspec update` los regenera, así que no se editan. Describe OpenSpec 1.15.0 con el perfil `core` (6 flujos). Los flujos del perfil ampliado (`new`, `continue`, `ff`, `verify`, `bulk-archive` y `onboard`) no están instalados todavía y esta guía no los cubre.
 
 ---
 
@@ -34,7 +34,7 @@ La regla de oro de SDD (desarrollo guiado por especificaciones): **primero se ac
 Cada flujo existe en dos formas con el mismo contenido:
 
 - **Comando** (`/opsx:propose`, etc., en `.claude/commands/opsx/`): lo invocas tú escribiéndolo.
-- **Skill** (`openspec-propose`, etc., en `.claude/skills/`): Claude la activa solo cuando entiende tu intención (por ejemplo, si dices "openspec apply").
+- **Skill** (`openspec-propose`, etc., en `.agents/skills/` y `.claude/skills/`): el agente la activa solo cuando entiende tu intención (por ejemplo, si dices "openspec apply" o "/opsx:apply").
 
 Cuatro de los seis comandos son idénticos a sus skills (`propose`, `update`, `apply` y `sync`). `explore` y `archive` difieren solo en los ejemplos: el comando `explore` no trae los ejemplos de conversación y el comando `archive` trae más ejemplos de salida. Todos pueden ejecutar comandos `openspec ...` sin pedirte permiso (`allowed-tools: Bash(openspec:*)`).
 
@@ -56,7 +56,7 @@ Todas empiezan con el mismo bloque de reglas:
 - **Store (repositorio OpenSpec independiente).** Si nombras uno, la skill lo descubre con `openspec store list --json` y agrega `--store <id>` a sus comandos. **No aplica a este proyecto**: sin store, actúan sobre la carpeta `openspec/` más cercana.
 - **Comprobación del proyecto.** Antes de escribir, ejecutan `openspec list --json` y miran `root`. Si es `null`, no hay `openspec/` en este lugar. Entonces: si la skill se activó sola, responde normal sin hablar de OpenSpec; si lo pediste explícitamente, te pregunta qué hacer (`openspec init`, usar un store o seguir sin OpenSpec). Nunca crean `openspec/` por su cuenta.
 - **Qué cambio usar.** Usan el nombre que des; si no, lo infieren de la conversación; si solo hay un cambio activo, ese; si hay varios, te los listan y preguntan. Siempre anuncian `Using change: <nombre>` y cómo cambiarlo (por ejemplo `/opsx:apply otro-cambio`).
-- **Contexto y reglas del proyecto.** Leen `openspec/config.yaml` (ver sección 5). El contexto y las reglas son restricciones para Claude: **no se copian** dentro de los archivos que se generan.
+- **Contexto y reglas del proyecto.** Leen `openspec/config.yaml` (ver sección 5). El contexto y las reglas son restricciones para el agente: **no se copian** dentro de los archivos que se generan.
 - **Son contratos de prompt, no controles automáticos.** Nada obliga técnicamente a una skill a obedecer el contexto o las guías; por eso el TDD también debe respaldarse con el CI y con tu revisión.
 - **Pausa ante la duda.** Si algo es ambiguo, preguntan en vez de adivinar.
 
@@ -151,7 +151,7 @@ Todas empiezan con el mismo bloque de reglas:
 
 ### 4.5. `/opsx:sync [nombre]` — actualizar las specs sin archivar
 
-**Para qué sirve:** fusiona los delta specs del cambio en las specs vigentes de `openspec/specs/`, **sin archivar** el cambio. Es una fusión inteligente hecha por Claude (por ejemplo, agrega un escenario a un requisito sin copiar el requisito entero), y es idempotente: ejecutarla dos veces da el mismo resultado.
+**Para qué sirve:** fusiona los delta specs del cambio en las specs vigentes de `openspec/specs/`, **sin archivar** el cambio. Es una fusión inteligente hecha por el agente (por ejemplo, agrega un escenario a un requisito sin copiar el requisito entero), y es idempotente: ejecutarla dos veces da el mismo resultado.
 
 **Cuándo usarlo:** cuando otro cambio necesita ver ya las specs actualizadas, o cuando quieres revisar cómo quedarían antes de archivar. `archive` la ejecuta por ti si se lo aceptas.
 
@@ -237,12 +237,12 @@ Comandos de terminal útiles para seguir lo que pasa: `openspec list` (cambios e
 | `.openspec.yaml` | Metadatos del cambio; puede traer `skip_specs` (omite las specs) o `retire_capabilities` (permite retirar una capacidad). |
 | `planningHome` / `changeRoot` | Rutas que la CLI informa para saber dónde viven la planificación y el cambio; las skills las usan en vez de suponer rutas. |
 | Store | Repositorio OpenSpec independiente y registrado en el equipo. No se usa en este proyecto. |
-| Skill / comando | Dos formas de invocar el mismo flujo: Claude la activa sola / tú la escribes. |
+| Skill / comando | Dos formas de invocar el mismo flujo: el agente la activa solo / tú la escribes. |
 
 ---
 
 ## 8. Advertencias
 
-- Esta guía **resume y traduce**; ante cualquier duda manda el texto original de cada skill en `.claude/skills/` y `.claude/commands/opsx/`.
+- Esta guía **resume y traduce**; ante cualquier duda manda el texto original de cada skill en `.agents/skills/`, `.claude/skills/` y `.claude/commands/opsx/`.
 - Si actualizas OpenSpec (`npm install -g @fission-ai/openspec@latest` y `openspec update`), las skills pueden cambiar. Conviene revisar esta guía cuando cambie la versión.
 - Cuando actives el perfil ampliado, habrá que agregar aquí los flujos nuevos.

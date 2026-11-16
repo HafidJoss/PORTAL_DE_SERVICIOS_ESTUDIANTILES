@@ -135,7 +135,7 @@ Antes de cada push:
 
 | Situación | Qué hacer |
 |---|---|
-| Se suma una persona | Leer el README, `CLAUDE.md` y `docs/06-estandares/` |
+| Se suma una persona | Leer el README, `AGENTS.md` / `CLAUDE.md` y `docs/06-estandares/` |
 | Antes de empezar una tarea | Avisar qué módulo se va a tocar, para no trabajar lo mismo a la vez |
 | Dos personas tocan el mismo módulo | Acordar quién va primero y subir cambios pequeños con frecuencia |
 | Cambia un requisito o un ADR | Actualizar el documento en el mismo trabajo y avisar al equipo |
@@ -167,7 +167,7 @@ Antes de cada push:
 
 ## 8. Agentes de IA
 
-Claude Code y cualquier otro agente:
+Gemini Antigravity, Claude Code y cualquier otro agente:
 
 - trabajan en local, en `dev`;
 - **no hacen commit, push ni merge** salvo pedido explícito;

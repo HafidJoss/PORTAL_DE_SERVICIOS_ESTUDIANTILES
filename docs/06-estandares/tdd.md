@@ -14,7 +14,7 @@ Definir cómo se aplica TDD en el proyecto para que todo comportamiento quede de
 | Qué es TDD | Escribir primero una prueba que falla, luego el código mínimo que la hace pasar y después mejorar el diseño |
 | Por qué lo usamos | Las reglas del MINEDU, las notas y los datos de menores no admiten errores silenciosos (AC04, AC05) |
 | Relación con OpenSpec | La spec dice **qué** debe pasar; la prueba lo demuestra; el código lo cumple |
-| Fuente de verdad | Este documento. `openspec/config.yaml` y `CLAUDE.md` lo resumen y remiten aquí |
+| Fuente de verdad | Este documento. `openspec/config.yaml`, `AGENTS.md` y `CLAUDE.md` lo resumen y remiten aquí |
 
 ---
 
