@@ -61,10 +61,10 @@ flowchart TB
 
 | Persona | Descripción | Qué hace en el sistema |
 |---|---|---|
-| **Estudiante** | Alumno de primaria o secundaria de la I.E. Emblemática Mariscal Cáceres | Sigue sus notas, trabajos, pendientes, observaciones y asistencia, conoce a sus docentes y descarga su libreta publicada |
-| **Apoderado** | Padre, madre o tutor legal | Sigue de forma continua a sus hijos, y solo a ellos, con una sola cuenta |
-| **Docente** | Titular, suplente o tutor asignado a cursos y secciones | Registra trabajos, calificativos y observaciones, envía recordatorios, confirma niveles y descarga el Excel de sus cursos |
-| **Auxiliar** | Personal asignado a secciones | Registra la asistencia una vez al día |
+| **Estudiante** | Alumno de primaria o secundaria de la I.E. Emblemática Mariscal Cáceres | Sigue sus notas, trabajos, sesiones, pendientes, observaciones y asistencia, responde mensajes y confirma lectura, conoce a sus docentes y descarga su libreta publicada |
+| **Apoderado** | Padre, madre o tutor legal | Sigue de forma continua a sus hijos, y solo a ellos, con una sola cuenta; confirma lectura y responde mensajes docentes, y envía solicitudes de justificación al auxiliar |
+| **Docente** | Titular, suplente o tutor asignado a cursos y secciones | Registra trabajos, sesiones (nota del día), calificativos y observaciones, envía y responde mensajes, confirma niveles y descarga el Excel de sus cursos |
+| **Auxiliar** | Personal asignado a secciones | Registra la asistencia una vez al día y atiende solicitudes de justificación enviadas por los apoderados |
 | **Secretaría Académica** | Personal administrativo académico | Carga la nómina, asigna secciones, agrega y edita usuarios, descarga el Excel por sección y emite actas preliminares |
 | **Dirección** | Directivos de la institución | Consulta el avance, agrega y edita usuarios, publica libretas, reabre notas y consulta la bitácora |
 | **Administrador** | Responsable técnico del sistema | Configura el catálogo, cambia los estados de los trimestres, gestiona cuentas y credenciales, y consulta la bitácora |
@@ -106,7 +106,7 @@ flowchart TB
 | 1 | No hay integración automática con SIAGIE en el MVP; solo intercambio por Excel | Decisión de alcance del MVP (RC06) |
 | 2 | El usuario de acceso es el documento de identidad, la cuenta se activa con un código y el Administrador restablece contraseñas | Muchos apoderados no usan correo (ADR-004, RF14) |
 | 3 | Los datos de menores solo son accesibles para usuarios autorizados por rol y pertenencia | Ley N.º 29733 y AC04 |
-| 4 | Fuera de alcance: matrícula, admisión, traslados, pagos, subida de trabajos, biometría, LMS y chat | Plazo del MVP de 12 semanas (RC08) |
+| 4 | Fuera de alcance: matrícula, admisión, traslados, pagos, subida de trabajos/archivos, biometría, LMS y chat en tiempo real | Plazo del MVP de 12 semanas (RC08) |
 
 ### Pendientes por definir
 

@@ -293,16 +293,16 @@ El módulo `evaluacion` separa dos capas. El **seguimiento diario** es evidencia
 
 | Entidad | Datos principales | Capa | Requisito |
 |---|---|---|---|
-| Actividad | Sección, asignatura, trimestre, título, fecha, fecha de entrega, competencias, estado (borrador o publicado) | Seguimiento diario | RF23 |
-| Resultado | Actividad, estudiante, estado de entrega, calificativo, comentario, `version` | Seguimiento diario | RF23 |
+| Actividad | Sección, asignatura, trimestre, tipo (`trabajo` o `sesion_clase`), título, fecha, fecha de entrega (si aplica), competencia y capacidad/criterios, estado (borrador o publicado) | Seguimiento diario | RF23 |
+| Resultado | Actividad, estudiante, estado de entrega, calificativo (o calificativos por criterio y nota del día), comentario, `version` | Seguimiento diario | RF23 |
 | Observación | Estudiante, docente, fecha, tipo, texto, estado | Seguimiento diario | RF24 |
-| Mensaje | Docente, sección o estudiante, tipo (tarea o recordatorio), texto, fecha | Seguimiento diario | RF25 |
+| Mensaje | Docente, sección o estudiante/apoderado, tipo (tarea o recordatorio), asunto, texto, fecha, confirmaciones de lectura e hilo de respuestas | Seguimiento diario | RF25 |
 | Nivel de trimestre | Estudiante, competencia, trimestre, nivel, conclusión, confirmado, `version` | Nivel oficial | RF07, RF22 |
 | Situación final | Estudiante, año lectivo, PRO, PER o RR, origen (calculada o manual), sustento | Nivel oficial | RF28 |
 
 **Reglas del modelo:**
 
-1. El nivel sugerido es el último calificativo publicado de la competencia; nunca es un promedio y el docente siempre lo confirma.
+1. El nivel sugerido de la competencia se calcula mediante la mediana de los niveles de sus capacidades sobre los calificativos publicados (sin promedios aritméticos ni escala vigesimal), y el docente siempre lo confirma o ajusta. En una sesión de clase (`sesion_clase`), la nota del día se obtiene con la mediana de sus criterios evaluados.
 2. Los pendientes no se guardan: se derivan de los resultados sin entregar.
 3. Una competencia transversal no pertenece a un área y no cuenta para la situación final.
 4. Corregir algo publicado genera auditoría con valores anterior y nuevo.

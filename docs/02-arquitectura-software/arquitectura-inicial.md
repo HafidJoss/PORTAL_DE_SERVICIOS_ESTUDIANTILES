@@ -23,8 +23,8 @@ Cada requisito funcional tiene un único módulo propietario. Los módulos se de
 | :--- | :--- | :--- | :--- |
 | `seguimiento` | Vista continua de apoderados, estudiantes y sección. Compone lecturas de otros módulos; no tiene tablas propias salvo la marca de última visita | RF01, RF26, RF31 | MVP |
 | `reportes` | Libretas, Excel SIAGIE, actas preliminares y publicación de libretas | RF15, RF16, RF27 | MVP |
-| `evaluacion` | Actividades, resultados, observaciones, mensajes, niveles del trimestre, conclusiones, cierres y reapertura | RF06, RF07, RF08, RF22, RF23, RF24, RF25, RF28, RF30 | MVP |
-| `asistencia` | Registro y consulta de asistencia diaria | RF19, RF20 | MVP |
+| `evaluacion` | Actividades (trabajos y sesiones de clase / nota del día), resultados, observaciones, mensajes por hilos (con confirmación de lectura y respuestas), niveles del trimestre, conclusiones, cierres y reapertura | RF06, RF07, RF08, RF22, RF23, RF24, RF25, RF28, RF30 | MVP |
+| `asistencia` | Registro y consulta de asistencia diaria y solicitudes de justificación (apoderado $\rightarrow$ auxiliar) | RF19, RF20 | MVP |
 | `matriculas` | Nómina vigente, asignación a sección y estado del estudiante | RF21 | MVP |
 | `institucion` | Catálogo escolar (incluidas asignaturas y competencias), años, trimestres y asignación de docentes, tutores y auxiliares | RF03, RF04, RF05 | MVP |
 | `personas` | Estudiantes, apoderados, personal y vínculo apoderado–estudiante | Datos de RF01 y RF21 | MVP |
@@ -128,10 +128,10 @@ Los niveles ordenan las llamadas `service` a `service` dibujadas: cada módulo s
 Es el flujo más frecuente. La autorización (rol y pertenencia apoderado–hijo) se evalúa en cada petición. `seguimiento` compone una respuesta agregada con novedades, pendientes, asistencia, observaciones y niveles publicados, leyendo por estudiante y trimestre con índices y paginación por cursor (ADR-006).
 
 ### 4.2. Registro continuo del docente
-El docente crea una actividad, llena la cuadrícula en borrador y la publica. Un solo guardado masivo escribe los resultados en una transacción con bloqueo optimista, y cada corrección posterior a la publicación se audita. Publicar hace visible el registro en la vista familiar.
+El docente crea una actividad (trabajo/evaluación o sesión de clase para la nota del día), llena la cuadrícula en borrador y la publica. Un solo guardado masivo escribe los resultados en una transacción con bloqueo optimista, y cada corrección posterior a la publicación se audita. Publicar hace visible el registro en la vista familiar.
 
 ### 4.3. Del registro diario al Excel SIAGIE
-Al terminar el trimestre, `evaluacion` sugiere el nivel de cada competencia con su último calificativo publicado. El docente confirma o cambia el nivel y registra las conclusiones obligatorias. Con los niveles confirmados, `reportes` llena la plantilla del SIAGIE y entrega la descarga, sin volver a digitar.
+Al terminar el trimestre, `evaluacion` sugiere el nivel de cada competencia calculando la mediana de los niveles de sus capacidades sobre los calificativos publicados. El docente confirma o cambia el nivel y registra las conclusiones obligatorias. Con los niveles confirmados, `reportes` llena la plantilla del SIAGIE y entrega la descarga, sin volver a digitar.
 
 ### 4.4. Cierre del trimestre y libretas
 El Administrador cierra el trimestre desde `evaluacion` (ADR-009). Después del commit se encola en Cloud Tasks un lote por sección para generar las libretas. Administrador o Dirección las publican como acción aparte, de modo que el pico de descargas sea lectura de archivos y no cómputo de PDF. Reabrir para corregir es otra acción, con motivo obligatorio y nueva versión de la libreta.

@@ -92,8 +92,8 @@ Los niveles ordenan las llamadas `service` a `service` documentadas en la vista 
 | **Puntos de entrada** | API REST y servicio de tareas: rutas, JWT, validación y manejador de errores | — | `backend/app/main.py`, `core/` |
 | **seguimiento** | Vista continua de apoderados, estudiantes y sección; sin tablas propias salvo la última visita | RF01, RF26, RF31 | `backend/app/modules/seguimiento/` |
 | **reportes** | Libretas, Excel SIAGIE, actas preliminares y publicación de libretas | RF15, RF16, RF27 | `backend/app/modules/reportes/` |
-| **evaluacion** | Actividades, resultados, observaciones, mensajes, niveles, conclusiones, cierres y reapertura | RF06, RF07, RF08, RF22, RF23, RF24, RF25, RF28, RF30 | `backend/app/modules/evaluacion/` |
-| **asistencia** | Registro y consulta de asistencia diaria | RF19, RF20 | `backend/app/modules/asistencia/` |
+| **evaluacion** | Actividades (trabajos y sesiones/nota del día), resultados, observaciones, mensajes por hilos (con confirmación de lectura y respuestas), niveles, conclusiones, cierres y reapertura | RF06, RF07, RF08, RF22, RF23, RF24, RF25, RF28, RF30 | `backend/app/modules/evaluacion/` |
+| **asistencia** | Registro y consulta de asistencia diaria y solicitudes de justificación (apoderado $\rightarrow$ auxiliar) | RF19, RF20 | `backend/app/modules/asistencia/` |
 | **matriculas** | Nómina vigente, asignación a sección y estado del estudiante | RF21 | `backend/app/modules/matriculas/` |
 | **institucion** | Catálogo escolar (incluidas asignaturas y competencias), años, trimestres y asignaciones | RF03, RF04, RF05 | `backend/app/modules/institucion/` |
 | **personas** | Estudiantes, apoderados, personal y vínculo apoderado–estudiante | Datos de RF01 y RF21 | `backend/app/modules/personas/` |
