@@ -22,6 +22,7 @@ htmlcov/
 node_modules/
 dist/
 coverage/
+*.tsbuildinfo
 *.log
 
 # Firebase
@@ -36,3 +37,6 @@ Thumbs.db
 
 # Claude Code: ajustes locales de cada persona
 .claude/settings.local.json
+
+# Prototipos UI locales e insumos institucionales (Ley N.º 29733)
+prototipos/
