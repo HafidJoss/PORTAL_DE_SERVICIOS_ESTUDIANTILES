@@ -1,0 +1,3200 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Portal de Servicios Estudiantiles API",
+    "description": "API REST del Portal de Servicios Estudiantiles (I.E. Mariscal Cáceres)",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "core"
+        ],
+        "summary": "Verificar Salud",
+        "description": "Verifica que la API está operativa.",
+        "operationId": "verificar_salud_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/identidad/login": {
+      "post": {
+        "tags": [
+          "identidad"
+        ],
+        "summary": "Iniciar Sesion",
+        "description": "Inicia sesión con DNI y contraseña (contrato stub).",
+        "operationId": "iniciar_sesion_api_v1_identidad_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SesionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/identidad/activar": {
+      "post": {
+        "tags": [
+          "identidad"
+        ],
+        "summary": "Activar Cuenta",
+        "description": "Activa una cuenta con código de un solo uso (contrato stub).",
+        "operationId": "activar_cuenta_api_v1_identidad_activar_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivacionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivacionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/identidad/logout": {
+      "post": {
+        "tags": [
+          "identidad"
+        ],
+        "summary": "Cerrar Sesion",
+        "description": "Cierra la sesión activa invalidando el token vigente (contrato stub).",
+        "operationId": "cerrar_sesion_api_v1_identidad_logout_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MensajeOperacionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/identidad/sesion": {
+      "get": {
+        "tags": [
+          "identidad"
+        ],
+        "summary": "Obtener Sesion",
+        "description": "Devuelve la información del usuario autenticado (contrato stub).",
+        "operationId": "obtener_sesion_api_v1_identidad_sesion_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SesionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/identidad/cambiar-contrasena": {
+      "post": {
+        "tags": [
+          "identidad"
+        ],
+        "summary": "Cambiar Contrasena",
+        "description": "Actualiza la contraseña del usuario autenticado (contrato stub).",
+        "operationId": "cambiar_contrasena_api_v1_identidad_cambiar_contrasena_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CambioContrasenaIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MensajeOperacionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/identidad/aviso-privacidad": {
+      "get": {
+        "tags": [
+          "identidad"
+        ],
+        "summary": "Obtener Aviso Privacidad",
+        "description": "Devuelve el aviso de privacidad institucional (RF29).",
+        "operationId": "obtener_aviso_privacidad_api_v1_identidad_aviso_privacidad_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvisoPrivacidadOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/seguimiento/estudiantes/{estudiante_id}/inicio": {
+      "get": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Obtener Inicio Estudiante",
+        "description": "Compone novedades, KPIs y agenda semanal del estudiante (contrato stub).",
+        "operationId": "obtener_inicio_estudiante_api_v1_seguimiento_estudiantes__estudiante_id__inicio_get",
+        "parameters": [
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InicioEstudianteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/seguimiento/estudiantes/{estudiante_id}/novedades/visto": {
+      "post": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Marcar Novedades Vistas",
+        "description": "Actualiza la marca de última visita del estudiante (contrato stub).",
+        "operationId": "marcar_novedades_vistas_api_v1_seguimiento_estudiantes__estudiante_id__novedades_visto_post",
+        "parameters": [
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NovedadesVistoOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/seguimiento/estudiantes/{estudiante_id}/cursos": {
+      "get": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Listar Cursos Estudiante",
+        "description": "Devuelve la lista de cursos del estudiante (contrato stub).",
+        "operationId": "listar_cursos_estudiante_api_v1_seguimiento_estudiantes__estudiante_id__cursos_get",
+        "parameters": [
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListaCursosOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/seguimiento/estudiantes/{estudiante_id}/cursos/{asignatura_id}": {
+      "get": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Obtener Detalle Curso",
+        "description": "Devuelve el detalle del curso con novedades, competencias y plana docente.",
+        "operationId": "obtener_detalle_curso_api_v1_seguimiento_estudiantes__estudiante_id__cursos__asignatura_id__get",
+        "parameters": [
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          },
+          {
+            "name": "asignatura_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Asignatura Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CursoDetalleOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluacion/estudiantes/{estudiante_id}/calificaciones": {
+      "get": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Obtener Calificaciones Estudiante",
+        "description": "Devuelve niveles por competencia, conclusiones y calificativos publicados.",
+        "operationId": "obtener_calificaciones_estudiante_api_v1_evaluacion_estudiantes__estudiante_id__calificaciones_get",
+        "parameters": [
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalificacionesEstudianteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluacion/estudiantes/{estudiante_id}/actividades": {
+      "get": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Listar Actividades Estudiante",
+        "description": "Lista trabajos y sesiones de clase (nota del día) del estudiante.",
+        "operationId": "listar_actividades_estudiante_api_v1_evaluacion_estudiantes__estudiante_id__actividades_get",
+        "parameters": [
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListaActividadesOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluacion/estudiantes/{estudiante_id}/mensajes": {
+      "get": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Listar Mensajes Estudiante",
+        "description": "Devuelve la bandeja de mensajes e hilos del estudiante.",
+        "operationId": "listar_mensajes_estudiante_api_v1_evaluacion_estudiantes__estudiante_id__mensajes_get",
+        "parameters": [
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListaMensajesOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluacion/mensajes/{mensaje_id}/leer": {
+      "post": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Confirmar Lectura Mensaje",
+        "description": "Registra la confirmación de lectura de un mensaje.",
+        "operationId": "confirmar_lectura_mensaje_api_v1_evaluacion_mensajes__mensaje_id__leer_post",
+        "parameters": [
+          {
+            "name": "mensaje_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Mensaje Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LecturaConfirmadaOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluacion/mensajes/{mensaje_id}/respuestas": {
+      "post": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Responder Mensaje",
+        "description": "Publica una respuesta acotada dentro del hilo de un mensaje (RF25).",
+        "operationId": "responder_mensaje_api_v1_evaluacion_mensajes__mensaje_id__respuestas_post",
+        "parameters": [
+          {
+            "name": "mensaje_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Mensaje Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RespuestaMensajeIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaHiloOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/asistencia/estudiantes/{estudiante_id}": {
+      "get": {
+        "tags": [
+          "asistencia"
+        ],
+        "summary": "Obtener Asistencia Mensual",
+        "description": "Devuelve KPIs, calendario mensual e incidencias de asistencia (stub).",
+        "operationId": "obtener_asistencia_mensual_api_v1_asistencia_estudiantes__estudiante_id__get",
+        "parameters": [
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          },
+          {
+            "name": "mes",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 12,
+              "minimum": 1,
+              "default": 11,
+              "title": "Mes"
+            }
+          },
+          {
+            "name": "anio",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 2100,
+              "minimum": 2020,
+              "default": 2026,
+              "title": "Anio"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsistenciaMesOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reportes/estudiantes/{estudiante_id}/libretas": {
+      "get": {
+        "tags": [
+          "reportes"
+        ],
+        "summary": "Obtener Libretas Estudiante",
+        "description": "Devuelve las libretas trimestrales y situación final (contrato stub).",
+        "operationId": "obtener_libretas_estudiante_api_v1_reportes_estudiantes__estudiante_id__libretas_get",
+        "parameters": [
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibretasOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reportes/estudiantes/{estudiante_id}/libretas/{trimestre_id}/descarga": {
+      "get": {
+        "tags": [
+          "reportes"
+        ],
+        "summary": "Obtener Url Descarga Libreta",
+        "description": "Devuelve una URL firmada temporal de 15 min para descargar el PDF (RC05).",
+        "operationId": "obtener_url_descarga_libreta_api_v1_reportes_estudiantes__estudiante_id__libretas__trimestre_id__descarga_get",
+        "parameters": [
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          },
+          {
+            "name": "trimestre_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Trimestre Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UrlDescargaOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActivacionIn": {
+        "properties": {
+          "dni": {
+            "type": "string",
+            "pattern": "^\\d{8}$",
+            "title": "Dni"
+          },
+          "codigo_activacion": {
+            "type": "string",
+            "maxLength": 12,
+            "minLength": 6,
+            "title": "Codigo Activacion"
+          },
+          "nueva_contrasena": {
+            "type": "string",
+            "minLength": 8,
+            "title": "Nueva Contrasena"
+          },
+          "acepta_privacidad": {
+            "type": "boolean",
+            "title": "Acepta Privacidad"
+          }
+        },
+        "type": "object",
+        "required": [
+          "dni",
+          "codigo_activacion",
+          "nueva_contrasena",
+          "acepta_privacidad"
+        ],
+        "title": "ActivacionIn",
+        "description": "Datos para activar una cuenta con código de un solo uso."
+      },
+      "ActivacionOut": {
+        "properties": {
+          "activada": {
+            "type": "boolean",
+            "title": "Activada"
+          },
+          "mensaje": {
+            "type": "string",
+            "title": "Mensaje"
+          }
+        },
+        "type": "object",
+        "required": [
+          "activada",
+          "mensaje"
+        ],
+        "title": "ActivacionOut",
+        "description": "Confirmación de activación de cuenta."
+      },
+      "ActividadOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "trabajo",
+              "sesion_clase"
+            ],
+            "title": "Tipo"
+          },
+          "titulo": {
+            "type": "string",
+            "title": "Titulo"
+          },
+          "curso": {
+            "type": "string",
+            "title": "Curso"
+          },
+          "asignada": {
+            "type": "string",
+            "title": "Asignada"
+          },
+          "fecha_entrega": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Entrega"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "pendiente",
+              "vencido",
+              "entregado",
+              "calificado"
+            ],
+            "title": "Estado"
+          },
+          "urgente": {
+            "type": "boolean",
+            "title": "Urgente",
+            "default": false
+          },
+          "competencia": {
+            "type": "string",
+            "title": "Competencia"
+          },
+          "capacidad": {
+            "type": "string",
+            "title": "Capacidad"
+          },
+          "descripcion": {
+            "type": "string",
+            "title": "Descripcion",
+            "default": ""
+          },
+          "nivel": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "AD",
+                  "A",
+                  "B",
+                  "C",
+                  "—"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nivel"
+          },
+          "comentario": {
+            "type": "string",
+            "title": "Comentario",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "tipo",
+          "titulo",
+          "curso",
+          "asignada",
+          "estado",
+          "competencia",
+          "capacidad"
+        ],
+        "title": "ActividadOut",
+        "description": "Trabajo o sesión de clase visible en Trabajos y pendientes."
+      },
+      "AreaLibretaOut": {
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "competencias": {
+            "items": {
+              "$ref": "#/components/schemas/FilaLibretaCompetenciaOut"
+            },
+            "type": "array",
+            "title": "Competencias"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombre",
+          "competencias"
+        ],
+        "title": "AreaLibretaOut",
+        "description": "Área curricular agrupada en el Informe de progreso."
+      },
+      "AsistenciaMesOut": {
+        "properties": {
+          "estudiante_id": {
+            "type": "string",
+            "title": "Estudiante Id"
+          },
+          "mes": {
+            "type": "integer",
+            "title": "Mes"
+          },
+          "anio": {
+            "type": "integer",
+            "title": "Anio"
+          },
+          "seccion": {
+            "type": "string",
+            "title": "Seccion"
+          },
+          "kpis": {
+            "$ref": "#/components/schemas/KpisAsistenciaOut"
+          },
+          "dias": {
+            "items": {
+              "$ref": "#/components/schemas/DiaAsistenciaOut"
+            },
+            "type": "array",
+            "title": "Dias"
+          },
+          "incidencias": {
+            "items": {
+              "$ref": "#/components/schemas/IncidenciaAsistenciaOut"
+            },
+            "type": "array",
+            "title": "Incidencias"
+          }
+        },
+        "type": "object",
+        "required": [
+          "estudiante_id",
+          "mes",
+          "anio",
+          "seccion",
+          "kpis",
+          "dias",
+          "incidencias"
+        ],
+        "title": "AsistenciaMesOut",
+        "description": "Respuesta mensual de asistencia para un estudiante."
+      },
+      "AvisoPrivacidadOut": {
+        "properties": {
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "actualizado_el": {
+            "type": "string",
+            "title": "Actualizado El"
+          },
+          "titulo": {
+            "type": "string",
+            "title": "Titulo"
+          },
+          "contenido": {
+            "type": "string",
+            "title": "Contenido"
+          }
+        },
+        "type": "object",
+        "required": [
+          "version",
+          "actualizado_el",
+          "titulo",
+          "contenido"
+        ],
+        "title": "AvisoPrivacidadOut",
+        "description": "Texto vigente del aviso de privacidad (Ley N.º 29733)."
+      },
+      "CalificacionesEstudianteOut": {
+        "properties": {
+          "trimestre_actual": {
+            "type": "integer",
+            "title": "Trimestre Actual"
+          },
+          "estado_trimestre": {
+            "type": "string",
+            "title": "Estado Trimestre"
+          },
+          "criterio_sugerencia": {
+            "type": "string",
+            "const": "mediana_capacidades",
+            "title": "Criterio Sugerencia",
+            "default": "mediana_capacidades"
+          },
+          "cursos": {
+            "items": {
+              "$ref": "#/components/schemas/CursoCalificacionesOut"
+            },
+            "type": "array",
+            "title": "Cursos"
+          }
+        },
+        "type": "object",
+        "required": [
+          "trimestre_actual",
+          "estado_trimestre",
+          "cursos"
+        ],
+        "title": "CalificacionesEstudianteOut",
+        "description": "Respuesta completa de la vista Calificaciones."
+      },
+      "CalificativoPublicadoOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "trabajo",
+              "sesion_clase"
+            ],
+            "title": "Tipo"
+          },
+          "titulo": {
+            "type": "string",
+            "title": "Titulo"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          },
+          "competencia": {
+            "type": "string",
+            "title": "Competencia"
+          },
+          "nivel": {
+            "type": "string",
+            "enum": [
+              "AD",
+              "A",
+              "B",
+              "C"
+            ],
+            "title": "Nivel"
+          },
+          "comentario": {
+            "type": "string",
+            "title": "Comentario",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "tipo",
+          "titulo",
+          "fecha",
+          "competencia",
+          "nivel"
+        ],
+        "title": "CalificativoPublicadoOut",
+        "description": "Evidencia calificada (trabajo o sesión de clase) publicada."
+      },
+      "CambioContrasenaIn": {
+        "properties": {
+          "contrasena_actual": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Contrasena Actual"
+          },
+          "nueva_contrasena": {
+            "type": "string",
+            "minLength": 8,
+            "title": "Nueva Contrasena"
+          }
+        },
+        "type": "object",
+        "required": [
+          "contrasena_actual",
+          "nueva_contrasena"
+        ],
+        "title": "CambioContrasenaIn",
+        "description": "Solicitud de actualización de contraseña propia."
+      },
+      "CompetenciaCursoResumenOut": {
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "trimestres": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "AD",
+                "A",
+                "B",
+                "C",
+                "—"
+              ]
+            },
+            "type": "array",
+            "title": "Trimestres"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombre",
+          "trimestres"
+        ],
+        "title": "CompetenciaCursoResumenOut",
+        "description": "Competencia y sus niveles sugeridos/confirmados por trimestre."
+      },
+      "CompetenciaNivelOut": {
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "trimestres": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "AD",
+                "A",
+                "B",
+                "C",
+                "—"
+              ]
+            },
+            "type": "array",
+            "title": "Trimestres"
+          },
+          "en_evaluacion_t3": {
+            "type": "boolean",
+            "title": "En Evaluacion T3",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombre",
+          "trimestres"
+        ],
+        "title": "CompetenciaNivelOut",
+        "description": "Niveles trimestrales de una competencia."
+      },
+      "ConclusionOut": {
+        "properties": {
+          "trimestre": {
+            "type": "string",
+            "title": "Trimestre"
+          },
+          "competencia": {
+            "type": "string",
+            "title": "Competencia"
+          },
+          "nivel": {
+            "type": "string",
+            "enum": [
+              "AD",
+              "A",
+              "B",
+              "C"
+            ],
+            "title": "Nivel"
+          },
+          "texto": {
+            "type": "string",
+            "title": "Texto"
+          }
+        },
+        "type": "object",
+        "required": [
+          "trimestre",
+          "competencia",
+          "nivel",
+          "texto"
+        ],
+        "title": "ConclusionOut",
+        "description": "Conclusión descriptiva publicada en un trimestre cerrado."
+      },
+      "CursoCalificacionesOut": {
+        "properties": {
+          "asignatura_id": {
+            "type": "string",
+            "title": "Asignatura Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "docente": {
+            "type": "string",
+            "title": "Docente"
+          },
+          "competencias": {
+            "items": {
+              "$ref": "#/components/schemas/CompetenciaNivelOut"
+            },
+            "type": "array",
+            "title": "Competencias"
+          },
+          "conclusiones": {
+            "items": {
+              "$ref": "#/components/schemas/ConclusionOut"
+            },
+            "type": "array",
+            "title": "Conclusiones"
+          },
+          "calificativos_publicados": {
+            "items": {
+              "$ref": "#/components/schemas/CalificativoPublicadoOut"
+            },
+            "type": "array",
+            "title": "Calificativos Publicados"
+          }
+        },
+        "type": "object",
+        "required": [
+          "asignatura_id",
+          "nombre",
+          "docente",
+          "competencias",
+          "conclusiones",
+          "calificativos_publicados"
+        ],
+        "title": "CursoCalificacionesOut",
+        "description": "Calificaciones, conclusiones y evidencias de una asignatura."
+      },
+      "CursoDetalleOut": {
+        "properties": {
+          "asignatura_id": {
+            "type": "string",
+            "title": "Asignatura Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "docente": {
+            "type": "string",
+            "title": "Docente"
+          },
+          "rol_docente": {
+            "type": "string",
+            "title": "Rol Docente"
+          },
+          "horario": {
+            "type": "string",
+            "title": "Horario"
+          },
+          "horas_semanales": {
+            "type": "integer",
+            "title": "Horas Semanales"
+          },
+          "stream": {
+            "items": {
+              "$ref": "#/components/schemas/StreamCursoOut"
+            },
+            "type": "array",
+            "title": "Stream"
+          },
+          "competencias": {
+            "items": {
+              "$ref": "#/components/schemas/CompetenciaCursoResumenOut"
+            },
+            "type": "array",
+            "title": "Competencias"
+          },
+          "equipo": {
+            "items": {
+              "$ref": "#/components/schemas/IntegranteEquipoOut"
+            },
+            "type": "array",
+            "title": "Equipo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "asignatura_id",
+          "nombre",
+          "docente",
+          "rol_docente",
+          "horario",
+          "horas_semanales",
+          "stream",
+          "competencias",
+          "equipo"
+        ],
+        "title": "CursoDetalleOut",
+        "description": "Detalle completo de un curso para las 4 pestañas de Estudiante v2."
+      },
+      "CursoResumenOut": {
+        "properties": {
+          "asignatura_id": {
+            "type": "string",
+            "title": "Asignatura Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "docente": {
+            "type": "string",
+            "title": "Docente"
+          },
+          "rol_docente": {
+            "type": "string",
+            "title": "Rol Docente"
+          },
+          "horario": {
+            "type": "string",
+            "title": "Horario"
+          },
+          "horas_semanales": {
+            "type": "integer",
+            "title": "Horas Semanales"
+          },
+          "pendientes": {
+            "type": "integer",
+            "title": "Pendientes"
+          },
+          "proximo_vencimiento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Proximo Vencimiento"
+          },
+          "mini_niveles": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "AD",
+                "A",
+                "B",
+                "C",
+                "—"
+              ]
+            },
+            "type": "array",
+            "title": "Mini Niveles"
+          }
+        },
+        "type": "object",
+        "required": [
+          "asignatura_id",
+          "nombre",
+          "docente",
+          "rol_docente",
+          "horario",
+          "horas_semanales",
+          "pendientes",
+          "mini_niveles"
+        ],
+        "title": "CursoResumenOut",
+        "description": "Tarjeta resumen de una asignatura en la vista Cursos."
+      },
+      "DiaAgendaOut": {
+        "properties": {
+          "etiqueta": {
+            "type": "string",
+            "title": "Etiqueta"
+          },
+          "numero": {
+            "type": "integer",
+            "title": "Numero"
+          },
+          "es_hoy": {
+            "type": "boolean",
+            "title": "Es Hoy"
+          },
+          "asistencia": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asistencia"
+          },
+          "eventos": {
+            "items": {
+              "$ref": "#/components/schemas/EventoAgendaOut"
+            },
+            "type": "array",
+            "title": "Eventos"
+          }
+        },
+        "type": "object",
+        "required": [
+          "etiqueta",
+          "numero",
+          "es_hoy",
+          "eventos"
+        ],
+        "title": "DiaAgendaOut",
+        "description": "Día dentro de la vista de agenda semanal."
+      },
+      "DiaAsistenciaOut": {
+        "properties": {
+          "dia": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dia"
+          },
+          "codigo": {
+            "type": "string",
+            "enum": [
+              "P",
+              "T",
+              "F",
+              "FJ",
+              "TJ",
+              "FE",
+              ""
+            ],
+            "title": "Codigo"
+          },
+          "nombre_estado": {
+            "type": "string",
+            "title": "Nombre Estado"
+          }
+        },
+        "type": "object",
+        "required": [
+          "codigo",
+          "nombre_estado"
+        ],
+        "title": "DiaAsistenciaOut",
+        "description": "Celda del calendario laboral de asistencia."
+      },
+      "DistribucionNivelItemOut": {
+        "properties": {
+          "nivel": {
+            "type": "string",
+            "enum": [
+              "AD",
+              "A",
+              "B",
+              "C"
+            ],
+            "title": "Nivel"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "cantidad": {
+            "type": "integer",
+            "title": "Cantidad"
+          },
+          "porcentaje": {
+            "type": "number",
+            "title": "Porcentaje"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nivel",
+          "nombre",
+          "cantidad",
+          "porcentaje"
+        ],
+        "title": "DistribucionNivelItemOut",
+        "description": "Conteo por nivel de logro en el trimestre actual."
+      },
+      "EntregaProximaOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "titulo": {
+            "type": "string",
+            "title": "Titulo"
+          },
+          "curso": {
+            "type": "string",
+            "title": "Curso"
+          },
+          "fecha_entrega": {
+            "type": "string",
+            "title": "Fecha Entrega"
+          },
+          "estado_etiqueta": {
+            "type": "string",
+            "title": "Estado Etiqueta"
+          },
+          "urgente": {
+            "type": "boolean",
+            "title": "Urgente",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "titulo",
+          "curso",
+          "fecha_entrega",
+          "estado_etiqueta"
+        ],
+        "title": "EntregaProximaOut",
+        "description": "Actividad pendiente próxima a vencer."
+      },
+      "EventoAgendaOut": {
+        "properties": {
+          "titulo": {
+            "type": "string",
+            "title": "Titulo"
+          },
+          "tipo": {
+            "type": "string",
+            "title": "Tipo"
+          },
+          "ruta_destino": {
+            "type": "string",
+            "title": "Ruta Destino"
+          }
+        },
+        "type": "object",
+        "required": [
+          "titulo",
+          "tipo",
+          "ruta_destino"
+        ],
+        "title": "EventoAgendaOut",
+        "description": "Evento puntual en la agenda semanal (variante C)."
+      },
+      "FilaLibretaCompetenciaOut": {
+        "properties": {
+          "competencia": {
+            "type": "string",
+            "title": "Competencia"
+          },
+          "nivel": {
+            "type": "string",
+            "enum": [
+              "AD",
+              "A",
+              "B",
+              "C",
+              "—"
+            ],
+            "title": "Nivel"
+          },
+          "conclusion": {
+            "type": "string",
+            "title": "Conclusion",
+            "default": ""
+          },
+          "es_transversal": {
+            "type": "boolean",
+            "title": "Es Transversal",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "competencia",
+          "nivel"
+        ],
+        "title": "FilaLibretaCompetenciaOut",
+        "description": "Fila de competencia dentro de la libreta trimestral."
+      },
+      "HealthOut": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "HealthOut",
+        "description": "Respuesta del endpoint de verificación de salud."
+      },
+      "IncidenciaAsistenciaOut": {
+        "properties": {
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          },
+          "codigo": {
+            "type": "string",
+            "enum": [
+              "T",
+              "F",
+              "FJ",
+              "TJ",
+              "FE"
+            ],
+            "title": "Codigo"
+          },
+          "nombre_estado": {
+            "type": "string",
+            "title": "Nombre Estado"
+          },
+          "detalle": {
+            "type": "string",
+            "title": "Detalle"
+          }
+        },
+        "type": "object",
+        "required": [
+          "fecha",
+          "codigo",
+          "nombre_estado",
+          "detalle"
+        ],
+        "title": "IncidenciaAsistenciaOut",
+        "description": "Detalle de tardanza, falta o justificación del mes."
+      },
+      "InicioEstudianteOut": {
+        "properties": {
+          "estudiante_id": {
+            "type": "string",
+            "title": "Estudiante Id"
+          },
+          "ultima_visita": {
+            "type": "string",
+            "title": "Ultima Visita"
+          },
+          "novedades_sin_ver": {
+            "type": "integer",
+            "title": "Novedades Sin Ver"
+          },
+          "novedades": {
+            "items": {
+              "$ref": "#/components/schemas/NovedadItemOut"
+            },
+            "type": "array",
+            "title": "Novedades"
+          },
+          "kpis": {
+            "items": {
+              "$ref": "#/components/schemas/KpiInicioOut"
+            },
+            "type": "array",
+            "title": "Kpis"
+          },
+          "distribucion_niveles": {
+            "items": {
+              "$ref": "#/components/schemas/DistribucionNivelItemOut"
+            },
+            "type": "array",
+            "title": "Distribucion Niveles"
+          },
+          "agenda_semanal": {
+            "items": {
+              "$ref": "#/components/schemas/DiaAgendaOut"
+            },
+            "type": "array",
+            "title": "Agenda Semanal"
+          },
+          "proximas_entregas": {
+            "items": {
+              "$ref": "#/components/schemas/EntregaProximaOut"
+            },
+            "type": "array",
+            "title": "Proximas Entregas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "estudiante_id",
+          "ultima_visita",
+          "novedades_sin_ver",
+          "novedades",
+          "kpis",
+          "distribucion_niveles",
+          "agenda_semanal",
+          "proximas_entregas"
+        ],
+        "title": "InicioEstudianteOut",
+        "description": "Respuesta agregada de la pantalla Inicio (soporta variantes A, B y C)."
+      },
+      "IntegranteEquipoOut": {
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "rol": {
+            "type": "string",
+            "title": "Rol"
+          },
+          "grupo": {
+            "type": "string",
+            "enum": [
+              "docente",
+              "equipo_seccion"
+            ],
+            "title": "Grupo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombre",
+          "rol",
+          "grupo"
+        ],
+        "title": "IntegranteEquipoOut",
+        "description": "Docente, tutor o auxiliar vinculado al curso o sección."
+      },
+      "KpiInicioOut": {
+        "properties": {
+          "clave": {
+            "type": "string",
+            "title": "Clave"
+          },
+          "etiqueta": {
+            "type": "string",
+            "title": "Etiqueta"
+          },
+          "valor": {
+            "type": "string",
+            "title": "Valor"
+          },
+          "subtitulo": {
+            "type": "string",
+            "title": "Subtitulo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "clave",
+          "etiqueta",
+          "valor",
+          "subtitulo"
+        ],
+        "title": "KpiInicioOut",
+        "description": "Tarjeta KPI para la variante B del inicio."
+      },
+      "KpisAsistenciaOut": {
+        "properties": {
+          "porcentaje": {
+            "type": "string",
+            "title": "Porcentaje"
+          },
+          "presentes": {
+            "type": "integer",
+            "title": "Presentes"
+          },
+          "tardanzas": {
+            "type": "integer",
+            "title": "Tardanzas"
+          },
+          "faltas": {
+            "type": "integer",
+            "title": "Faltas"
+          },
+          "justificadas": {
+            "type": "integer",
+            "title": "Justificadas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "porcentaje",
+          "presentes",
+          "tardanzas",
+          "faltas",
+          "justificadas"
+        ],
+        "title": "KpisAsistenciaOut",
+        "description": "Resumen numérico mensual de asistencia."
+      },
+      "LecturaConfirmadaOut": {
+        "properties": {
+          "mensaje_id": {
+            "type": "string",
+            "title": "Mensaje Id"
+          },
+          "lectura_confirmada": {
+            "type": "boolean",
+            "title": "Lectura Confirmada"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mensaje_id",
+          "lectura_confirmada"
+        ],
+        "title": "LecturaConfirmadaOut",
+        "description": "Confirmación de lectura de un mensaje."
+      },
+      "LibretasOut": {
+        "properties": {
+          "estudiante_id": {
+            "type": "string",
+            "title": "Estudiante Id"
+          },
+          "anio_escolar": {
+            "type": "integer",
+            "title": "Anio Escolar"
+          },
+          "grado_seccion": {
+            "type": "string",
+            "title": "Grado Seccion"
+          },
+          "trimestres": {
+            "items": {
+              "$ref": "#/components/schemas/TrimestreLibretaOut"
+            },
+            "type": "array",
+            "title": "Trimestres"
+          },
+          "situacion_final": {
+            "$ref": "#/components/schemas/SituacionFinalOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "estudiante_id",
+          "anio_escolar",
+          "grado_seccion",
+          "trimestres",
+          "situacion_final"
+        ],
+        "title": "LibretasOut",
+        "description": "Listado de libretas por trimestre del estudiante."
+      },
+      "ListaActividadesOut": {
+        "properties": {
+          "pendientes": {
+            "type": "integer",
+            "title": "Pendientes"
+          },
+          "vencen_pronto": {
+            "type": "integer",
+            "title": "Vencen Pronto"
+          },
+          "actividades": {
+            "items": {
+              "$ref": "#/components/schemas/ActividadOut"
+            },
+            "type": "array",
+            "title": "Actividades"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pendientes",
+          "vencen_pronto",
+          "actividades"
+        ],
+        "title": "ListaActividadesOut",
+        "description": "Listado de trabajos y sesiones de clase del estudiante."
+      },
+      "ListaCursosOut": {
+        "properties": {
+          "grado_seccion": {
+            "type": "string",
+            "title": "Grado Seccion"
+          },
+          "total_pendientes": {
+            "type": "integer",
+            "title": "Total Pendientes"
+          },
+          "cursos": {
+            "items": {
+              "$ref": "#/components/schemas/CursoResumenOut"
+            },
+            "type": "array",
+            "title": "Cursos"
+          }
+        },
+        "type": "object",
+        "required": [
+          "grado_seccion",
+          "total_pendientes",
+          "cursos"
+        ],
+        "title": "ListaCursosOut",
+        "description": "Listado de cursos del estudiante en el año lectivo."
+      },
+      "ListaMensajesOut": {
+        "properties": {
+          "sin_leer": {
+            "type": "integer",
+            "title": "Sin Leer"
+          },
+          "mensajes": {
+            "items": {
+              "$ref": "#/components/schemas/MensajeOut"
+            },
+            "type": "array",
+            "title": "Mensajes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sin_leer",
+          "mensajes"
+        ],
+        "title": "ListaMensajesOut",
+        "description": "Bandeja de mensajes del estudiante."
+      },
+      "LoginIn": {
+        "properties": {
+          "dni": {
+            "type": "string",
+            "pattern": "^\\d{8}$",
+            "title": "Dni",
+            "description": "Documento de identidad de 8 dígitos"
+          },
+          "contrasena": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Contrasena",
+            "description": "Contraseña del usuario"
+          },
+          "recordar": {
+            "type": "boolean",
+            "title": "Recordar",
+            "description": "Mantener preferencia de recordar DNI",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "dni",
+          "contrasena"
+        ],
+        "title": "LoginIn",
+        "description": "Credenciales para iniciar sesión por documento de identidad."
+      },
+      "MensajeOperacionOut": {
+        "properties": {
+          "mensaje": {
+            "type": "string",
+            "title": "Mensaje"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mensaje"
+        ],
+        "title": "MensajeOperacionOut",
+        "description": "Respuesta simple para operaciones de cierre de sesión o cambio de clave."
+      },
+      "MensajeOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "Tarea",
+              "Recordatorio",
+              "ObsPos",
+              "ObsMej"
+            ],
+            "title": "Tipo"
+          },
+          "remitente": {
+            "type": "string",
+            "title": "Remitente"
+          },
+          "curso": {
+            "type": "string",
+            "title": "Curso"
+          },
+          "asunto": {
+            "type": "string",
+            "title": "Asunto"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          },
+          "fecha_larga": {
+            "type": "string",
+            "title": "Fecha Larga"
+          },
+          "destinatarios": {
+            "type": "string",
+            "title": "Destinatarios"
+          },
+          "cuerpo": {
+            "type": "string",
+            "title": "Cuerpo"
+          },
+          "actividad_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actividad Id"
+          },
+          "no_leido": {
+            "type": "boolean",
+            "title": "No Leido"
+          },
+          "lectura_confirmada": {
+            "type": "boolean",
+            "title": "Lectura Confirmada"
+          },
+          "respuestas": {
+            "items": {
+              "$ref": "#/components/schemas/RespuestaHiloOut"
+            },
+            "type": "array",
+            "title": "Respuestas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "tipo",
+          "remitente",
+          "curso",
+          "asunto",
+          "fecha",
+          "fecha_larga",
+          "destinatarios",
+          "cuerpo",
+          "no_leido",
+          "lectura_confirmada",
+          "respuestas"
+        ],
+        "title": "MensajeOut",
+        "description": "Mensaje, recordatorio u observación con soporte de lectura e hilo."
+      },
+      "NovedadItemOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "grupo": {
+            "type": "string",
+            "title": "Grupo"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "calificativo",
+              "observacion",
+              "asistencia",
+              "recordatorio",
+              "mensaje"
+            ],
+            "title": "Tipo"
+          },
+          "etiqueta": {
+            "type": "string",
+            "title": "Etiqueta"
+          },
+          "curso": {
+            "type": "string",
+            "title": "Curso"
+          },
+          "titulo": {
+            "type": "string",
+            "title": "Titulo"
+          },
+          "detalle": {
+            "type": "string",
+            "title": "Detalle"
+          },
+          "nivel": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "AD",
+                  "A",
+                  "B",
+                  "C",
+                  "—"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nivel"
+          },
+          "hora": {
+            "type": "string",
+            "title": "Hora"
+          },
+          "ruta_destino": {
+            "type": "string",
+            "title": "Ruta Destino"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "grupo",
+          "tipo",
+          "etiqueta",
+          "curso",
+          "titulo",
+          "detalle",
+          "hora",
+          "ruta_destino"
+        ],
+        "title": "NovedadItemOut",
+        "description": "Elemento de novedad desde la última visita."
+      },
+      "NovedadesVistoOut": {
+        "properties": {
+          "visto": {
+            "type": "boolean",
+            "title": "Visto"
+          },
+          "ultima_visita": {
+            "type": "string",
+            "title": "Ultima Visita"
+          }
+        },
+        "type": "object",
+        "required": [
+          "visto",
+          "ultima_visita"
+        ],
+        "title": "NovedadesVistoOut",
+        "description": "Confirmación de actualización de marca de última visita."
+      },
+      "ProblemDetail": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "description": "URI que identifica el tipo de problema",
+            "default": "about:blank"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "Resumen legible del problema"
+          },
+          "status": {
+            "type": "integer",
+            "title": "Status",
+            "description": "Código de estado HTTP"
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "description": "Explicación específica de esta ocurrencia"
+          },
+          "instance": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Instance",
+            "description": "Ruta o identificador de la petición"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "status",
+          "detail"
+        ],
+        "title": "ProblemDetail",
+        "description": "Representación estándar de error HTTP según RFC 9457."
+      },
+      "RespuestaHiloOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "mensaje_id": {
+            "type": "string",
+            "title": "Mensaje Id"
+          },
+          "autor": {
+            "type": "string",
+            "title": "Autor"
+          },
+          "rol_autor": {
+            "type": "string",
+            "title": "Rol Autor"
+          },
+          "contenido": {
+            "type": "string",
+            "title": "Contenido"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "mensaje_id",
+          "autor",
+          "rol_autor",
+          "contenido",
+          "fecha"
+        ],
+        "title": "RespuestaHiloOut",
+        "description": "Respuesta dentro del hilo de un mensaje."
+      },
+      "RespuestaMensajeIn": {
+        "properties": {
+          "contenido": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Contenido"
+          }
+        },
+        "type": "object",
+        "required": [
+          "contenido"
+        ],
+        "title": "RespuestaMensajeIn",
+        "description": "Payload para responder dentro de un hilo de mensaje."
+      },
+      "SesionOut": {
+        "properties": {
+          "autenticado": {
+            "type": "boolean",
+            "title": "Autenticado"
+          },
+          "usuario": {
+            "$ref": "#/components/schemas/UsuarioSesionOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "autenticado",
+          "usuario"
+        ],
+        "title": "SesionOut",
+        "description": "Respuesta de inicio o consulta de sesión."
+      },
+      "SituacionFinalOut": {
+        "properties": {
+          "calculada": {
+            "type": "boolean",
+            "title": "Calculada"
+          },
+          "codigo": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "PRO",
+                  "PER",
+                  "RR"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Codigo"
+          },
+          "etiqueta": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Etiqueta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "calculada"
+        ],
+        "title": "SituacionFinalOut",
+        "description": "Resultado anual de promoción, permanencia o recuperación (RF28)."
+      },
+      "StreamCursoOut": {
+        "properties": {
+          "titulo": {
+            "type": "string",
+            "title": "Titulo"
+          },
+          "subtitulo": {
+            "type": "string",
+            "title": "Subtitulo"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          },
+          "tipo": {
+            "type": "string",
+            "title": "Tipo"
+          },
+          "nivel": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "AD",
+                  "A",
+                  "B",
+                  "C",
+                  "—"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nivel"
+          },
+          "cuerpo": {
+            "type": "string",
+            "title": "Cuerpo",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "titulo",
+          "subtitulo",
+          "fecha",
+          "tipo"
+        ],
+        "title": "StreamCursoOut",
+        "description": "Elemento cronológico en la pestaña Novedades del curso."
+      },
+      "TrimestreLibretaOut": {
+        "properties": {
+          "trimestre_id": {
+            "type": "integer",
+            "title": "Trimestre Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "rango_fechas": {
+            "type": "string",
+            "title": "Rango Fechas"
+          },
+          "publicada": {
+            "type": "boolean",
+            "title": "Publicada"
+          },
+          "fecha_publicacion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Publicacion"
+          },
+          "areas": {
+            "items": {
+              "$ref": "#/components/schemas/AreaLibretaOut"
+            },
+            "type": "array",
+            "title": "Areas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "trimestre_id",
+          "nombre",
+          "rango_fechas",
+          "publicada",
+          "areas"
+        ],
+        "title": "TrimestreLibretaOut",
+        "description": "Estado y contenido de la libreta de un trimestre."
+      },
+      "UrlDescargaOut": {
+        "properties": {
+          "url_firmada": {
+            "type": "string",
+            "title": "Url Firmada"
+          },
+          "expira_en_segundos": {
+            "type": "integer",
+            "title": "Expira En Segundos"
+          },
+          "nombre_archivo": {
+            "type": "string",
+            "title": "Nombre Archivo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url_firmada",
+          "expira_en_segundos",
+          "nombre_archivo"
+        ],
+        "title": "UrlDescargaOut",
+        "description": "Enlace temporal firmado para descargar una libreta en PDF (RC05)."
+      },
+      "UsuarioSesionOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "dni": {
+            "type": "string",
+            "title": "Dni"
+          },
+          "nombres": {
+            "type": "string",
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "type": "string",
+            "title": "Apellidos"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "Administrador",
+              "Dirección",
+              "Secretaría Académica",
+              "Docente",
+              "Auxiliar",
+              "Apoderado",
+              "Estudiante"
+            ],
+            "title": "Rol"
+          },
+          "estudiante_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estudiante Id"
+          },
+          "codigo_estudiante": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Codigo Estudiante"
+          },
+          "grado_seccion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grado Seccion"
+          },
+          "tutor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tutor"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "dni",
+          "nombres",
+          "apellidos",
+          "rol"
+        ],
+        "title": "UsuarioSesionOut",
+        "description": "Resumen público del usuario autenticado."
+      }
+    }
+  }
+}
