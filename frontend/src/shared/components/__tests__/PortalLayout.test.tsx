@@ -1,0 +1,71 @@
+// Spec: plataforma-web · Requirement: Shell responsivo e identidad visual del portal (RC01, AC07)
+import { act, render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import { afterEach, describe, expect, it } from "vitest";
+
+import { ThemeProvider } from "../../../app/ThemeProvider";
+import { PortalLayout } from "../PortalLayout";
+
+function definirAnchoVentana(ancho: number) {
+  Object.defineProperty(window, "innerWidth", {
+    writable: true,
+    configurable: true,
+    value: ancho,
+  });
+}
+
+function renderPortal() {
+  return render(
+    <MemoryRouter
+      initialEntries={["/inicio"]}
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
+      <ThemeProvider>
+        <PortalLayout
+          usuarioNombre="Luis Ángel Quispe"
+          usuarioDetalle="Estudiante · 3.° B"
+        >
+          <div>Contenido de prueba</div>
+        </PortalLayout>
+      </ThemeProvider>
+    </MemoryRouter>,
+  );
+}
+
+describe("PortalLayout", () => {
+  afterEach(() => {
+    act(() => {
+      definirAnchoVentana(1280);
+    });
+  });
+
+  it("muestra barra lateral con escudo, enlaces y avatar de iniciales en escritorio", () => {
+    definirAnchoVentana(1280);
+    renderPortal();
+
+    expect(
+      screen.getByRole("navigation", { name: "Navegación principal" }),
+    ).toBeInTheDocument();
+    expect(screen.getByAltText(/Escudo G\.U\.E\. Mariscal Cáceres/i)).toBeInTheDocument();
+    expect(screen.getByText("LQ")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Inicio/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Libreta/i })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("navigation", { name: "Navegación móvil" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("oculta la barra lateral y muestra topbar y navegacion inferior en 360x640", () => {
+    definirAnchoVentana(360);
+    renderPortal();
+
+    expect(
+      screen.queryByRole("navigation", { name: "Navegación principal" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("navigation", { name: "Navegación móvil" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("LQ")).toBeInTheDocument();
+    expect(screen.getByText("Contenido de prueba")).toBeInTheDocument();
+  });
+});
