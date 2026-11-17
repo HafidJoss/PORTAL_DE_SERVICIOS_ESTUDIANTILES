@@ -88,3 +88,4 @@ operations:
     guidance:
       - Antes de archivar, comprobar que pytest, import-linter y openspec validate --strict estén en verde.
       - Resumir qué HU y RF quedaron cubiertos y avisar si hay que actualizar la prioridad o los IDs en docs/01-analisis-de-sistema/.
+      - Al concluir el último cambio de una fase, documentar su cierre en docs/07-fases/fase-NN-<nombre>.md y actualizar docs/07-fases/README.md antes de pasar a la fase siguiente.
