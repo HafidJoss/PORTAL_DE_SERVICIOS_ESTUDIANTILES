@@ -110,19 +110,21 @@ Herramientas: **pytest** para todas las pruebas y **testcontainers** para levant
 
 ```text
 backend/tests/
-├── conftest.py                  Configuración y datos compartidos
+├── conftest.py                                Configuración y cliente ASGI/BD compartido
+├── core/
+│   └── test_integracion_salud_y_errores.py    Salud del servicio, OpenAPI y RFC 9457
 └── <modulo>/
-    ├── test_reglas.py           Unitarias de reglas.py
-    ├── test_service.py          Unitarias de service.py
-    ├── test_repository.py       Integración con PostgreSQL
-    └── test_api.py              Integración de los endpoints
+    ├── test_unitario_reglas.py                Unitarias de reglas.py
+    ├── test_unitario_servicio.py              Unitarias de service.py
+    ├── test_integracion_repositorio.py        Integración con PostgreSQL
+    └── test_integracion_contrato_<modulo>.py  Integración de los endpoints / contrato OpenAPI
 ```
 
 ### 5.2 Convenciones
 
 | Elemento | Convención | Ejemplo |
 |---|---|---|
-| Archivo | `test_<capa>.py` | `test_service.py` |
+| Archivo | `test_<tipo>_<contexto>.py` | `test_unitario_servicio.py`, `test_integracion_contrato_evaluacion.py` |
 | Función | `test_<comportamiento_en_español>` | `test_rechaza_nota_con_periodo_cerrado` |
 | Estructura | Preparar, actuar, verificar, separados por líneas en blanco | — |
 | Alcance | Un comportamiento por prueba | — |
@@ -173,21 +175,21 @@ Herramientas oficiales: **Vitest**, **React Testing Library** y **MSW** para sim
 
 ### 7.1 Estructura de carpetas del frontend
 
-Se usa organización **híbrida limpia** en `camelCase` con prefijo `test` y un distintivo según la función de cada carpeta (ver [nomenclatura.md](nomenclatura.md)), evitando carpetas `__tests__/` genéricas:
+Se usa la carpeta `pruebas/` dentro de cada módulo (`api/`, `app/`, `shared/`, `features/<modulo>/`) junto a `testSetup/` para el entorno global de Vitest, con prefijo semántico `test<Tipo><Contexto>.test.ts(x)` en `camelCase` (ver [nomenclatura.md](nomenclatura.md)), evitando carpetas `__tests__/` genéricas:
 
 ```text
 frontend/src/
 ├── testSetup/
 │   └── setup.ts                  Arranque global de Vitest y limpieza DOM
 ├── api/
-│   └── testApi/                  Pruebas del cliente HTTP y manejo RFC 9457
+│   └── pruebas/                  testComponenteClienteHttp.test.ts
 ├── app/
-│   └── testApp/                  Pruebas de rutas, ciclo e2e y proveedor de tema
+│   └── pruebas/                  testE2eRecorridoEstudiante.test.tsx,
+│                                 testE2eSesionYCierre.test.tsx, testUnitarioProveedorTema.test.tsx
 ├── shared/
-│   └── testShared/               Pruebas unificadas de components/, hooks/ y preferencias/
+│   └── pruebas/                  testUnitario* y testComponente* de componentes/, ganchos/ y preferencias/
 └── features/<modulo>/
-    └── test<Modulo>/             Ej.: testIdentidad/, testSeguimiento/, testEvaluacion/,
-                                       testAsistencia/, testReportes/
+    └── pruebas/                  testUnitario* (utilidades) y testIntegracion* (vistas)
 ```
 
 ---

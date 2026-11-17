@@ -246,3 +246,19 @@ Comandos de terminal útiles para seguir lo que pasa: `openspec list` (cambios e
 - Esta guía **resume y traduce**; ante cualquier duda manda el texto original de cada skill en `.agents/skills/`, `.claude/skills/` y `.claude/commands/opsx/`.
 - Si actualizas OpenSpec (`npm install -g @fission-ai/openspec@latest` y `openspec update`), las skills pueden cambiar. Conviene revisar esta guía cuando cambie la versión.
 - Cuando actives el perfil ampliado, habrá que agregar aquí los flujos nuevos.
+
+---
+
+## 9. Skills propias del proyecto
+
+Además de las skills de OpenSpec, el repositorio cuenta con skills propias mantenidas en `.agents/skills/` y replicadas en `.claude/skills/`. El comando `openspec update` **no** las toca ni las sobrescribe.
+
+| Skill | Ubicación | Propósito | Modos de uso |
+|---|---|---|---|
+| `cierre-fase-tdd` | `.agents/skills/cierre-fase-tdd/` y `.claude/skills/cierre-fase-tdd/` | Auditar código, trazabilidad `Spec → pruebas`, arquitectura (`ADR-008`), SOLID y nomenclatura; corregir puntos sueltos con TDD y cerrar la fase en `docs/07-fases/` | **Modo A · Diagnóstico** (solo lectura) · **Modo B · Cierre completo** (remediación TDD + verificación + acta) |
+
+### Relación con OpenSpec
+
+```text
+/opsx:apply (TDD por tarea) -> /opsx:archive (cerrar cambios) -> skill cierre-fase-tdd (auditoría integral + acta docs/07-fases/)
+```

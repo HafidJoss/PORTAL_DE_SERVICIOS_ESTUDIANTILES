@@ -9,7 +9,7 @@
 En esta primera fase se construyó de extremo a extremo la aplicación web para el rol **Estudiante (`Estudiante v2`)** respaldada por un contrato **OpenAPI 3.1** expuesto desde un backend stub en FastAPI y consumido mediante hooks TypeScript generados con Orval (`ADR-006`).
 
 ### En alcance
-- Base de frontend en React 18 + TypeScript + Vite, sistema de diseño institucional (`tokens.css` claro/oscuro WCAG AA), layout responsivo (`PortalLayout`), `ThemeProvider`, `http.ts` con soporte RFC 9457 (`ProblemDetailError`), CSRF y manejo de `401`.
+- Base de frontend en React 18 + TypeScript + Vite, sistema de diseño institucional (`tokens.css` claro/oscuro WCAG AA), layout responsivo (`MarcoPortal`), `ProveedorTema`, `clienteHttp.ts` con soporte RFC 9457 (`ProblemDetailError`), CSRF y manejo de `401`.
 - Backend contractual stub en FastAPI (`backend/app/`) con 19 rutas bajo `/api/v1`, esquema `backend/openapi.json` y pruebas contractuales con `pytest`.
 - Implementación completa de las 10 rutas del estudiante (`/ingresar`, `/inicio`, `/cursos`, `/cursos/:asignaturaId`, `/trabajos`, `/asistencia`, `/calificaciones`, `/mensajes`, `/libreta`, `/configuracion`).
 - Refactorizaciones de cierre de fase: habilitación de ESLint con `typescript-eslint`, uso estricto de tokens semánticos `--status-info-*` en modo oscuro y alternancia real listado/detalle en móvil (`< 1024 px`) con el hook compartido `useEsMovil`.
@@ -27,15 +27,15 @@ En esta primera fase se construyó de extremo a extremo la aplicación web para 
 
 | Área / Módulo (`ADR-008`) | Archivos principales | Responsabilidad |
 |---|---|---|
-| `app/` | `App.tsx`, `main.tsx`, `ThemeProvider.tsx`, `queryClient.ts` | Enrutamiento autenticado (`RequiereSesion`), manejo global de `401`, proveedor de tema y TanStack Query |
-| `api/` | `http.ts`, `generated/*` (Orval) | Cliente HTTP tipado (`credentials: "include"`, `X-CSRF-Token`, RFC 9457) y hooks por módulo |
-| `shared/` | `components/*`, `hooks/useEsMovil.ts`, `preferencias/preferenciasAvisos.ts`, `utils/sesion.ts`, `styles/tokens.css`, `testShared/*` | Primitivas UI reutilizables, tokens claro/oscuro y utilidades compartidas sin acoplamiento entre features |
+| `app/` | `aplicacion.tsx`, `principal.tsx`, `proveedorTema.tsx`, `clienteConsultas.ts`, `pruebas/` | Enrutamiento autenticado (`RequiereSesion`), manejo global de `401`, proveedor de tema, TanStack Query y pruebas E2E (`testE2e*`) |
+| `api/` | `clienteHttp.ts`, `generated/*` (Orval), `pruebas/` | Cliente HTTP tipado (`credentials: "include"`, `X-CSRF-Token`, RFC 9457) y hooks por módulo |
+| `shared/` | `componentes/*`, `ganchos/useEsMovil.ts`, `preferencias/preferenciasAvisos.ts`, `utilidades/sesion.ts`, `estilos/tokens.css`, `pruebas/` | Primitivas UI reutilizables en español, tokens claro/oscuro y utilidades compartidas sin acoplamiento entre features |
 | `testSetup/` | `setup.ts` | Arranque global de Vitest y limpieza DOM (`@testing-library/jest-dom`) |
-| `features/identidad/` | `IngresoPage.tsx`, `ConfiguracionPage.tsx`, `FormLogin.tsx`, `FormActivarCuenta.tsx`, `ModalPrivacidad.tsx`, `validaciones.ts` | Ingreso por DNI, activación con código, aviso de privacidad (`RF29`), tema, avisos locales y cambio de contraseña |
-| `features/seguimiento/` | `InicioPage.tsx`, `variantes/*` (`A`, `B`, `C`), `CursosPage.tsx`, `CursoDetallePage.tsx`, `filtrosSeguimiento.ts`, `preferenciasInicio.ts` | Tablero de inicio en 3 variantes con `Marcar todo como visto`, grilla de cursos y detalle en 4 subpestañas (`Novedades`, `Trabajos`, `Calificaciones`, `Personas`) |
-| `features/evaluacion/` | `TrabajosPage.tsx`, `TarjetaActividad.tsx`, `CalificacionesPage.tsx`, `MensajesPage.tsx`, `filtros*.ts` | Trabajos y notas del día (`sesion_clase`), calificaciones por competencias (`AD/A/B/C`) y mensajería por hilos con confirmación de lectura y respuesta acotada |
-| `features/asistencia/` | `AsistenciaPage.tsx`, `CalendarioAsistencia.tsx`, `calendarioMes.ts` | Consulta mensual (`Sep/Oct/Nov`), 5 KPIs, grilla L–V (`P/T/F/FJ/TJ/FE`) e incidencias en solo lectura |
-| `features/reportes/` | `LibretaPage.tsx`, `resumenLibreta.ts` | Libretas trimestrales, situación final (`PRO/PER/RR`) y obtención bajo demanda de URL firmada temporal (`TTL 15 min`) para PDF |
+| `features/identidad/` | `vistas/{ingresoVista,configuracionVista}.tsx`, `componentes/*`, `utilidades/{validaciones,preferenciasIdentidad}.ts`, `pruebas/` | Ingreso por DNI, activación con código, aviso de privacidad (`RF29`), tema, avisos locales y cambio de contraseña |
+| `features/seguimiento/` | `vistas/{inicioVista,cursosVista,cursoDetalleVista}.tsx`, `componentes/variante*.tsx`, `utilidades/*`, `pruebas/` | Tablero de inicio en 3 variantes con `Marcar todo como visto`, grilla de cursos y detalle en 4 subpestañas (`Novedades`, `Trabajos`, `Calificaciones`, `Personas`) |
+| `features/evaluacion/` | `vistas/{trabajosVista,calificacionesVista,mensajesVista}.tsx`, `componentes/tarjetaActividad.tsx`, `utilidades/filtros*.ts`, `pruebas/` | Trabajos y notas del día (`sesion_clase`), calificaciones por competencias (`AD/A/B/C`) y mensajería por hilos con confirmación de lectura y respuesta acotada |
+| `features/asistencia/` | `vistas/asistenciaVista.tsx`, `componentes/calendarioAsistencia.tsx`, `utilidades/calendarioMes.ts`, `pruebas/` | Consulta mensual (`Sep/Oct/Nov`), 5 KPIs, grilla L–V (`P/T/F/FJ/TJ/FE`) e incidencias en solo lectura |
+| `features/reportes/` | `vistas/libretaVista.tsx`, `utilidades/resumenLibreta.ts`, `pruebas/` | Libretas trimestrales, situación final (`PRO/PER/RR`) y obtención bajo demanda de URL firmada temporal (`TTL 15 min`) para PDF |
 
 ### Comprobación de fronteras (`ADR-008`)
 - `seguimiento` (nivel compuesto) consume únicamente `../evaluacion/` (`TarjetaActividad` y `filtrarActividadesPorPestana`) y usa `shared/preferencias/preferenciasAvisos.ts` para leer preferencias sin importar `features/identidad`.
@@ -76,3 +76,12 @@ Los 4 cambios de la fase quedaron archivados en `openspec/changes/archive/2026-1
 1. **Autenticación contractual fija (`identidad/router.py`)**: `GET /api/v1/identidad/sesion` devuelve siempre sesión activa demo en modo stub; al implementar el backend real en Fase 2 se activará cookie `__session` `httpOnly`, CSRF real, Argon2 y rechazo `401` efectivo (`ADR-004`).
 2. **Inspección visual en Chrome DevTools**: durante el cierre, el subagente de navegador reportó ausencia de `DevToolsActivePort` en Chrome del host (`chrome://inspect/#remote-debugging`), por lo que la validación visual en navegador real quedó cubierta mediante jsdom/RTL (`390 px` y escritorio) y verificación HTTP contra Vite + FastAPI; se recomienda abrir `http://127.0.0.1:5173` en navegador local al arrancar Fase 2.
 3. **Siguiente fase recomendada (Fase 2 · Backend real y persistencia)**: implementar `core/` (SQLAlchemy async, PostgreSQL + Alembic, auditoría `ADR-005`), módulo `identidad` y `institucion` (periodos y catálogo) manteniendo intactos los contratos OpenAPI ya consumidos por el frontend.
+
+---
+
+## 6. Normalización estructural y nomenclatura v2.0
+
+Tras el cierre inicial se estandarizó todo el árbol de código y pruebas de `frontend/` y `backend/` conforme a [nomenclatura.md](../06-estandares/nomenclatura.md) y [tdd.md](../06-estandares/tdd.md):
+
+- **Frontend (`frontend/src/`):** `camelCase` estricto en todas las carpetas y nombres de archivo (con símbolos JSX/TS en `PascalCase`), subcarpetas uniformes en español (`vistas/`, `componentes/`, `utilidades/`, `ganchos/`, `estilos/`, `preferencias/`, `pruebas/`) y archivos de prueba con prefijo semántico (`testUnitario*`, `testComponente*`, `testIntegracion*`, `testE2e*`).
+- **Backend (`backend/`):** módulo `app/core/errores.py` (`ErrorAplicacion`) y `SaludOut` en español, espejo completo de los 9 módulos MVP en `app/modules/` y pruebas homologadas bajo `backend/tests/<modulo>/test_integracion_*.py`.

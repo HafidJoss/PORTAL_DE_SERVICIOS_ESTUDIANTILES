@@ -4,7 +4,7 @@ Esta carpeta conserva el registro oficial del cierre técnico y funcional de cad
 
 ## Regla de flujo de trabajo
 
-Siempre que concluya una fase del proyecto (tras ejecutar `/opsx:archive` y verificar pruebas, lint y compilación), el agente y el equipo deben crear o actualizar:
+Siempre que concluya una fase del proyecto (tras ejecutar `/opsx:archive` y verificar pruebas, lint y compilación), activa la skill **`cierre-fase-tdd`** (en **Modo Cierre completo** o **Modo Diagnóstico** previo) para auditar el cumplimiento TDD/arquitectónico y documentar el cierre en:
 
 1. El documento de la fase: `docs/07-fases/fase-NN-<nombre>.md`.
 2. La tabla índice en este archivo (`docs/07-fases/README.md`).

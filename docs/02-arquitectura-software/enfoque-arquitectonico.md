@@ -21,7 +21,7 @@ backend/
   migrations/        → migraciones de la base de datos con Alembic
   tests/             → pruebas con pytest
 backend/app/
-  core/              → config, database, security, storage, tasks, pdf, excel, errors, logging
+  core/              → config, database, security, storage, tasks, pdf, excel, errores, logging
   modules/
     evaluacion/
       router.py, schemas.py, dependencies.py   → presentación
