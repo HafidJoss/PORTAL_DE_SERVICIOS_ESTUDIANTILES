@@ -771,6 +771,573 @@
         }
       }
     },
+    "/api/v1/seguimiento/docentes/{docente_id}/inicio": {
+      "get": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Obtener Inicio Docente",
+        "description": "Devuelve bandeja, clases del día, pendientes, alertas y etapas del docente.",
+        "operationId": "obtener_inicio_docente_api_v1_seguimiento_docentes__docente_id__inicio_get",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InicioDocenteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/seguimiento/docentes/{docente_id}/bandeja/leer-todo": {
+      "post": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Marcar Bandeja Docente Leida",
+        "description": "Marca todos los mensajes de la bandeja docente como leídos.",
+        "operationId": "marcar_bandeja_docente_leida_api_v1_seguimiento_docentes__docente_id__bandeja_leer_todo_post",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionBandejaOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/seguimiento/docentes/{docente_id}/bandeja/{mensaje_id}/leer": {
+      "post": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Marcar Mensaje Bandeja Leido",
+        "description": "Marca un mensaje específico de la bandeja docente como leído.",
+        "operationId": "marcar_mensaje_bandeja_leido_api_v1_seguimiento_docentes__docente_id__bandeja__mensaje_id__leer_post",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          },
+          {
+            "name": "mensaje_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Mensaje Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionBandejaOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/seguimiento/docentes/{docente_id}/bandeja/{mensaje_id}/responder": {
+      "post": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Responder Mensaje Bandeja",
+        "description": "Registra una respuesta acotada en hilo solo sobre consultas de estudiantes.",
+        "operationId": "responder_mensaje_bandeja_api_v1_seguimiento_docentes__docente_id__bandeja__mensaje_id__responder_post",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          },
+          {
+            "name": "mensaje_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Mensaje Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RespuestaBandejaIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaBandejaOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/seguimiento/docentes/{docente_id}/cursos": {
+      "get": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Listar Secciones Docente",
+        "description": "Devuelve las secciones asignadas al docente para la grilla Mis cursos.",
+        "operationId": "listar_secciones_docente_api_v1_seguimiento_docentes__docente_id__cursos_get",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListaSeccionesDocenteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/seguimiento/docentes/{docente_id}/secciones/{seccion_id}": {
+      "get": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Obtener Detalle Seccion Docente",
+        "description": "Devuelve cabecera, distribución de niveles y flujo Novedades de la sección.",
+        "operationId": "obtener_detalle_seccion_docente_api_v1_seguimiento_docentes__docente_id__secciones__seccion_id__get",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          },
+          {
+            "name": "seccion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seccion Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetalleSeccionDocenteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/seguimiento/docentes/{docente_id}/secciones/{seccion_id}/anuncios": {
+      "post": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Publicar Anuncio Seccion",
+        "description": "Publica un anuncio unidireccional en Novedades de la sección (RF25, RC08).",
+        "operationId": "publicar_anuncio_seccion_api_v1_seguimiento_docentes__docente_id__secciones__seccion_id__anuncios_post",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          },
+          {
+            "name": "seccion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seccion Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnuncioSeccionCreateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ElementoStreamSeccionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/evaluacion/estudiantes/{estudiante_id}/calificaciones": {
       "get": {
         "tags": [
@@ -1146,6 +1713,793 @@
         }
       }
     },
+    "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/clases": {
+      "get": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Obtener Panel Evaluacion Seccion",
+        "description": "Devuelve catálogo de competencias, nómina, sesiones, actividades y cierres de sección.",
+        "operationId": "obtener_panel_evaluacion_seccion_api_v1_evaluacion_docentes__docente_id__secciones__seccion_id__clases_get",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          },
+          {
+            "name": "seccion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seccion Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PanelEvaluacionSeccionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/sesiones": {
+      "post": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Crear Sesion Clase",
+        "description": "Crea una nueva sesión de clase con cuatro criterios evaluables K1..K4.",
+        "operationId": "crear_sesion_clase_api_v1_evaluacion_docentes__docente_id__secciones__seccion_id__sesiones_post",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          },
+          {
+            "name": "seccion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seccion Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SesionClaseCreateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SesionClaseOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/sesiones/{sesion_id}/notas": {
+      "put": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Guardar Notas Sesion",
+        "description": "Guarda avances o publica la sesión exigiendo 4 criterios válidos por estudiante.",
+        "operationId": "guardar_notas_sesion_api_v1_evaluacion_docentes__docente_id__secciones__seccion_id__sesiones__sesion_id__notas_put",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          },
+          {
+            "name": "seccion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seccion Id"
+            }
+          },
+          {
+            "name": "sesion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sesion Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotasSesionPutIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SesionClaseOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/actividades": {
+      "post": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Crear Actividad Docente",
+        "description": "Registra una actividad académica como borrador o publicada sin adjuntos (RC08).",
+        "operationId": "crear_actividad_docente_api_v1_evaluacion_docentes__docente_id__secciones__seccion_id__actividades_post",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          },
+          {
+            "name": "seccion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seccion Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActividadDocenteCreateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActividadDocenteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluacion/docentes/{docente_id}/actividades/{actividad_id}/publicar": {
+      "post": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Publicar Actividad Docente",
+        "description": "Publica una actividad que se encontraba en borrador.",
+        "operationId": "publicar_actividad_docente_api_v1_evaluacion_docentes__docente_id__actividades__actividad_id__publicar_post",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          },
+          {
+            "name": "actividad_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Actividad Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActividadDocenteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/cierre/confirmar": {
+      "post": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Confirmar Cierre Competencia",
+        "description": "Valida completitud de niveles y conclusiones obligatorias (RF22) al confirmar cierre.",
+        "operationId": "confirmar_cierre_competencia_api_v1_evaluacion_docentes__docente_id__secciones__seccion_id__cierre_confirmar_post",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          },
+          {
+            "name": "seccion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seccion Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmarCierreIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfirmacionCierreOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/observaciones": {
+      "post": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Registrar Observacion Docente",
+        "description": "Publica una observación cualitativa dirigida al estudiante y su apoderado (RF24).",
+        "operationId": "registrar_observacion_docente_api_v1_evaluacion_docentes__docente_id__secciones__seccion_id__observaciones_post",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          },
+          {
+            "name": "seccion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seccion Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ObservacionDocenteCreateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObservacionDocenteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluacion/docentes/{docente_id}/mensajes": {
+      "get": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Listar Mensajes Docente",
+        "description": "Devuelve catálogo de secciones/estudiantes e historial de mensajes enviados.",
+        "operationId": "listar_mensajes_docente_api_v1_evaluacion_docentes__docente_id__mensajes_get",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BandejaEnviadosDocenteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "evaluacion"
+        ],
+        "summary": "Enviar Mensaje Docente",
+        "description": "Registra y envía un mensaje docente (Tarea o Recordatorio) sin archivos adjuntos.",
+        "operationId": "enviar_mensaje_docente_api_v1_evaluacion_docentes__docente_id__mensajes_post",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MensajeDocenteCreateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MensajeEnviadoDocenteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/asistencia/estudiantes/{estudiante_id}": {
       "get": {
         "tags": [
@@ -1397,6 +2751,171 @@
           }
         }
       }
+    },
+    "/api/v1/reportes/docentes/{docente_id}/siagie": {
+      "get": {
+        "tags": [
+          "reportes"
+        ],
+        "summary": "Obtener Resumen Siagie Docente",
+        "description": "Devuelve estado de preparación SIAGIE y Actas por trimestre y sección.",
+        "operationId": "obtener_resumen_siagie_docente_api_v1_reportes_docentes__docente_id__siagie_get",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResumenSiagieDocenteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reportes/docentes/{docente_id}/siagie/{seccion_id}/descarga": {
+      "post": {
+        "tags": [
+          "reportes"
+        ],
+        "summary": "Generar Descarga Siagie Docente",
+        "description": "Emite URL firmada temporal (TTL 15 min) para Excel SIAGIE o Acta preliminar (RF16, RC05).",
+        "operationId": "generar_descarga_siagie_docente_api_v1_reportes_docentes__docente_id__siagie__seccion_id__descarga_post",
+        "parameters": [
+          {
+            "name": "docente_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Docente Id"
+            }
+          },
+          {
+            "name": "seccion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seccion Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudDescargaSiagieIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UrlDescargaOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1452,6 +2971,104 @@
         ],
         "title": "ActivacionOut",
         "description": "Confirmación de activación de cuenta."
+      },
+      "ActividadDocenteCreateIn": {
+        "properties": {
+          "titulo": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 4,
+            "title": "Titulo"
+          },
+          "fecha_entrega": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 4,
+            "title": "Fecha Entrega"
+          },
+          "competencia": {
+            "type": "string",
+            "enum": [
+              "C1",
+              "C2",
+              "C3",
+              "C4"
+            ],
+            "title": "Competencia"
+          },
+          "descripcion": {
+            "type": "string",
+            "maxLength": 1000,
+            "title": "Descripcion",
+            "default": ""
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "borrador",
+              "publicada"
+            ],
+            "title": "Estado",
+            "default": "publicada"
+          }
+        },
+        "type": "object",
+        "required": [
+          "titulo",
+          "fecha_entrega",
+          "competencia"
+        ],
+        "title": "ActividadDocenteCreateIn",
+        "description": "Payload para registrar una actividad en borrador o publicada (RC08: sin adjuntos)."
+      },
+      "ActividadDocenteOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "titulo": {
+            "type": "string",
+            "title": "Titulo"
+          },
+          "fecha_entrega": {
+            "type": "string",
+            "title": "Fecha Entrega"
+          },
+          "competencia": {
+            "type": "string",
+            "enum": [
+              "C1",
+              "C2",
+              "C3",
+              "C4"
+            ],
+            "title": "Competencia"
+          },
+          "descripcion": {
+            "type": "string",
+            "title": "Descripcion"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "borrador",
+              "publicada"
+            ],
+            "title": "Estado"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "titulo",
+          "fecha_entrega",
+          "competencia",
+          "descripcion",
+          "estado"
+        ],
+        "title": "ActividadDocenteOut",
+        "description": "Actividad académica creada o gestionada por el docente sin archivos adjuntos."
       },
       "ActividadOut": {
         "properties": {
@@ -1556,6 +3173,71 @@
         "title": "ActividadOut",
         "description": "Trabajo o sesión de clase visible en Trabajos y pendientes."
       },
+      "AlertaDocenteOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "texto": {
+            "type": "string",
+            "title": "Texto"
+          },
+          "severidad": {
+            "type": "string",
+            "enum": [
+              "danger",
+              "warning",
+              "neutral"
+            ],
+            "title": "Severidad"
+          },
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "destino_tab": {
+            "type": "string",
+            "title": "Destino Tab"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "texto",
+          "severidad",
+          "seccion_id",
+          "destino_tab"
+        ],
+        "title": "AlertaDocenteOut",
+        "description": "Alerta prioritaria de atención para el docente."
+      },
+      "AnuncioSeccionCreateIn": {
+        "properties": {
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "Aviso",
+              "Recordatorio",
+              "Tarea"
+            ],
+            "title": "Tipo"
+          },
+          "texto": {
+            "type": "string",
+            "maxLength": 1500,
+            "minLength": 3,
+            "title": "Texto"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tipo",
+          "texto"
+        ],
+        "title": "AnuncioSeccionCreateIn",
+        "description": "Payload para publicar un anuncio unidireccional en la sección (RF25, RC08)."
+      },
       "AreaLibretaOut": {
         "properties": {
           "nombre": {
@@ -1655,6 +3337,31 @@
         ],
         "title": "AvisoPrivacidadOut",
         "description": "Texto vigente del aviso de privacidad (Ley N.º 29733)."
+      },
+      "BandejaEnviadosDocenteOut": {
+        "properties": {
+          "secciones": {
+            "items": {
+              "$ref": "#/components/schemas/SeccionDestinatariosOut"
+            },
+            "type": "array",
+            "title": "Secciones"
+          },
+          "enviados": {
+            "items": {
+              "$ref": "#/components/schemas/MensajeEnviadoDocenteOut"
+            },
+            "type": "array",
+            "title": "Enviados"
+          }
+        },
+        "type": "object",
+        "required": [
+          "secciones",
+          "enviados"
+        ],
+        "title": "BandejaEnviadosDocenteOut",
+        "description": "Catálogo de destinatarios e historial de enviados para Mensajes del docente."
       },
       "CalificacionesEstudianteOut": {
         "properties": {
@@ -1764,6 +3471,99 @@
         "title": "CambioContrasenaIn",
         "description": "Solicitud de actualización de contraseña propia."
       },
+      "ClaseHoyDocenteOut": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "seccion_nombre": {
+            "type": "string",
+            "title": "Seccion Nombre"
+          },
+          "aula": {
+            "type": "string",
+            "title": "Aula"
+          },
+          "estudiantes_total": {
+            "type": "integer",
+            "title": "Estudiantes Total"
+          },
+          "hora_inicio": {
+            "type": "string",
+            "title": "Hora Inicio"
+          },
+          "hora_fin": {
+            "type": "string",
+            "title": "Hora Fin"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "Terminada",
+              "En curso",
+              "Siguiente"
+            ],
+            "title": "Estado"
+          },
+          "sesion_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sesion Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "seccion_nombre",
+          "aula",
+          "estudiantes_total",
+          "hora_inicio",
+          "hora_fin",
+          "estado"
+        ],
+        "title": "ClaseHoyDocenteOut",
+        "description": "Clase programada del día en el horario del docente."
+      },
+      "CompetenciaCatalogoOut": {
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "enum": [
+              "C1",
+              "C2",
+              "C3",
+              "C4"
+            ],
+            "title": "Codigo"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "capacidades": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Capacidades"
+          }
+        },
+        "type": "object",
+        "required": [
+          "codigo",
+          "nombre",
+          "capacidades"
+        ],
+        "title": "CompetenciaCatalogoOut",
+        "description": "Catálogo de competencia y sus cuatro capacidades del CNEB."
+      },
       "CompetenciaCursoResumenOut": {
         "properties": {
           "nombre": {
@@ -1861,6 +3661,78 @@
         ],
         "title": "ConclusionOut",
         "description": "Conclusión descriptiva publicada en un trimestre cerrado."
+      },
+      "ConfirmacionCierreOut": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "competencia": {
+            "type": "string",
+            "enum": [
+              "C1",
+              "C2",
+              "C3",
+              "C4"
+            ],
+            "title": "Competencia"
+          },
+          "confirmada": {
+            "type": "boolean",
+            "title": "Confirmada"
+          },
+          "total_confirmados": {
+            "type": "integer",
+            "title": "Total Confirmados"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "competencia",
+          "confirmada",
+          "total_confirmados"
+        ],
+        "title": "ConfirmacionCierreOut",
+        "description": "Confirmación exitosa de niveles y conclusiones de una competencia."
+      },
+      "ConfirmarCierreIn": {
+        "properties": {
+          "competencia": {
+            "type": "string",
+            "enum": [
+              "C1",
+              "C2",
+              "C3",
+              "C4"
+            ],
+            "title": "Competencia"
+          },
+          "nivel_educativo": {
+            "type": "string",
+            "enum": [
+              "Primaria",
+              "Secundaria"
+            ],
+            "title": "Nivel Educativo",
+            "default": "Secundaria"
+          },
+          "filas": {
+            "items": {
+              "$ref": "#/components/schemas/FilaCierreIn"
+            },
+            "type": "array",
+            "title": "Filas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "competencia",
+          "filas"
+        ],
+        "title": "ConfirmarCierreIn",
+        "description": "Solicitud de confirmación de cierre de una competencia (RF22)."
       },
       "CursoCalificacionesOut": {
         "properties": {
@@ -2043,6 +3915,117 @@
         "title": "CursoResumenOut",
         "description": "Tarjeta resumen de una asignatura en la vista Cursos."
       },
+      "DestinatarioEstudianteOut": {
+        "properties": {
+          "indice": {
+            "type": "integer",
+            "title": "Indice"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          }
+        },
+        "type": "object",
+        "required": [
+          "indice",
+          "nombre"
+        ],
+        "title": "DestinatarioEstudianteOut",
+        "description": "Estudiante seleccionable como destinatario directo en mensajería docente."
+      },
+      "DetalleSeccionDocenteOut": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "asignatura": {
+            "type": "string",
+            "title": "Asignatura"
+          },
+          "nivel_educativo": {
+            "type": "string",
+            "enum": [
+              "Primaria",
+              "Secundaria"
+            ],
+            "title": "Nivel Educativo"
+          },
+          "horario": {
+            "type": "string",
+            "title": "Horario"
+          },
+          "aula": {
+            "type": "string",
+            "title": "Aula"
+          },
+          "tutor": {
+            "type": "string",
+            "title": "Tutor"
+          },
+          "estudiantes_total": {
+            "type": "integer",
+            "title": "Estudiantes Total"
+          },
+          "clases_registradas": {
+            "type": "integer",
+            "title": "Clases Registradas"
+          },
+          "competencias_confirmadas": {
+            "type": "integer",
+            "title": "Competencias Confirmadas"
+          },
+          "competencias_total": {
+            "type": "integer",
+            "title": "Competencias Total"
+          },
+          "distribucion_niveles": {
+            "items": {
+              "$ref": "#/components/schemas/DistribucionNivelItemOut"
+            },
+            "type": "array",
+            "title": "Distribucion Niveles"
+          },
+          "pendientes": {
+            "items": {
+              "$ref": "#/components/schemas/PendienteSeccionOut"
+            },
+            "type": "array",
+            "title": "Pendientes"
+          },
+          "stream": {
+            "items": {
+              "$ref": "#/components/schemas/ElementoStreamSeccionOut"
+            },
+            "type": "array",
+            "title": "Stream"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "nombre",
+          "asignatura",
+          "nivel_educativo",
+          "horario",
+          "aula",
+          "tutor",
+          "estudiantes_total",
+          "clases_registradas",
+          "competencias_confirmadas",
+          "competencias_total",
+          "distribucion_niveles",
+          "pendientes",
+          "stream"
+        ],
+        "title": "DetalleSeccionDocenteOut",
+        "description": "Cabecera, distribución cualitativa y novedades de una sección docente."
+      },
       "DiaAgendaOut": {
         "properties": {
           "etiqueta": {
@@ -2160,6 +4143,52 @@
         "title": "DistribucionNivelItemOut",
         "description": "Conteo por nivel de logro en el trimestre actual."
       },
+      "ElementoStreamSeccionOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "Aviso",
+              "Recordatorio",
+              "Tarea",
+              "Actividad",
+              "Clase"
+            ],
+            "title": "Tipo"
+          },
+          "titulo": {
+            "type": "string",
+            "title": "Titulo"
+          },
+          "subtitulo": {
+            "type": "string",
+            "title": "Subtitulo",
+            "default": ""
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          },
+          "cuerpo": {
+            "type": "string",
+            "title": "Cuerpo",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "tipo",
+          "titulo",
+          "fecha"
+        ],
+        "title": "ElementoStreamSeccionOut",
+        "description": "Publicación en el flujo cronológico de Novedades de la sección docente."
+      },
       "EntregaProximaOut": {
         "properties": {
           "id": {
@@ -2199,6 +4228,69 @@
         "title": "EntregaProximaOut",
         "description": "Actividad pendiente próxima a vencer."
       },
+      "EstudianteSeccionOut": {
+        "properties": {
+          "indice": {
+            "type": "integer",
+            "title": "Indice"
+          },
+          "codigo": {
+            "type": "string",
+            "title": "Codigo"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "iniciales": {
+            "type": "string",
+            "title": "Iniciales"
+          },
+          "observaciones_total": {
+            "type": "integer",
+            "title": "Observaciones Total",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "indice",
+          "codigo",
+          "nombre",
+          "iniciales"
+        ],
+        "title": "EstudianteSeccionOut",
+        "description": "Estudiante matriculado en una sección asignada al docente."
+      },
+      "EtapaTrimestreOut": {
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "completada",
+              "actual",
+              "pendiente"
+            ],
+            "title": "Estado"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombre",
+          "fecha",
+          "estado"
+        ],
+        "title": "EtapaTrimestreOut",
+        "description": "Etapa del trimestre actual en la línea de tiempo."
+      },
       "EventoAgendaOut": {
         "properties": {
           "titulo": {
@@ -2222,6 +4314,39 @@
         ],
         "title": "EventoAgendaOut",
         "description": "Evento puntual en la agenda semanal (variante C)."
+      },
+      "FilaCierreIn": {
+        "properties": {
+          "estudiante_idx": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Estudiante Idx"
+          },
+          "nivel": {
+            "type": "string",
+            "enum": [
+              "AD",
+              "A",
+              "B",
+              "C",
+              ""
+            ],
+            "title": "Nivel"
+          },
+          "conclusion": {
+            "type": "string",
+            "maxLength": 1000,
+            "title": "Conclusion",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "estudiante_idx",
+          "nivel"
+        ],
+        "title": "FilaCierreIn",
+        "description": "Nivel y conclusión descriptiva de un estudiante para confirmación trimestral."
       },
       "FilaLibretaCompetenciaOut": {
         "properties": {
@@ -2294,6 +4419,80 @@
         ],
         "title": "IncidenciaAsistenciaOut",
         "description": "Detalle de tardanza, falta o justificación del mes."
+      },
+      "InicioDocenteOut": {
+        "properties": {
+          "docente_id": {
+            "type": "string",
+            "title": "Docente Id"
+          },
+          "trimestre_actual": {
+            "type": "string",
+            "title": "Trimestre Actual"
+          },
+          "fecha_etiqueta": {
+            "type": "string",
+            "title": "Fecha Etiqueta"
+          },
+          "sin_leer": {
+            "type": "integer",
+            "title": "Sin Leer"
+          },
+          "por_calificar_total": {
+            "type": "integer",
+            "title": "Por Calificar Total"
+          },
+          "mensajes_bandeja": {
+            "items": {
+              "$ref": "#/components/schemas/MensajeBandejaDocenteOut"
+            },
+            "type": "array",
+            "title": "Mensajes Bandeja"
+          },
+          "clases_hoy": {
+            "items": {
+              "$ref": "#/components/schemas/ClaseHoyDocenteOut"
+            },
+            "type": "array",
+            "title": "Clases Hoy"
+          },
+          "notas_pendientes": {
+            "items": {
+              "$ref": "#/components/schemas/NotaPendienteDocenteOut"
+            },
+            "type": "array",
+            "title": "Notas Pendientes"
+          },
+          "alertas": {
+            "items": {
+              "$ref": "#/components/schemas/AlertaDocenteOut"
+            },
+            "type": "array",
+            "title": "Alertas"
+          },
+          "etapas_trimestre": {
+            "items": {
+              "$ref": "#/components/schemas/EtapaTrimestreOut"
+            },
+            "type": "array",
+            "title": "Etapas Trimestre"
+          }
+        },
+        "type": "object",
+        "required": [
+          "docente_id",
+          "trimestre_actual",
+          "fecha_etiqueta",
+          "sin_leer",
+          "por_calificar_total",
+          "mensajes_bandeja",
+          "clases_hoy",
+          "notas_pendientes",
+          "alertas",
+          "etapas_trimestre"
+        ],
+        "title": "InicioDocenteOut",
+        "description": "Respuesta agregada del tablero inicial del docente."
       },
       "InicioEstudianteOut": {
         "properties": {
@@ -2581,6 +4780,43 @@
         "title": "ListaMensajesOut",
         "description": "Bandeja de mensajes del estudiante."
       },
+      "ListaSeccionesDocenteOut": {
+        "properties": {
+          "asignatura_nombre": {
+            "type": "string",
+            "title": "Asignatura Nombre"
+          },
+          "nivel_educativo": {
+            "type": "string",
+            "title": "Nivel Educativo"
+          },
+          "anio_escolar": {
+            "type": "integer",
+            "title": "Anio Escolar"
+          },
+          "total_estudiantes": {
+            "type": "integer",
+            "title": "Total Estudiantes"
+          },
+          "secciones": {
+            "items": {
+              "$ref": "#/components/schemas/SeccionDocenteOut"
+            },
+            "type": "array",
+            "title": "Secciones"
+          }
+        },
+        "type": "object",
+        "required": [
+          "asignatura_nombre",
+          "nivel_educativo",
+          "anio_escolar",
+          "total_estudiantes",
+          "secciones"
+        ],
+        "title": "ListaSeccionesDocenteOut",
+        "description": "Listado de secciones a cargo del docente en Mis cursos."
+      },
       "LoginIn": {
         "properties": {
           "dni": {
@@ -2609,6 +4845,208 @@
         ],
         "title": "LoginIn",
         "description": "Credenciales para iniciar sesión por documento de identidad."
+      },
+      "MensajeBandejaDocenteOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "origen": {
+            "type": "string",
+            "enum": [
+              "institucion",
+              "asistencia",
+              "estudiante"
+            ],
+            "title": "Origen"
+          },
+          "remitente": {
+            "type": "string",
+            "title": "Remitente"
+          },
+          "nombre_corto": {
+            "type": "string",
+            "title": "Nombre Corto",
+            "default": ""
+          },
+          "seccion_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seccion Id"
+          },
+          "seccion_nombre": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seccion Nombre"
+          },
+          "asunto": {
+            "type": "string",
+            "title": "Asunto"
+          },
+          "cuerpo": {
+            "type": "string",
+            "title": "Cuerpo"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          },
+          "leido": {
+            "type": "boolean",
+            "title": "Leido"
+          },
+          "puede_responder": {
+            "type": "boolean",
+            "title": "Puede Responder"
+          },
+          "destino_tab": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Destino Tab"
+          },
+          "respuestas": {
+            "items": {
+              "$ref": "#/components/schemas/RespuestaHiloDocenteOut"
+            },
+            "type": "array",
+            "title": "Respuestas",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "origen",
+          "remitente",
+          "asunto",
+          "cuerpo",
+          "fecha",
+          "leido",
+          "puede_responder"
+        ],
+        "title": "MensajeBandejaDocenteOut",
+        "description": "Mensaje en la bandeja de entrada del docente."
+      },
+      "MensajeDocenteCreateIn": {
+        "properties": {
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "Tarea",
+              "Recordatorio"
+            ],
+            "title": "Tipo"
+          },
+          "seccion_id": {
+            "type": "string",
+            "maxLength": 16,
+            "minLength": 1,
+            "title": "Seccion Id"
+          },
+          "estudiante_idx": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estudiante Idx"
+          },
+          "asunto": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 3,
+            "title": "Asunto"
+          },
+          "cuerpo": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 5,
+            "title": "Cuerpo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tipo",
+          "seccion_id",
+          "asunto",
+          "cuerpo"
+        ],
+        "title": "MensajeDocenteCreateIn",
+        "description": "Payload de envío saliente docente sin adjuntos (RF25, RC08)."
+      },
+      "MensajeEnviadoDocenteOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "Tarea",
+              "Recordatorio",
+              "Observación · Positiva",
+              "Observación · Por mejorar",
+              "Aviso"
+            ],
+            "title": "Tipo"
+          },
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "destinatario": {
+            "type": "string",
+            "title": "Destinatario"
+          },
+          "asunto": {
+            "type": "string",
+            "title": "Asunto"
+          },
+          "cuerpo": {
+            "type": "string",
+            "title": "Cuerpo"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "tipo",
+          "seccion_id",
+          "destinatario",
+          "asunto",
+          "cuerpo",
+          "fecha"
+        ],
+        "title": "MensajeEnviadoDocenteOut",
+        "description": "Registro cronológico de un mensaje o aviso enviado por el docente."
       },
       "MensajeOperacionOut": {
         "properties": {
@@ -2713,6 +5151,130 @@
         "title": "MensajeOut",
         "description": "Mensaje, recordatorio u observación con soporte de lectura e hilo."
       },
+      "NivelGuardadoDocenteOut": {
+        "properties": {
+          "competencia": {
+            "type": "string",
+            "enum": [
+              "C1",
+              "C2",
+              "C3",
+              "C4"
+            ],
+            "title": "Competencia"
+          },
+          "confirmada": {
+            "type": "boolean",
+            "title": "Confirmada"
+          },
+          "niveles_por_estudiante": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Niveles Por Estudiante"
+          },
+          "conclusiones_por_estudiante": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Conclusiones Por Estudiante"
+          }
+        },
+        "type": "object",
+        "required": [
+          "competencia",
+          "confirmada",
+          "niveles_por_estudiante",
+          "conclusiones_por_estudiante"
+        ],
+        "title": "NivelGuardadoDocenteOut",
+        "description": "Estado guardado o confirmado de cierre por competencia."
+      },
+      "NotaPendienteDocenteOut": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "seccion_nombre": {
+            "type": "string",
+            "title": "Seccion Nombre"
+          },
+          "sesion_id": {
+            "type": "string",
+            "title": "Sesion Id"
+          },
+          "titulo": {
+            "type": "string",
+            "title": "Titulo"
+          },
+          "registrados": {
+            "type": "integer",
+            "title": "Registrados"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "porcentaje": {
+            "type": "integer",
+            "title": "Porcentaje"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "seccion_nombre",
+          "sesion_id",
+          "titulo",
+          "registrados",
+          "total",
+          "porcentaje"
+        ],
+        "title": "NotaPendienteDocenteOut",
+        "description": "Sesión con notas pendientes de completar por sección."
+      },
+      "NotasSesionPutIn": {
+        "properties": {
+          "notas_por_estudiante": {
+            "additionalProperties": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "type": "object",
+            "title": "Notas Por Estudiante"
+          },
+          "ajustes_manuales": {
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "AD",
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "type": "object",
+            "title": "Ajustes Manuales",
+            "default": {}
+          },
+          "publicar": {
+            "type": "boolean",
+            "title": "Publicar",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "notas_por_estudiante"
+        ],
+        "title": "NotasSesionPutIn",
+        "description": "Payload para guardar o publicar criterios K1..K4 de una sesión."
+      },
       "NovedadItemOut": {
         "properties": {
           "id": {
@@ -2811,6 +5373,209 @@
         "title": "NovedadesVistoOut",
         "description": "Confirmación de actualización de marca de última visita."
       },
+      "ObservacionDocenteCreateIn": {
+        "properties": {
+          "estudiante_idx": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Estudiante Idx"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "Positiva",
+              "Por mejorar"
+            ],
+            "title": "Tipo"
+          },
+          "texto": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 5,
+            "title": "Texto"
+          }
+        },
+        "type": "object",
+        "required": [
+          "estudiante_idx",
+          "tipo",
+          "texto"
+        ],
+        "title": "ObservacionDocenteCreateIn",
+        "description": "Payload para publicar una observación dirigida a estudiante y apoderado (RF24)."
+      },
+      "ObservacionDocenteOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "estudiante_idx": {
+            "type": "integer",
+            "title": "Estudiante Idx"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "Positiva",
+              "Por mejorar"
+            ],
+            "title": "Tipo"
+          },
+          "texto": {
+            "type": "string",
+            "title": "Texto"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "estudiante_idx",
+          "tipo",
+          "texto",
+          "fecha"
+        ],
+        "title": "ObservacionDocenteOut",
+        "description": "Observación registrada para un estudiante y su apoderado."
+      },
+      "OperacionBandejaOut": {
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "title": "Ok"
+          },
+          "mensaje": {
+            "type": "string",
+            "title": "Mensaje"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ok",
+          "mensaje"
+        ],
+        "title": "OperacionBandejaOut",
+        "description": "Confirmación simple de marcado de lectura en bandeja docente."
+      },
+      "PanelEvaluacionSeccionOut": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "seccion_nombre": {
+            "type": "string",
+            "title": "Seccion Nombre"
+          },
+          "asignatura_nombre": {
+            "type": "string",
+            "title": "Asignatura Nombre"
+          },
+          "nivel_educativo": {
+            "type": "string",
+            "enum": [
+              "Primaria",
+              "Secundaria"
+            ],
+            "title": "Nivel Educativo"
+          },
+          "competencias": {
+            "items": {
+              "$ref": "#/components/schemas/CompetenciaCatalogoOut"
+            },
+            "type": "array",
+            "title": "Competencias"
+          },
+          "estudiantes": {
+            "items": {
+              "$ref": "#/components/schemas/EstudianteSeccionOut"
+            },
+            "type": "array",
+            "title": "Estudiantes"
+          },
+          "sesiones": {
+            "items": {
+              "$ref": "#/components/schemas/SesionClaseOut"
+            },
+            "type": "array",
+            "title": "Sesiones"
+          },
+          "actividades": {
+            "items": {
+              "$ref": "#/components/schemas/ActividadDocenteOut"
+            },
+            "type": "array",
+            "title": "Actividades"
+          },
+          "cierres": {
+            "items": {
+              "$ref": "#/components/schemas/NivelGuardadoDocenteOut"
+            },
+            "type": "array",
+            "title": "Cierres"
+          },
+          "observaciones": {
+            "items": {
+              "$ref": "#/components/schemas/ObservacionDocenteOut"
+            },
+            "type": "array",
+            "title": "Observaciones"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "seccion_nombre",
+          "asignatura_nombre",
+          "nivel_educativo",
+          "competencias",
+          "estudiantes",
+          "sesiones",
+          "actividades",
+          "cierres",
+          "observaciones"
+        ],
+        "title": "PanelEvaluacionSeccionOut",
+        "description": "Datos iniciales completos de evaluación continua y cierre para una sección."
+      },
+      "PendienteSeccionOut": {
+        "properties": {
+          "sesion_id": {
+            "type": "string",
+            "title": "Sesion Id"
+          },
+          "titulo": {
+            "type": "string",
+            "title": "Titulo"
+          },
+          "registrados": {
+            "type": "integer",
+            "title": "Registrados"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "porcentaje": {
+            "type": "integer",
+            "title": "Porcentaje"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sesion_id",
+          "titulo",
+          "registrados",
+          "total",
+          "porcentaje"
+        ],
+        "title": "PendienteSeccionOut",
+        "description": "Resumen breve de una sesión pendiente dentro de la tarjeta de sección."
+      },
       "ProblemDetail": {
         "properties": {
           "type": {
@@ -2855,6 +5620,64 @@
         ],
         "title": "ProblemDetail",
         "description": "Representación estándar de error HTTP según RFC 9457."
+      },
+      "RespuestaBandejaIn": {
+        "properties": {
+          "texto": {
+            "type": "string",
+            "minLength": 2,
+            "title": "Texto"
+          }
+        },
+        "type": "object",
+        "required": [
+          "texto"
+        ],
+        "title": "RespuestaBandejaIn",
+        "description": "Cuerpo de respuesta en hilo desde la bandeja docente."
+      },
+      "RespuestaBandejaOut": {
+        "properties": {
+          "mensaje_id": {
+            "type": "string",
+            "title": "Mensaje Id"
+          },
+          "texto": {
+            "type": "string",
+            "title": "Texto"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mensaje_id",
+          "texto",
+          "fecha"
+        ],
+        "title": "RespuestaBandejaOut",
+        "description": "Respuesta registrada para un mensaje de estudiante en bandeja."
+      },
+      "RespuestaHiloDocenteOut": {
+        "properties": {
+          "texto": {
+            "type": "string",
+            "title": "Texto"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          }
+        },
+        "type": "object",
+        "required": [
+          "texto",
+          "fecha"
+        ],
+        "title": "RespuestaHiloDocenteOut",
+        "description": "Respuesta publicada dentro de un hilo de bandeja docente."
       },
       "RespuestaHiloOut": {
         "properties": {
@@ -2911,6 +5734,28 @@
         "title": "RespuestaMensajeIn",
         "description": "Payload para responder dentro de un hilo de mensaje."
       },
+      "ResumenSiagieDocenteOut": {
+        "properties": {
+          "asignatura": {
+            "type": "string",
+            "title": "Asignatura"
+          },
+          "trimestres": {
+            "items": {
+              "$ref": "#/components/schemas/TrimestreSiagieOut"
+            },
+            "type": "array",
+            "title": "Trimestres"
+          }
+        },
+        "type": "object",
+        "required": [
+          "asignatura",
+          "trimestres"
+        ],
+        "title": "ResumenSiagieDocenteOut",
+        "description": "Resumen completo de trimestres y secciones para Exportar SIAGIE."
+      },
       "SaludOut": {
         "properties": {
           "status": {
@@ -2924,6 +5769,272 @@
         ],
         "title": "SaludOut",
         "description": "Respuesta del endpoint de verificación de salud."
+      },
+      "SeccionDestinatariosOut": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "estudiantes_total": {
+            "type": "integer",
+            "title": "Estudiantes Total"
+          },
+          "estudiantes": {
+            "items": {
+              "$ref": "#/components/schemas/DestinatarioEstudianteOut"
+            },
+            "type": "array",
+            "title": "Estudiantes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "nombre",
+          "estudiantes_total",
+          "estudiantes"
+        ],
+        "title": "SeccionDestinatariosOut",
+        "description": "Sección asignada con sus posibles destinatarios individuales."
+      },
+      "SeccionDocenteOut": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "horario": {
+            "type": "string",
+            "title": "Horario"
+          },
+          "aula": {
+            "type": "string",
+            "title": "Aula"
+          },
+          "tutor": {
+            "type": "string",
+            "title": "Tutor"
+          },
+          "estudiantes_total": {
+            "type": "integer",
+            "title": "Estudiantes Total"
+          },
+          "competencias_confirmadas": {
+            "type": "integer",
+            "title": "Competencias Confirmadas"
+          },
+          "competencias_total": {
+            "type": "integer",
+            "title": "Competencias Total"
+          },
+          "notas_pendientes": {
+            "items": {
+              "$ref": "#/components/schemas/PendienteSeccionOut"
+            },
+            "type": "array",
+            "title": "Notas Pendientes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "nombre",
+          "horario",
+          "aula",
+          "tutor",
+          "estudiantes_total",
+          "competencias_confirmadas",
+          "competencias_total",
+          "notas_pendientes"
+        ],
+        "title": "SeccionDocenteOut",
+        "description": "Tarjeta resumen de una sección asignada al docente."
+      },
+      "SeccionSiagieEstadoOut": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "estudiantes_total": {
+            "type": "integer",
+            "title": "Estudiantes Total"
+          },
+          "competencias_confirmadas": {
+            "type": "integer",
+            "title": "Competencias Confirmadas"
+          },
+          "competencias_total": {
+            "type": "integer",
+            "title": "Competencias Total"
+          },
+          "listo_para_exportar": {
+            "type": "boolean",
+            "title": "Listo Para Exportar"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "nombre",
+          "estudiantes_total",
+          "competencias_confirmadas",
+          "competencias_total",
+          "listo_para_exportar"
+        ],
+        "title": "SeccionSiagieEstadoOut",
+        "description": "Estado de preparación de una sección para exportación SIAGIE."
+      },
+      "SesionClaseCreateIn": {
+        "properties": {
+          "competencia": {
+            "type": "string",
+            "enum": [
+              "C1",
+              "C2",
+              "C3",
+              "C4"
+            ],
+            "title": "Competencia"
+          },
+          "capacidad_idx": {
+            "type": "integer",
+            "maximum": 3.0,
+            "minimum": 0.0,
+            "title": "Capacidad Idx"
+          },
+          "tema": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 3,
+            "title": "Tema"
+          },
+          "evidencia": {
+            "type": "string",
+            "maxLength": 240,
+            "title": "Evidencia",
+            "default": ""
+          },
+          "fecha": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 4,
+            "title": "Fecha"
+          },
+          "criterios": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 4,
+            "minItems": 4,
+            "title": "Criterios"
+          }
+        },
+        "type": "object",
+        "required": [
+          "competencia",
+          "capacidad_idx",
+          "tema",
+          "fecha",
+          "criterios"
+        ],
+        "title": "SesionClaseCreateIn",
+        "description": "Payload para crear una nueva sesión de clase con 4 criterios evaluables."
+      },
+      "SesionClaseOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "competencia": {
+            "type": "string",
+            "enum": [
+              "C1",
+              "C2",
+              "C3",
+              "C4"
+            ],
+            "title": "Competencia"
+          },
+          "capacidad_idx": {
+            "type": "integer",
+            "title": "Capacidad Idx"
+          },
+          "tema": {
+            "type": "string",
+            "title": "Tema"
+          },
+          "evidencia": {
+            "type": "string",
+            "title": "Evidencia"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          },
+          "criterios": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Criterios"
+          },
+          "notas_por_estudiante": {
+            "additionalProperties": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "type": "object",
+            "title": "Notas Por Estudiante"
+          },
+          "ajustes_manuales": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Ajustes Manuales"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "pendiente",
+              "registrada"
+            ],
+            "title": "Estado"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "competencia",
+          "capacidad_idx",
+          "tema",
+          "evidencia",
+          "fecha",
+          "criterios",
+          "notas_por_estudiante",
+          "ajustes_manuales",
+          "estado"
+        ],
+        "title": "SesionClaseOut",
+        "description": "Sesión de clase continua con cuatro criterios y notas del día."
       },
       "SesionOut": {
         "properties": {
@@ -2983,6 +6094,34 @@
         ],
         "title": "SituacionFinalOut",
         "description": "Resultado anual de promoción, permanencia o recuperación (RF28)."
+      },
+      "SolicitudDescargaSiagieIn": {
+        "properties": {
+          "trimestre_id": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3
+            ],
+            "title": "Trimestre Id"
+          },
+          "formato": {
+            "type": "string",
+            "enum": [
+              "excel_siagie",
+              "acta_preliminar"
+            ],
+            "title": "Formato"
+          }
+        },
+        "type": "object",
+        "required": [
+          "trimestre_id",
+          "formato"
+        ],
+        "title": "SolicitudDescargaSiagieIn",
+        "description": "Solicitud de descarga temporal firmada de Excel SIAGIE o Acta preliminar."
       },
       "StreamCursoOut": {
         "properties": {
@@ -3084,6 +6223,43 @@
         "title": "TrimestreLibretaOut",
         "description": "Estado y contenido de la libreta de un trimestre."
       },
+      "TrimestreSiagieOut": {
+        "properties": {
+          "trimestre_id": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3
+            ],
+            "title": "Trimestre Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "cerrado": {
+            "type": "boolean",
+            "title": "Cerrado"
+          },
+          "secciones": {
+            "items": {
+              "$ref": "#/components/schemas/SeccionSiagieEstadoOut"
+            },
+            "type": "array",
+            "title": "Secciones"
+          }
+        },
+        "type": "object",
+        "required": [
+          "trimestre_id",
+          "nombre",
+          "cerrado",
+          "secciones"
+        ],
+        "title": "TrimestreSiagieOut",
+        "description": "Trimestre académico con estado de exportación por sección."
+      },
       "UrlDescargaOut": {
         "properties": {
           "url_firmada": {
@@ -3182,6 +6358,53 @@
               }
             ],
             "title": "Tutor"
+          },
+          "docente_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Docente Id"
+          },
+          "especialidad": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Especialidad"
+          },
+          "nivel_educativo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nivel Educativo"
+          },
+          "secciones_a_cargo": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Secciones A Cargo"
           }
         },
         "type": "object",

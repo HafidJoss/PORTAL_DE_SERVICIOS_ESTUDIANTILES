@@ -5,19 +5,34 @@ from fastapi import APIRouter
 from app.core.errores import ErrorAplicacion
 
 from .schemas import (
+    AlertaDocenteOut,
+    AnuncioSeccionCreateIn,
+    ClaseHoyDocenteOut,
     CompetenciaCursoResumenOut,
     CursoDetalleOut,
     CursoResumenOut,
+    DetalleSeccionDocenteOut,
     DiaAgendaOut,
     DistribucionNivelItemOut,
+    ElementoStreamSeccionOut,
     EntregaProximaOut,
+    EtapaTrimestreOut,
     EventoAgendaOut,
+    InicioDocenteOut,
     InicioEstudianteOut,
     IntegranteEquipoOut,
     KpiInicioOut,
     ListaCursosOut,
-    NovedadesVistoOut,
+    ListaSeccionesDocenteOut,
+    MensajeBandejaDocenteOut,
+    NotaPendienteDocenteOut,
     NovedadItemOut,
+    NovedadesVistoOut,
+    OperacionBandejaOut,
+    PendienteSeccionOut,
+    RespuestaBandejaIn,
+    RespuestaBandejaOut,
+    SeccionDocenteOut,
     StreamCursoOut,
 )
 
@@ -194,4 +209,433 @@ def obtener_detalle_curso(estudiante_id: str, asignatura_id: str) -> CursoDetall
                 grupo="equipo_seccion",
             ),
         ],
+    )
+
+
+def _mensajes_bandeja_docente_demo() -> list[MensajeBandejaDocenteOut]:
+    return [
+        MensajeBandejaDocenteOut(
+            id="m1",
+            origen="institucion",
+            remitente="Dirección",
+            asunto="Cierre preliminar del III Trimestre: 4 de diciembre",
+            cuerpo=(
+                "Estimados docentes:\nLes recordamos que el cierre preliminar del III Trimestre "
+                "es el jueves 4 de diciembre. Desde esa fecha solo se podrán ajustar niveles "
+                "y conclusiones descriptivas."
+            ),
+            fecha="Hoy, 7:10",
+            leido=False,
+            puede_responder=False,
+        ),
+        MensajeBandejaDocenteOut(
+            id="m2",
+            origen="estudiante",
+            remitente="Diego Cárdenas Rojas",
+            nombre_corto="Diego",
+            seccion_id="3B",
+            seccion_nombre="3.° B",
+            asunto="Consulta sobre la ficha de funciones lineales",
+            cuerpo=(
+                "Profesor, buenos días. En el ejercicio 7 de la ficha no entiendo cómo hallar "
+                "la pendiente si solo me dan dos puntos. ¿Lo podemos revisar hoy?"
+            ),
+            fecha="Hoy, 6:52",
+            leido=False,
+            puede_responder=True,
+            destino_tab="nov",
+        ),
+        MensajeBandejaDocenteOut(
+            id="m3",
+            origen="institucion",
+            remitente="Coordinación académica",
+            asunto="Reunión de área de Matemática — viernes 14, 3:00 p.m.",
+            cuerpo="Se convoca a los docentes del área a la reunión de planificación de la Unidad 8.",
+            fecha="Ayer, 16:30",
+            leido=False,
+            puede_responder=False,
+        ),
+        MensajeBandejaDocenteOut(
+            id="m4",
+            origen="estudiante",
+            remitente="María José Huamaní Ccori",
+            nombre_corto="María José",
+            seccion_id="4A",
+            seccion_nombre="4.° A",
+            asunto="No pude asistir a la práctica del martes",
+            cuerpo=(
+                "Buenas noches, profesor. El martes estuve con descanso médico. "
+                "¿Podría rendir la práctica otro día?"
+            ),
+            fecha="Ayer, 20:14",
+            leido=False,
+            puede_responder=True,
+            destino_tab="clases",
+        ),
+        MensajeBandejaDocenteOut(
+            id="m5",
+            origen="asistencia",
+            remitente="Auxiliar de educación",
+            seccion_id="4C",
+            seccion_nombre="4.° C",
+            asunto="Resumen de asistencia · 4.° C",
+            cuerpo="Faltas del 11 de noviembre en 4.° C: 3 registros (1 justificada). Tardanzas: 2.",
+            fecha="Ayer, 13:05",
+            leido=True,
+            puede_responder=False,
+            destino_tab="est",
+        ),
+    ]
+
+
+@router.get(
+    "/docentes/{docente_id}/inicio",
+    response_model=InicioDocenteOut,
+)
+def obtener_inicio_docente(docente_id: str) -> InicioDocenteOut:
+    """Devuelve bandeja, clases del día, pendientes, alertas y etapas del docente."""
+    mensajes = _mensajes_bandeja_docente_demo()
+    pendientes = [
+        NotaPendienteDocenteOut(
+            seccion_id="3B",
+            seccion_nombre="3.° B",
+            sesion_id="3Bs16",
+            titulo="Clase: Pendiente y razón de cambio",
+            registrados=0,
+            total=30,
+            porcentaje=0,
+        ),
+        NotaPendienteDocenteOut(
+            seccion_id="4A",
+            seccion_nombre="4.° A",
+            sesion_id="4As16",
+            titulo="Clase: Pendiente y razón de cambio",
+            registrados=0,
+            total=31,
+            porcentaje=0,
+        ),
+        NotaPendienteDocenteOut(
+            seccion_id="4C",
+            seccion_nombre="4.° C",
+            sesion_id="4Cs16",
+            titulo="Clase: Pendiente y razón de cambio",
+            registrados=0,
+            total=29,
+            porcentaje=0,
+        ),
+    ]
+    return InicioDocenteOut(
+        docente_id=docente_id,
+        trimestre_actual="III Trimestre en evaluación",
+        fecha_etiqueta="Jueves 12 de noviembre · III Trimestre en evaluación",
+        sin_leer=sum(1 for m in mensajes if not m.leido),
+        por_calificar_total=len(pendientes),
+        mensajes_bandeja=mensajes,
+        clases_hoy=[
+            ClaseHoyDocenteOut(
+                seccion_id="3A",
+                seccion_nombre="3.° A",
+                aula="Aula 12",
+                estudiantes_total=32,
+                hora_inicio="07:45",
+                hora_fin="09:15",
+                estado="Terminada",
+            ),
+            ClaseHoyDocenteOut(
+                seccion_id="4A",
+                seccion_nombre="4.° A",
+                aula="Aula 21",
+                estudiantes_total=31,
+                hora_inicio="09:30",
+                hora_fin="11:00",
+                estado="En curso",
+                sesion_id="4As16",
+            ),
+            ClaseHoyDocenteOut(
+                seccion_id="4C",
+                seccion_nombre="4.° C",
+                aula="Aula 23",
+                estudiantes_total=29,
+                hora_inicio="11:15",
+                hora_fin="12:45",
+                estado="Siguiente",
+            ),
+        ],
+        notas_pendientes=pendientes,
+        alertas=[
+            AlertaDocenteOut(
+                id="al-1",
+                texto="4 estudiantes de 3.° B tienen nivel C en alguna competencia: requieren conclusión descriptiva.",
+                severidad="danger",
+                seccion_id="3B",
+                destino_tab="cierre",
+            ),
+            AlertaDocenteOut(
+                id="al-2",
+                texto="3 clases tienen notas del día pendientes de registrar.",
+                severidad="warning",
+                seccion_id="4A",
+                destino_tab="clases",
+            ),
+            AlertaDocenteOut(
+                id="al-3",
+                texto="«Proyecto: presupuesto familiar» sigue en borrador (3.° A).",
+                severidad="neutral",
+                seccion_id="3A",
+                destino_tab="act",
+            ),
+        ],
+        etapas_trimestre=[
+            EtapaTrimestreOut(nombre="Aperturado", fecha="14 de septiembre", estado="completada"),
+            EtapaTrimestreOut(
+                nombre="En evaluación",
+                fecha="Desde el 21 de septiembre · actual",
+                estado="actual",
+            ),
+            EtapaTrimestreOut(
+                nombre="Cierre preliminar",
+                fecha="4 de diciembre · solo ajustes de nivel y conclusiones",
+                estado="pendiente",
+            ),
+            EtapaTrimestreOut(nombre="Cerrado", fecha="18 de diciembre", estado="pendiente"),
+        ],
+    )
+
+
+@router.post(
+    "/docentes/{docente_id}/bandeja/leer-todo",
+    response_model=OperacionBandejaOut,
+)
+def marcar_bandeja_docente_leida(docente_id: str) -> OperacionBandejaOut:
+    """Marca todos los mensajes de la bandeja docente como leídos."""
+    _ = docente_id
+    return OperacionBandejaOut(ok=True, mensaje="Bandeja marcada como leída.")
+
+
+@router.post(
+    "/docentes/{docente_id}/bandeja/{mensaje_id}/leer",
+    response_model=OperacionBandejaOut,
+)
+def marcar_mensaje_bandeja_leido(docente_id: str, mensaje_id: str) -> OperacionBandejaOut:
+    """Marca un mensaje específico de la bandeja docente como leído."""
+    _ = docente_id
+    mensajes = {m.id: m for m in _mensajes_bandeja_docente_demo()}
+    if mensaje_id not in mensajes:
+        raise ErrorAplicacion(
+            title="Mensaje no encontrado",
+            detail=f"No existe el mensaje '{mensaje_id}' en la bandeja.",
+            status_code=404,
+        )
+    return OperacionBandejaOut(ok=True, mensaje="Mensaje marcado como leído.")
+
+
+@router.post(
+    "/docentes/{docente_id}/bandeja/{mensaje_id}/responder",
+    response_model=RespuestaBandejaOut,
+)
+def responder_mensaje_bandeja(
+    docente_id: str, mensaje_id: str, datos: RespuestaBandejaIn
+) -> RespuestaBandejaOut:
+    """Registra una respuesta acotada en hilo solo sobre consultas de estudiantes."""
+    _ = docente_id
+    mensajes = {m.id: m for m in _mensajes_bandeja_docente_demo()}
+    objetivo = mensajes.get(mensaje_id)
+    if objetivo is None:
+        raise ErrorAplicacion(
+            title="Mensaje no encontrado",
+            detail=f"No existe el mensaje '{mensaje_id}' en la bandeja.",
+            status_code=404,
+        )
+    if not objetivo.puede_responder:
+        raise ErrorAplicacion(
+            title="Hilo de solo lectura",
+            detail="Los comunicados institucionales o resúmenes de asistencia no admiten respuestas.",
+            status_code=400,
+        )
+    return RespuestaBandejaOut(
+        mensaje_id=mensaje_id,
+        texto=datos.texto.strip(),
+        fecha="Hoy, ahora",
+    )
+
+
+def _secciones_docente_demo() -> list[SeccionDocenteOut]:
+    return [
+        SeccionDocenteOut(
+            seccion_id="3A",
+            nombre="3.° A",
+            horario="Lun · Mar · Jue",
+            aula="Aula 12",
+            tutor="Prof. Edwin Pariona",
+            estudiantes_total=32,
+            competencias_confirmadas=4,
+            competencias_total=4,
+            notas_pendientes=[],
+        ),
+        SeccionDocenteOut(
+            seccion_id="3B",
+            nombre="3.° B",
+            horario="Lun · Mié · Vie",
+            aula="Aula 14",
+            tutor="Prof. Rosa Cárdenas",
+            estudiantes_total=30,
+            competencias_confirmadas=0,
+            competencias_total=4,
+            notas_pendientes=[
+                PendienteSeccionOut(
+                    sesion_id="3Bs16",
+                    titulo="Clase: Pendiente y razón de cambio",
+                    registrados=0,
+                    total=30,
+                    porcentaje=0,
+                )
+            ],
+        ),
+        SeccionDocenteOut(
+            seccion_id="4A",
+            nombre="4.° A",
+            horario="Mar · Jue · Vie",
+            aula="Aula 21",
+            tutor="Prof. Karen Lozano",
+            estudiantes_total=31,
+            competencias_confirmadas=1,
+            competencias_total=4,
+            notas_pendientes=[
+                PendienteSeccionOut(
+                    sesion_id="4As16",
+                    titulo="Clase: Pendiente y razón de cambio",
+                    registrados=0,
+                    total=31,
+                    porcentaje=0,
+                )
+            ],
+        ),
+        SeccionDocenteOut(
+            seccion_id="4C",
+            nombre="4.° C",
+            horario="Lun · Mié · Jue",
+            aula="Aula 23",
+            tutor="Prof. Raúl Ccahuana",
+            estudiantes_total=29,
+            competencias_confirmadas=0,
+            competencias_total=4,
+            notas_pendientes=[
+                PendienteSeccionOut(
+                    sesion_id="4Cs16",
+                    titulo="Clase: Pendiente y razón de cambio",
+                    registrados=0,
+                    total=29,
+                    porcentaje=0,
+                )
+            ],
+        ),
+    ]
+
+
+@router.get(
+    "/docentes/{docente_id}/cursos",
+    response_model=ListaSeccionesDocenteOut,
+)
+def listar_secciones_docente(docente_id: str) -> ListaSeccionesDocenteOut:
+    """Devuelve las secciones asignadas al docente para la grilla Mis cursos."""
+    _ = docente_id
+    secciones = _secciones_docente_demo()
+    return ListaSeccionesDocenteOut(
+        asignatura_nombre="Matemática",
+        nivel_educativo="Secundaria",
+        anio_escolar=2026,
+        total_estudiantes=sum(s.estudiantes_total for s in secciones),
+        secciones=secciones,
+    )
+
+
+@router.get(
+    "/docentes/{docente_id}/secciones/{seccion_id}",
+    response_model=DetalleSeccionDocenteOut,
+)
+def obtener_detalle_seccion_docente(
+    docente_id: str, seccion_id: str
+) -> DetalleSeccionDocenteOut:
+    """Devuelve cabecera, distribución de niveles y flujo Novedades de la sección."""
+    _ = docente_id
+    mapa = {sec.seccion_id: sec for sec in _secciones_docente_demo()}
+    sec = mapa.get(seccion_id)
+    if sec is None:
+        raise ErrorAplicacion(
+            title="Sección no encontrada",
+            detail=f"No existe la sección '{seccion_id}' para el docente.",
+            status_code=404,
+        )
+    return DetalleSeccionDocenteOut(
+        seccion_id=sec.seccion_id,
+        nombre=sec.nombre,
+        asignatura="Matemática",
+        nivel_educativo="Secundaria",
+        horario=sec.horario,
+        aula=sec.aula,
+        tutor=sec.tutor,
+        estudiantes_total=sec.estudiantes_total,
+        clases_registradas=17 if sec.seccion_id == "3A" else 16,
+        competencias_confirmadas=sec.competencias_confirmadas,
+        competencias_total=sec.competencias_total,
+        distribucion_niveles=[
+            DistribucionNivelItemOut(nivel="AD", nombre="Logro destacado", cantidad=6, porcentaje=20.0),
+            DistribucionNivelItemOut(nivel="A", nombre="Logro esperado", cantidad=15, porcentaje=50.0),
+            DistribucionNivelItemOut(nivel="B", nombre="En proceso", cantidad=6, porcentaje=20.0),
+            DistribucionNivelItemOut(nivel="C", nombre="En inicio", cantidad=3, porcentaje=10.0),
+        ],
+        pendientes=sec.notas_pendientes,
+        stream=[
+            ElementoStreamSeccionOut(
+                id=f"st-{sec.seccion_id}-1",
+                tipo="Actividad",
+                titulo="Ficha: funciones lineales",
+                subtitulo="Regularidad, equivalencia y cambio · Entrega 18 nov",
+                fecha="11 nov",
+                cuerpo="Ejercicios 1 al 12 de la ficha entregada en clase.",
+            ),
+            ElementoStreamSeccionOut(
+                id=f"st-{sec.seccion_id}-2",
+                tipo="Clase",
+                titulo="Funciones lineales · Tabla y gráfica de una función",
+                subtitulo="Sesión registrada · Todos los criterios completos",
+                fecha="11 nov",
+                cuerpo="Se evaluaron los 4 criterios de participación y representación gráfica.",
+            ),
+            ElementoStreamSeccionOut(
+                id=f"st-{sec.seccion_id}-3",
+                tipo="Aviso",
+                titulo="Material para próxima sesión",
+                subtitulo="Comunicado unidireccional a la sección",
+                fecha="10 nov",
+                cuerpo="Traer regla y hoja cuadriculada para trabajar pendientes en plano cartesiano.",
+            ),
+        ],
+    )
+
+
+@router.post(
+    "/docentes/{docente_id}/secciones/{seccion_id}/anuncios",
+    response_model=ElementoStreamSeccionOut,
+    status_code=201,
+)
+def publicar_anuncio_seccion(
+    docente_id: str, seccion_id: str, datos: AnuncioSeccionCreateIn
+) -> ElementoStreamSeccionOut:
+    """Publica un anuncio unidireccional en Novedades de la sección (RF25, RC08)."""
+    _ = docente_id
+    mapa = {sec.seccion_id: sec for sec in _secciones_docente_demo()}
+    if seccion_id not in mapa:
+        raise ErrorAplicacion(
+            title="Sección no encontrada",
+            detail=f"No existe la sección '{seccion_id}' para el docente.",
+            status_code=404,
+        )
+    return ElementoStreamSeccionOut(
+        id=f"anuncio-{seccion_id.lower()}-1",
+        tipo=datos.tipo,
+        titulo=f"{datos.tipo} del docente",
+        subtitulo="Comunicación unidireccional en la sección",
+        fecha="Ahora",
+        cuerpo=datos.texto,
     )

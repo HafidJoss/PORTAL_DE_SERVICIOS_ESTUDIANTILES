@@ -48,3 +48,215 @@ def test_evaluacion_mensajes_lectura_y_respuesta_en_hilo():
         json={"contenido": ""},
     )
     assert invalido.status_code == 422
+
+
+# Spec: evaluacion · Requirement: Registro de sesiones de clase, criterios y Nota del día
+def test_evaluacion_docente_panel_y_sesiones_k1_k4():
+    client = crear_cliente(crear_app())
+
+    panel = client.get("/api/v1/evaluacion/docentes/doc-demo-1/secciones/3B/clases")
+    assert panel.status_code == 200
+    body = panel.json()
+    assert body["seccion_id"] == "3B"
+    assert len(body["competencias"]) == 4
+    assert len(body["estudiantes"]) == 30
+    assert len(body["sesiones"]) >= 10
+
+    creada = client.post(
+        "/api/v1/evaluacion/docentes/doc-demo-1/secciones/3B/sesiones",
+        json={
+            "competencia": "C2",
+            "capacidad_idx": 0,
+            "tema": "Ecuaciones lineales en contexto",
+            "evidencia": "Ficha de ejercicios",
+            "fecha": "2026-11-12",
+            "criterios": [
+                "Identifica datos",
+                "Plantea la ecuación",
+                "Resuelve sin errores",
+                "Verifica el resultado",
+            ],
+        },
+    )
+    assert creada.status_code == 201
+    assert creada.json()["estado"] == "pendiente"
+
+    invalida = client.post(
+        "/api/v1/evaluacion/docentes/doc-demo-1/secciones/3B/sesiones",
+        json={
+            "competencia": "C2",
+            "capacidad_idx": 0,
+            "tema": "Ab",
+            "evidencia": "",
+            "fecha": "2026-11-12",
+            "criterios": ["C1", "C2", "C3"],
+        },
+    )
+    assert invalida.status_code == 422
+    assert invalida.json()["status"] == 422
+
+
+# Spec: evaluacion · Scenario: Bloqueo de publicación por criterios incompletos
+def test_evaluacion_docente_guardado_y_validacion_notas_sesion():
+    client = crear_cliente(crear_app())
+
+    incompleta = client.put(
+        "/api/v1/evaluacion/docentes/doc-demo-1/secciones/3B/sesiones/3Bs16/notas",
+        json={
+            "notas_por_estudiante": {"0": ["A", "A", "AD", "A"]},
+            "ajustes_manuales": {},
+            "publicar": True,
+        },
+    )
+    assert incompleta.status_code == 400
+    assert incompleta.json()["status"] == 400
+
+    completa = {str(i): ["A", "A", "B", "A"] for i in range(30)}
+    ok = client.put(
+        "/api/v1/evaluacion/docentes/doc-demo-1/secciones/3B/sesiones/3Bs16/notas",
+        json={
+            "notas_por_estudiante": completa,
+            "ajustes_manuales": {"0": "AD"},
+            "publicar": True,
+        },
+    )
+    assert ok.status_code == 200
+    assert ok.json()["estado"] == "registrada"
+
+
+# Spec: evaluacion · Requirement: Gestión de actividades, cierre RF22 y observaciones RF24
+def test_evaluacion_docente_actividades_cierre_y_observaciones():
+    client = crear_cliente(crear_app())
+
+    act = client.post(
+        "/api/v1/evaluacion/docentes/doc-demo-1/secciones/3B/actividades",
+        json={
+            "titulo": "Taller de funciones lineales",
+            "fecha_entrega": "2026-11-24",
+            "competencia": "C2",
+            "descripcion": "Resolver ejercicios 1 al 8.",
+            "estado": "borrador",
+        },
+    )
+    assert act.status_code == 201
+    assert act.json()["estado"] == "borrador"
+
+    pub = client.post(
+        f"/api/v1/evaluacion/docentes/doc-demo-1/actividades/{act.json()['id']}/publicar"
+    )
+    assert pub.status_code == 200
+    assert pub.json()["estado"] == "publicada"
+
+    no_pub = client.post(
+        "/api/v1/evaluacion/docentes/doc-demo-1/actividades/act-inexistente/publicar"
+    )
+    assert no_pub.status_code == 404
+
+    cierre_sin_concl_sec = client.post(
+        "/api/v1/evaluacion/docentes/doc-demo-1/secciones/3B/cierre/confirmar",
+        json={
+            "competencia": "C1",
+            "nivel_educativo": "Secundaria",
+            "filas": [
+                {"estudiante_idx": 0, "nivel": "C", "conclusion": "Falta"},
+                {"estudiante_idx": 1, "nivel": "B", "conclusion": ""},
+            ],
+        },
+    )
+    assert cierre_sin_concl_sec.status_code == 400
+
+    cierre_sin_concl_pri = client.post(
+        "/api/v1/evaluacion/docentes/doc-demo-1/secciones/3B/cierre/confirmar",
+        json={
+            "competencia": "C1",
+            "nivel_educativo": "Primaria",
+            "filas": [
+                {"estudiante_idx": 0, "nivel": "B", "conclusion": ""},
+            ],
+        },
+    )
+    assert cierre_sin_concl_pri.status_code == 400
+
+    cierre_ok = client.post(
+        "/api/v1/evaluacion/docentes/doc-demo-1/secciones/3B/cierre/confirmar",
+        json={
+            "competencia": "C1",
+            "nivel_educativo": "Secundaria",
+            "filas": [
+                {
+                    "estudiante_idx": 0,
+                    "nivel": "C",
+                    "conclusion": "Requiere refuerzo en lectura de tablas.",
+                },
+                {"estudiante_idx": 1, "nivel": "A", "conclusion": ""},
+            ],
+        },
+    )
+    assert cierre_ok.status_code == 200
+    assert cierre_ok.json()["confirmada"] is True
+
+    obs_invalida = client.post(
+        "/api/v1/evaluacion/docentes/doc-demo-1/secciones/3B/observaciones",
+        json={"estudiante_idx": 0, "tipo": "Positiva", "texto": "Ok"},
+    )
+    assert obs_invalida.status_code == 422
+
+    obs_ok = client.post(
+        "/api/v1/evaluacion/docentes/doc-demo-1/secciones/3B/observaciones",
+        json={
+            "estudiante_idx": 0,
+            "tipo": "Positiva",
+            "texto": "Participó activamente resolviendo problemas en pizarra.",
+        },
+    )
+    assert obs_ok.status_code == 201
+    assert obs_ok.json()["tipo"] == "Positiva"
+
+
+
+# Spec: evaluacion · Requirement: Envío docente de mensajes a sección o estudiante sin adjuntos
+def test_evaluacion_docente_mensajes_listar_enviar_y_validar():
+    client = crear_cliente(crear_app())
+
+    bandeja = client.get("/api/v1/evaluacion/docentes/doc-demo-1/mensajes")
+    assert bandeja.status_code == 200
+    body = bandeja.json()
+    assert len(body["secciones"]) == 4
+    assert len(body["enviados"]) >= 1
+
+    creado = client.post(
+        "/api/v1/evaluacion/docentes/doc-demo-1/mensajes",
+        json={
+            "tipo": "Recordatorio",
+            "seccion_id": "4A",
+            "estudiante_idx": None,
+            "asunto": "Traer compás el viernes",
+            "cuerpo": "Trabajaremos circunferencias y polígonos inscritos.",
+        },
+    )
+    assert creado.status_code == 201
+    assert creado.json()["tipo"] == "Recordatorio"
+    assert creado.json()["destinatario"] == "4.° A"
+
+    invalido = client.post(
+        "/api/v1/evaluacion/docentes/doc-demo-1/mensajes",
+        json={
+            "tipo": "Tarea",
+            "seccion_id": "4A",
+            "asunto": "Ab",
+            "cuerpo": "Ok",
+        },
+    )
+    assert invalido.status_code == 422
+    assert invalido.json()["status"] == 422
+
+    no_sec = client.post(
+        "/api/v1/evaluacion/docentes/doc-demo-1/mensajes",
+        json={
+            "tipo": "Tarea",
+            "seccion_id": "9Z",
+            "asunto": "Asunto válido",
+            "cuerpo": "Contenido válido para validación de sección.",
+        },
+    )
+    assert no_sec.status_code == 404

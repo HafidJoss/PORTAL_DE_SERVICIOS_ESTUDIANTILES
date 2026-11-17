@@ -51,6 +51,10 @@ class UsuarioSesionOut(BaseModel):
     codigo_estudiante: str | None = None
     grado_seccion: str | None = None
     tutor: str | None = None
+    docente_id: str | None = None
+    especialidad: str | None = None
+    nivel_educativo: str | None = None
+    secciones_a_cargo: list[str] | None = None
 
 
 class SesionOut(BaseModel):

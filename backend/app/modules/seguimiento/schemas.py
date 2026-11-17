@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
 NivelLogro = Literal["AD", "A", "B", "C", "—"]
 
@@ -149,3 +149,186 @@ class CursoDetalleOut(BaseModel):
     stream: list[StreamCursoOut]
     competencias: list[CompetenciaCursoResumenOut]
     equipo: list[IntegranteEquipoOut]
+
+
+class RespuestaHiloDocenteOut(BaseModel):
+    """Respuesta publicada dentro de un hilo de bandeja docente."""
+
+    texto: str
+    fecha: str
+
+
+class MensajeBandejaDocenteOut(BaseModel):
+    """Mensaje en la bandeja de entrada del docente."""
+
+    id: str
+    origen: Literal["institucion", "asistencia", "estudiante"]
+    remitente: str
+    nombre_corto: str = ""
+    seccion_id: str | None = None
+    seccion_nombre: str | None = None
+    asunto: str
+    cuerpo: str
+    fecha: str
+    leido: bool
+    puede_responder: bool
+    destino_tab: str | None = None
+    respuestas: list[RespuestaHiloDocenteOut] = []
+
+
+class ClaseHoyDocenteOut(BaseModel):
+    """Clase programada del día en el horario del docente."""
+
+    seccion_id: str
+    seccion_nombre: str
+    aula: str
+    estudiantes_total: int
+    hora_inicio: str
+    hora_fin: str
+    estado: Literal["Terminada", "En curso", "Siguiente"]
+    sesion_id: str | None = None
+
+
+class NotaPendienteDocenteOut(BaseModel):
+    """Sesión con notas pendientes de completar por sección."""
+
+    seccion_id: str
+    seccion_nombre: str
+    sesion_id: str
+    titulo: str
+    registrados: int
+    total: int
+    porcentaje: int
+
+
+class AlertaDocenteOut(BaseModel):
+    """Alerta prioritaria de atención para el docente."""
+
+    id: str
+    texto: str
+    severidad: Literal["danger", "warning", "neutral"]
+    seccion_id: str
+    destino_tab: str
+
+
+class EtapaTrimestreOut(BaseModel):
+    """Etapa del trimestre actual en la línea de tiempo."""
+
+    nombre: str
+    fecha: str
+    estado: Literal["completada", "actual", "pendiente"]
+
+
+class InicioDocenteOut(BaseModel):
+    """Respuesta agregada del tablero inicial del docente."""
+
+    docente_id: str
+    trimestre_actual: str
+    fecha_etiqueta: str
+    sin_leer: int
+    por_calificar_total: int
+    mensajes_bandeja: list[MensajeBandejaDocenteOut]
+    clases_hoy: list[ClaseHoyDocenteOut]
+    notas_pendientes: list[NotaPendienteDocenteOut]
+    alertas: list[AlertaDocenteOut]
+    etapas_trimestre: list[EtapaTrimestreOut]
+
+
+class OperacionBandejaOut(BaseModel):
+    """Confirmación simple de marcado de lectura en bandeja docente."""
+
+    ok: bool
+    mensaje: str
+
+
+class RespuestaBandejaIn(BaseModel):
+    """Cuerpo de respuesta en hilo desde la bandeja docente."""
+
+    texto: str = Field(..., min_length=2)
+
+
+class RespuestaBandejaOut(BaseModel):
+    """Respuesta registrada para un mensaje de estudiante en bandeja."""
+
+    mensaje_id: str
+    texto: str
+    fecha: str
+
+
+class PendienteSeccionOut(BaseModel):
+    """Resumen breve de una sesión pendiente dentro de la tarjeta de sección."""
+
+    sesion_id: str
+    titulo: str
+    registrados: int
+    total: int
+    porcentaje: int
+
+
+class SeccionDocenteOut(BaseModel):
+    """Tarjeta resumen de una sección asignada al docente."""
+
+    seccion_id: str
+    nombre: str
+    horario: str
+    aula: str
+    tutor: str
+    estudiantes_total: int
+    competencias_confirmadas: int
+    competencias_total: int
+    notas_pendientes: list[PendienteSeccionOut]
+
+
+class ListaSeccionesDocenteOut(BaseModel):
+    """Listado de secciones a cargo del docente en Mis cursos."""
+
+    asignatura_nombre: str
+    nivel_educativo: str
+    anio_escolar: int
+    total_estudiantes: int
+    secciones: list[SeccionDocenteOut]
+
+
+class ElementoStreamSeccionOut(BaseModel):
+    """Publicación en el flujo cronológico de Novedades de la sección docente."""
+
+    id: str
+    tipo: Literal["Aviso", "Recordatorio", "Tarea", "Actividad", "Clase"]
+    titulo: str
+    subtitulo: str = ""
+    fecha: str
+    cuerpo: str = ""
+
+
+class DetalleSeccionDocenteOut(BaseModel):
+    """Cabecera, distribución cualitativa y novedades de una sección docente."""
+
+    seccion_id: str
+    nombre: str
+    asignatura: str
+    nivel_educativo: Literal["Primaria", "Secundaria"]
+    horario: str
+    aula: str
+    tutor: str
+    estudiantes_total: int
+    clases_registradas: int
+    competencias_confirmadas: int
+    competencias_total: int
+    distribucion_niveles: list[DistribucionNivelItemOut]
+    pendientes: list[PendienteSeccionOut]
+    stream: list[ElementoStreamSeccionOut]
+
+
+class AnuncioSeccionCreateIn(BaseModel):
+    """Payload para publicar un anuncio unidireccional en la sección (RF25, RC08)."""
+
+    tipo: Literal["Aviso", "Recordatorio", "Tarea"]
+    texto: str = Field(..., min_length=3, max_length=1500)
+
+    @field_validator("texto")
+    @classmethod
+    def _validar_texto(cls, valor: str) -> str:
+        limpio = valor.strip()
+        if len(limpio) < 3:
+            raise ValueError("El anuncio debe tener al menos 3 caracteres.")
+        return limpio

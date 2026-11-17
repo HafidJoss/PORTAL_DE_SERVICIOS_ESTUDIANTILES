@@ -80,3 +80,22 @@ def test_identidad_sesion_logout_cambiar_contrasena_y_aviso_privacidad():
     aviso = client.get("/api/v1/identidad/aviso-privacidad")
     assert aviso.status_code == 200
     assert "contenido" in aviso.json()
+
+
+# Spec: identidad · Scenario: Ingreso exitoso de docente con DNI y contraseña válidos (RF14, AC04)
+def test_identidad_login_docente_devuelve_perfil_y_secciones():
+    client = crear_cliente(crear_app())
+
+    resp = client.post(
+        "/api/v1/identidad/login",
+        json={"dni": "41257836", "contrasena": "clave_docente_2026", "recordar": True},
+    )
+
+    assert resp.status_code == 200
+    usuario = resp.json()["usuario"]
+    assert usuario["dni"] == "41257836"
+    assert usuario["rol"] == "Docente"
+    assert usuario["docente_id"] == "doc-demo-1"
+    assert usuario["especialidad"] == "Matemática"
+    assert usuario["nivel_educativo"] == "Secundaria"
+    assert len(usuario["secciones_a_cargo"]) >= 1

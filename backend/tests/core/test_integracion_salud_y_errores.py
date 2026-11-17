@@ -63,15 +63,32 @@ def test_openapi_expone_las_18_rutas_base_de_estudiante_v2():
         "/api/v1/seguimiento/estudiantes/{estudiante_id}/novedades/visto",
         "/api/v1/seguimiento/estudiantes/{estudiante_id}/cursos",
         "/api/v1/seguimiento/estudiantes/{estudiante_id}/cursos/{asignatura_id}",
+        "/api/v1/seguimiento/docentes/{docente_id}/inicio",
+        "/api/v1/seguimiento/docentes/{docente_id}/bandeja/{mensaje_id}/leer",
+        "/api/v1/seguimiento/docentes/{docente_id}/bandeja/leer-todo",
+        "/api/v1/seguimiento/docentes/{docente_id}/bandeja/{mensaje_id}/responder",
+        "/api/v1/seguimiento/docentes/{docente_id}/cursos",
+        "/api/v1/seguimiento/docentes/{docente_id}/secciones/{seccion_id}",
+        "/api/v1/seguimiento/docentes/{docente_id}/secciones/{seccion_id}/anuncios",
         "/api/v1/evaluacion/estudiantes/{estudiante_id}/calificaciones",
         "/api/v1/evaluacion/estudiantes/{estudiante_id}/actividades",
         "/api/v1/evaluacion/estudiantes/{estudiante_id}/mensajes",
         "/api/v1/evaluacion/mensajes/{mensaje_id}/leer",
         "/api/v1/evaluacion/mensajes/{mensaje_id}/respuestas",
+        "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/clases",
+        "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/sesiones",
+        "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/sesiones/{sesion_id}/notas",
+        "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/actividades",
+        "/api/v1/evaluacion/docentes/{docente_id}/actividades/{actividad_id}/publicar",
+        "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/cierre/confirmar",
+        "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/observaciones",
+        "/api/v1/evaluacion/docentes/{docente_id}/mensajes",
         "/api/v1/asistencia/estudiantes/{estudiante_id}",
         "/api/v1/reportes/estudiantes/{estudiante_id}/libretas",
         "/api/v1/reportes/estudiantes/{estudiante_id}/libretas/{trimestre_id}/descarga",
+        "/api/v1/reportes/docentes/{docente_id}/siagie",
+        "/api/v1/reportes/docentes/{docente_id}/siagie/{seccion_id}/descarga",
     }
     assert rutas_esperadas.issubset(paths)
-    assert len(paths) == 19
+    assert len(paths) == 36
 
