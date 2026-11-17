@@ -14,7 +14,7 @@ export default defineConfig({
       clean: true,
       override: {
         mutator: {
-          path: "src/api/http.ts",
+          path: "src/api/clienteHttp.ts",
           name: "customFetch",
         },
         query: {

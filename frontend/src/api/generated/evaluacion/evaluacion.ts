@@ -34,7 +34,7 @@ import type {
   RespuestaMensajeIn
 } from '.././model';
 
-import { customFetch } from '../../http';
+import { customFetch } from '../../clienteHttp';
 
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];

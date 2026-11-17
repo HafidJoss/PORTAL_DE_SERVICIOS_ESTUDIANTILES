@@ -21,11 +21,11 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  HealthOut,
-  ProblemDetail
+  ProblemDetail,
+  SaludOut
 } from '.././model';
 
-import { customFetch } from '../../http';
+import { customFetch } from '../../clienteHttp';
 
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -37,7 +37,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Verificar Salud
  */
 export type verificarSaludApiV1HealthGetResponse200 = {
-  data: HealthOut
+  data: SaludOut
   status: 200
 }
 
