@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter
 
-from app.core.errors import AppError
+from app.core.errores import ErrorAplicacion
 
 from .schemas import (
     CompetenciaCursoResumenOut,
@@ -154,7 +154,7 @@ def obtener_detalle_curso(estudiante_id: str, asignatura_id: str) -> CursoDetall
     """Devuelve el detalle del curso con novedades, competencias y plana docente."""
     _ = estudiante_id
     if asignatura_id != "mat":
-        raise AppError(
+        raise ErrorAplicacion(
             title="Curso no encontrado",
             detail=f"No existe el curso '{asignatura_id}' para el estudiante.",
             status_code=404,

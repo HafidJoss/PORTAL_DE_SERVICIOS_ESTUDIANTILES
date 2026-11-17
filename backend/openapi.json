@@ -20,7 +20,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HealthOut"
+                  "$ref": "#/components/schemas/SaludOut"
                 }
               }
             }
@@ -2259,20 +2259,6 @@
         "title": "FilaLibretaCompetenciaOut",
         "description": "Fila de competencia dentro de la libreta trimestral."
       },
-      "HealthOut": {
-        "properties": {
-          "status": {
-            "type": "string",
-            "title": "Status"
-          }
-        },
-        "type": "object",
-        "required": [
-          "status"
-        ],
-        "title": "HealthOut",
-        "description": "Respuesta del endpoint de verificación de salud."
-      },
       "IncidenciaAsistenciaOut": {
         "properties": {
           "fecha": {
@@ -2924,6 +2910,20 @@
         ],
         "title": "RespuestaMensajeIn",
         "description": "Payload para responder dentro de un hilo de mensaje."
+      },
+      "SaludOut": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "SaludOut",
+        "description": "Respuesta del endpoint de verificación de salud."
       },
       "SesionOut": {
         "properties": {

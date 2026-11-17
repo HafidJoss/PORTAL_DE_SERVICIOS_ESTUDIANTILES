@@ -3,7 +3,7 @@
 from fastapi import APIRouter, FastAPI
 from pydantic import BaseModel
 
-from app.core.errors import ProblemDetail, registrar_manejadores_error
+from app.core.errores import ProblemDetail, registrar_manejadores_error
 from app.modules.asistencia.router import router as asistencia_router
 from app.modules.evaluacion.router import router as evaluacion_router
 from app.modules.identidad.router import router as identidad_router
@@ -11,7 +11,7 @@ from app.modules.reportes.router import router as reportes_router
 from app.modules.seguimiento.router import router as seguimiento_router
 
 
-class HealthOut(BaseModel):
+class SaludOut(BaseModel):
     """Respuesta del endpoint de verificación de salud."""
 
     status: str
@@ -34,10 +34,10 @@ def crear_app() -> FastAPI:
 
     api_v1 = APIRouter(prefix="/api/v1")
 
-    @api_v1.get("/health", response_model=HealthOut, tags=["core"])
-    def verificar_salud() -> HealthOut:
+    @api_v1.get("/health", response_model=SaludOut, tags=["core"])
+    def verificar_salud() -> SaludOut:
         """Verifica que la API está operativa."""
-        return HealthOut(status="ok")
+        return SaludOut(status="ok")
 
     api_v1.include_router(identidad_router)
     api_v1.include_router(seguimiento_router)

@@ -19,7 +19,7 @@ class ProblemDetail(BaseModel):
     instance: str | None = Field(default=None, description="Ruta o identificador de la petición")
 
 
-class AppError(Exception):
+class ErrorAplicacion(Exception):
     """Excepción base de dominio traducida automáticamente a Problem Details."""
 
     def __init__(
@@ -60,8 +60,8 @@ def _problem_response(
 def registrar_manejadores_error(app: FastAPI) -> None:
     """Registra en FastAPI los manejadores globales de RFC 9457."""
 
-    @app.exception_handler(AppError)
-    async def manejar_app_error(request: Request, exc: AppError) -> JSONResponse:
+    @app.exception_handler(ErrorAplicacion)
+    async def manejar_error_aplicacion(request: Request, exc: ErrorAplicacion) -> JSONResponse:
         return _problem_response(
             status_code=exc.status_code,
             title=exc.title,
