@@ -74,3 +74,63 @@ Las vistas de inicio y cursos MUST adaptarse a pantallas móviles y de escritori
 - **GIVEN** un estudiante que navega en el detalle del curso y el selector de variantes de inicio
 - **WHEN** recorre las pestañas de variante o de curso mediante teclado y lector de pantalla
 - **THEN** los controles exponen roles y etiquetas accesibles y ajustan su disposición en ancho móvil sin ocultar pestañas ni truncar acciones principales
+
+### Requirement: Tablero de inicio docente con bandeja y programación diaria (RF26, RF31, AC01, AC07)
+El portal SHALL mostrar al docente autenticado un tablero de inicio con saludo contextual del trimestre, resumen de mensajes sin leer y clases pendientes por calificar, la bandeja de entrada unificada con filtros (`Todos`, `No leídos`, `Institución`, `Estudiantes`), las clases programadas del día con su estado (`Terminada`, `En curso`, `Siguiente`), los pendientes por calificar, alertas de atención prioritaria y la línea de tiempo de etapas del trimestre.
+
+#### Scenario: Visualización integral del tablero inicial del docente
+- **GIVEN** un docente autenticado accede a `/inicio` y la API responde con su tablero de seguimiento
+- **WHEN** se carga la vista de inicio docente
+- **THEN** visualiza su bandeja de entrada ordenada con etiquetas por origen (`Institución`, `Asistencia` o `Estudiante` + sección), el bloque `Clases de hoy` con horarios y estado, `Notas pendientes`, `Requiere tu atención` y el cronograma del trimestre vigente
+
+#### Scenario: Filtrado de mensajes en bandeja y manejo de bandeja vacía o error de carga
+- **GIVEN** un docente visualiza su bandeja de entrada con mensajes de institución, asistencia y estudiantes
+- **WHEN** selecciona sucesivamente los filtros `No leídos`, `Institución` y `Estudiantes`, o cuando la API devuelve error de servidor
+- **THEN** cada filtro muestra únicamente los mensajes que corresponden a la categoría elegida (mostrando un estado vacío informativo si no hay coincidencias) y, ante error de red o servidor, la vista muestra un aviso claro con acción para reintentar
+
+### Requirement: Lectura y respuesta acotada en hilos desde la bandeja docente (RF25, RC08)
+El sistema SHALL permitir al docente abrir un mensaje de la bandeja marcándolo como leído, marcar todos los mensajes como leídos en una sola acción y responder en hilo únicamente a consultas provenientes de estudiantes (`kind: "stu"`), sin permitir adjuntar archivos ni habilitar chat libre entre usuarios (`RC08`).
+
+#### Scenario: Marcado masivo y respuesta en hilo a consulta de estudiante
+- **GIVEN** un docente con mensajes sin leer abre una consulta enviada por un estudiante
+- **WHEN** escribe una respuesta válida y la envía, o acciona `Marcar todo como leído`
+- **THEN** la respuesta se registra en el hilo del mensaje sin controles para adjuntar archivos, o todos los mensajes pasan a estado leído reduciendo el contador de sin leer a cero
+
+#### Scenario: Validación de respuesta vacía y mensajes institucionales de solo lectura
+- **GIVEN** un docente abre un comunicado enviado por Dirección o intenta enviar una respuesta en blanco a un estudiante
+- **WHEN** inspecciona el comunicado institucional o envía texto vacío o menor al mínimo requerido
+- **THEN** el comunicado institucional no ofrece caja de respuesta en hilo y el envío vacío es rechazado mostrando un mensaje de validación sin invocar mutaciones inválidas
+
+### Requirement: Grilla de secciones asignadas al docente en Mis cursos (RF04, RF06, HU12, AC07)
+El portal MUST presentar al docente el resumen de sus secciones a cargo con totales de secciones y estudiantes, tarjetas por sección con horario, aula, barra de progreso de clases pendientes por calificar, contador de competencias confirmadas en el cierre (`X/4`) y accesos directos a las acciones de cada sección.
+
+#### Scenario: Visualización de tarjetas por sección en Mis cursos del docente
+- **GIVEN** un docente autenticado accede a `/cursos`
+- **WHEN** la API devuelve sus secciones asignadas
+- **THEN** visualiza el encabezado con cantidad total de secciones y estudiantes y una tarjeta por cada sección con su código, horario, aula, listado de notas pendientes con barra de progreso (o indicador `Todo calificado.`), avance de cierre y botones de acceso rápido
+
+#### Scenario: Estado vacío y recuperación ante error al consultar Mis cursos
+- **GIVEN** un docente sin secciones asignadas o cuya consulta de secciones falla en el servidor
+- **WHEN** accede a `/cursos`
+- **THEN** el portal muestra un estado vacío informativo cuando la lista está vacía, o un mensaje claro con botón `Reintentar` cuando ocurre un error
+
+### Requirement: Detalle de sección docente y sus seis pestañas operativas (RF04, RF23, RF26, ADR-008)
+Al seleccionar una sección desde `Mis cursos` o desde el tablero inicial, el portal SHALL mostrar al docente el detalle de la sección con barra de retorno, cabecera informativa (`asignatura`, `sección`, `horario`, `aula`, `tutor`, totales de estudiantes, clases registradas y competencias confirmadas) y seis pestañas navegables: `Novedades`, `Clases`, `Registro auxiliar`, `Actividades`, `Cierre` y `Estudiantes`.
+
+#### Scenario: Navegación integral entre las seis pestañas de la sección docente
+- **GIVEN** un docente autenticado accede al detalle de una sección asignada (por ejemplo `3.° B`)
+- **WHEN** alterna sucesivamente entre las pestañas `Novedades`, `Clases`, `Registro auxiliar`, `Actividades`, `Cierre` y `Estudiantes`
+- **THEN** `Novedades` muestra el resumen lateral de notas pendientes, la distribución de niveles (`AD`, `A`, `B`, `C`) y el flujo cronológico; mientras las pestañas restantes muestran respectivamente la lista/ficha de clases, el registro auxiliar, las actividades, el panel de cierre y la nómina de estudiantes
+
+#### Scenario: Acceso directo a una pestaña específica o manejo de sección inexistente
+- **GIVEN** un docente utiliza un acceso directo de la tarjeta de sección hacia `Cierre` o navega hacia un identificador de sección inexistente
+- **WHEN** se carga el detalle de la sección
+- **THEN** si la sección existe abre directamente la pestaña solicitada, y si no existe informa el error con acción para volver a `Mis cursos`
+
+### Requirement: Publicación de anuncios unidireccionales en el flujo de novedades de la sección (RF25, RC08)
+El portal SHALL permitir al docente redactar y publicar anuncios en la pestaña `Novedades` de su sección eligiendo la categoría (`Aviso`, `Recordatorio` o `Tarea`), incorporándolos inmediatamente en el flujo cronológico sin habilitar chat ni respuestas libres en el muro (`RC08`).
+
+#### Scenario: Publicación exitosa y validación de anuncio vacío en Novedades
+- **GIVEN** un docente abre el publicador de anuncios dentro de `Novedades` de una sección
+- **WHEN** intenta publicar con menos de 3 caracteres, y luego redacta un aviso válido y acciona `Publicar`
+- **THEN** el sistema bloquea el envío vacío y, al publicar un texto válido, lo agrega al inicio del flujo cronológico de la sección indicando que es comunicación en un solo sentido

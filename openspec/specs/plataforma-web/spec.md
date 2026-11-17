@@ -71,3 +71,50 @@ La API del portal SHALL exponer bajo `/api/v1` el endpoint de salud (`GET /api/v
 - GIVEN una ruta inexistente bajo `/api/v1/`
 - WHEN el cliente realiza una petición a dicha ruta
 - THEN la API responde con estado HTTP 404 y estructura Problem Details (`type`, `title`, `status`, `detail`)
+
+### Requirement: Navegación institucional parametrizada según rol autenticado (RC01, AC07)
+El shell responsivo del portal SHALL adaptar sus enlaces de barra lateral en escritorio y de navegación inferior en dispositivo móvil según el rol de la sesión activa (`Estudiante` o `Docente`), mostrando insignias de mensajes sin leer y notas pendientes para el docente sin alterar la navegación del estudiante ni producir desbordamiento horizontal en pantallas de 360x640 px.
+
+#### Scenario: Menú lateral e insignias para sesión con rol Docente en escritorio
+- **GIVEN** una pantalla de ancho igual o superior a 1024 px con sesión activa de rol `Docente`
+- **WHEN** se renderiza el marco principal del portal
+- **THEN** la navegación muestra los accesos docentes (`Inicio`, `Mis cursos`, `Nota del día`, `Mensajes`, `Exportar SIAGIE` y `Configuración`), el avatar con iniciales del docente y los contadores de pendientes cuando correspondan
+
+#### Scenario: Barra inferior compacta para sesión Docente en móvil
+- **GIVEN** una pantalla con resolución móvil de 360x640 px y sesión activa de rol `Docente`
+- **WHEN** se renderiza una ruta autenticada del portal docente
+- **THEN** el sistema oculta la barra lateral de escritorio y muestra la navegación inferior docente con accesos compactos sin desbordamiento horizontal
+
+### Requirement: Contratos OpenAPI para tablero de inicio, bandeja y secciones docentes (RC03, AC06)
+La API del portal SHALL exponer bajo `/api/v1` los endpoints contractuales de `seguimiento` para docentes (`inicio`, `bandeja/{mensaje_id}/leer`, `bandeja/leer-todo`, `bandeja/{mensaje_id}/responder` y `cursos`) junto con los campos opcionales de perfil docente en `identidad`, con sus esquemas tipados en OpenAPI para generar el cliente del frontend.
+
+#### Scenario: Esquema OpenAPI incluye endpoints contractuales docentes bajo seguimiento
+- **GIVEN** la API expone su esquema OpenAPI vigente
+- **WHEN** se inspeccionan las rutas registradas bajo `/api/v1/seguimiento/docentes/{docente_id}/`
+- **THEN** el contrato expone los endpoints `inicio`, `bandeja/{mensaje_id}/leer`, `bandeja/leer-todo`, `bandeja/{mensaje_id}/responder` y `cursos` con validación de entrada y respuestas Problem Details ante errores
+
+### Requirement: Contratos OpenAPI y rutas docentes activas para evaluación continua y detalle de sección (RC03, AC06, AC07)
+La API del portal SHALL exponer bajo `/api/v1` los endpoints contractuales de `evaluacion` para docentes (`clases`, `sesiones`, `sesiones/{sesion_id}/notas`, `actividades`, `actividades/{actividad_id}/publicar`, `cierre/confirmar`, `observaciones`) y de `seguimiento` (`secciones/{seccion_id}`, `secciones/{seccion_id}/anuncios`), y la aplicación web SHALL activar las rutas operativas `/cursos/:asignaturaId` y `/nota-del-dia` para el rol `Docente`.
+
+#### Scenario: Esquema OpenAPI incluye endpoints docentes de evaluación y detalle de sección
+- **GIVEN** la API expone su esquema OpenAPI vigente
+- **WHEN** se inspeccionan las rutas registradas bajo `/api/v1/evaluacion/docentes/{docente_id}/` y `/api/v1/seguimiento/docentes/{docente_id}/secciones/`
+- **THEN** todas las rutas de sesiones, criterios, actividades, cierre, observaciones, detalle de sección y anuncios están declaradas con validación de entrada y respuestas Problem Details
+
+#### Scenario: Navegación del docente hacia Nota del día y detalle de sección
+- **GIVEN** un docente autenticado navega desde el menú lateral o móvil hacia `Nota del día` o selecciona una sección en `Mis cursos`
+- **WHEN** la aplicación resuelve las rutas `/nota-del-dia` y `/cursos/:asignaturaId`
+- **THEN** renderiza la ficha interactiva de captura rápida de criterios o el detalle completo con sus seis pestañas operativas sin pantallas en construcción
+
+### Requirement: Rutas docentes finales para Mensajes y Exportar SIAGIE y contratos OpenAPI (RC03, AC06)
+La API del portal SHALL exponer bajo `/api/v1` los endpoints contractuales docentes `/evaluacion/docentes/{docente_id}/mensajes` (`GET`, `POST`), `/reportes/docentes/{docente_id}/siagie` (`GET`) y `/reportes/docentes/{docente_id}/siagie/{seccion_id}/descarga` (`POST`), y la aplicación web SHALL activar las rutas operativas `/mensajes` y `/siagie` para el rol `Docente` sin vistas en construcción.
+
+#### Scenario: Esquema OpenAPI declara contratos docentes de mensajería y SIAGIE
+- **GIVEN** la API expone su esquema OpenAPI vigente
+- **WHEN** se consultan las rutas bajo `/api/v1/evaluacion/docentes/` y `/api/v1/reportes/docentes/`
+- **THEN** todas las operaciones de mensajería saliente y descargas SIAGIE/actas están declaradas con validación de entrada y respuestas Problem Details
+
+#### Scenario: Navegación del docente por Mensajes y Exportar SIAGIE completos
+- **GIVEN** un docente autenticado navega hacia `/mensajes` o `/siagie` desde el menú lateral o móvil
+- **WHEN** se renderiza la vista correspondiente
+- **THEN** la aplicación muestra el redactor con historial de enviados o el panel trimestral de descargas SIAGIE sin marcadores temporales de pantalla en preparación
