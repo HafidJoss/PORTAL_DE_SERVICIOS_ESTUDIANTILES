@@ -10,3 +10,14 @@ export function resolverEstudianteId(usuario: UsuarioSesionOut): string {
   }
   return "";
 }
+
+/** Resuelve el identificador del docente cuando la sesión corresponde al rol Docente. */
+export function resolverDocenteId(usuario: UsuarioSesionOut): string {
+  if (usuario.docente_id) {
+    return usuario.docente_id;
+  }
+  if (usuario.rol === "Docente") {
+    return usuario.id;
+  }
+  return "";
+}

@@ -63,6 +63,41 @@ const AVISOS_CONFIG = [
   },
 ];
 
+const AVISOS_DOCENTE = [
+  {
+    id: "calif" as const,
+    label: "Calificativos pendientes",
+    sub: "Actividades publicadas sin calificar",
+    Icon: Award,
+    bg: "var(--color-primary-light)",
+    fg: "var(--color-primary)",
+  },
+  {
+    id: "tareas" as const,
+    label: "Fechas de cierre",
+    sub: "Cierre preliminar y cierre del trimestre",
+    Icon: ClipboardList,
+    bg: "var(--status-warning-bg)",
+    fg: "var(--status-warning-fg)",
+  },
+  {
+    id: "asist" as const,
+    label: "Asistencia de mis secciones",
+    sub: "Resumen diario del auxiliar",
+    Icon: CalendarCheck,
+    bg: "var(--bg-subtle)",
+    fg: "var(--text-main)",
+  },
+  {
+    id: "obs" as const,
+    label: "Comunicados de Dirección",
+    sub: "Avisos institucionales",
+    Icon: MessageSquare,
+    bg: "var(--status-info-bg)",
+    fg: "var(--status-info-fg)",
+  },
+];
+
 export function ConfiguracionVista({ usuario }: { usuario: UsuarioSesionOut }) {
   const { theme, setTheme } = useTema();
   const [avisos, setAvisos] = useState<PreferenciasAvisos>(leerPreferenciasAvisos);
@@ -74,19 +109,33 @@ export function ConfiguracionVista({ usuario }: { usuario: UsuarioSesionOut }) {
 
   const cambiarPassMutation = useCambiarContrasenaApiV1IdentidadCambiarContrasenaPost();
 
+  const esDocente = usuario.rol === "Docente";
   const nombreCompleto = `${usuario.nombres} ${usuario.apellidos}`.trim();
-  const subtitulo = usuario.grado_seccion
-    ? `${nombreCompleto} · ${usuario.rol} · ${usuario.grado_seccion}`
-    : `${nombreCompleto} · ${usuario.rol}`;
+  const subtitulo = esDocente
+    ? [nombreCompleto, usuario.rol, usuario.especialidad].filter(Boolean).join(" · ")
+    : usuario.grado_seccion
+      ? `${nombreCompleto} · ${usuario.rol} · ${usuario.grado_seccion}`
+      : `${nombreCompleto} · ${usuario.rol}`;
 
-  const datosPersonales = [
-    ["Nombres", usuario.nombres],
-    ["Apellidos", usuario.apellidos],
-    ["DNI", usuario.dni],
-    ["Código de estudiante", usuario.codigo_estudiante ?? "—"],
-    ["Grado y sección", usuario.grado_seccion ?? "—"],
-    ["Tutora / Tutor", usuario.tutor ?? "—"],
-  ];
+  const datosPersonales = esDocente
+    ? [
+        ["Nombres", usuario.nombres],
+        ["Apellidos", usuario.apellidos],
+        ["DNI", usuario.dni],
+        ["Especialidad", usuario.especialidad ?? "—"],
+        ["Nivel", usuario.nivel_educativo ?? "—"],
+        ["Secciones a cargo", usuario.secciones_a_cargo?.join(", ") || "—"],
+      ]
+    : [
+        ["Nombres", usuario.nombres],
+        ["Apellidos", usuario.apellidos],
+        ["DNI", usuario.dni],
+        ["Código de estudiante", usuario.codigo_estudiante ?? "—"],
+        ["Grado y sección", usuario.grado_seccion ?? "—"],
+        ["Tutora / Tutor", usuario.tutor ?? "—"],
+      ];
+
+  const avisosLista = esDocente ? AVISOS_DOCENTE : AVISOS_CONFIG;
 
   function alternarAviso(clave: keyof PreferenciasAvisos) {
     const siguiente = { ...avisos, [clave]: !avisos[clave] };
@@ -296,7 +345,7 @@ export function ConfiguracionVista({ usuario }: { usuario: UsuarioSesionOut }) {
                 Elige qué novedades se resaltan en tu inicio.
               </div>
             </div>
-            {AVISOS_CONFIG.map(({ id, label, sub, Icon, bg, fg }) => {
+            {avisosLista.map(({ id, label, sub, Icon, bg, fg }) => {
               const encendido = avisos[id];
               return (
                 <div

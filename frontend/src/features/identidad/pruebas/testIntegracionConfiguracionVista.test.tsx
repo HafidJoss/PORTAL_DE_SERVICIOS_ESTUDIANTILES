@@ -140,4 +140,38 @@ describe("ConfiguracionVista", () => {
       ).toBeInTheDocument();
     });
   });
+
+  // Spec: identidad · Scenario: Visualización de perfil docente en configuración sin subida de imagen (RC07, RC08)
+  it("muestra perfil docente con especialidad y secciones en solo lectura sin subida de imagen", () => {
+    const docUsuario: UsuarioSesionOut = {
+      id: "doc-demo-1",
+      dni: "41257836",
+      nombres: "Julio",
+      apellidos: "Gamboa Rojas",
+      rol: "Docente",
+      docente_id: "doc-demo-1",
+      especialidad: "Matemática",
+      nivel_educativo: "Secundaria",
+      secciones_a_cargo: ["3.° A", "3.° B", "4.° A", "4.° C"],
+    };
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    const { container } = render(
+      <QueryClientProvider client={qc}>
+        <ProveedorTema>
+          <ConfiguracionVista usuario={docUsuario} />
+        </ProveedorTema>
+      </QueryClientProvider>,
+    );
+
+    expect(container.querySelector('input[type="file"]')).toBeNull();
+    expect(screen.getByText("41257836")).toBeInTheDocument();
+    expect(screen.getByText("Matemática")).toBeInTheDocument();
+    expect(screen.getByText("Secundaria")).toBeInTheDocument();
+    expect(screen.getByText("3.° A, 3.° B, 4.° A, 4.° C")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Para corregir tus datos, acércate a Secretaría Académica/i),
+    ).toBeInTheDocument();
+  });
 });

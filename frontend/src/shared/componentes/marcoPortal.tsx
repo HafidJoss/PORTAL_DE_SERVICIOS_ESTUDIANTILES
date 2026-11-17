@@ -12,21 +12,32 @@ import {
   Moon,
   Settings,
   Sun,
+  type LucideIcon,
 } from "lucide-react";
 
 import { useTema } from "../../app/proveedorTema";
 import { useEsMovil } from "../ganchos/useEsMovil";
 import { AvatarIniciales } from "./avatarIniciales";
 
+export interface ElementoNavPortal {
+  to: string;
+  label: string;
+  Icon: LucideIcon;
+  badge?: number;
+}
+
 interface MarcoPortalProps {
   usuarioNombre: string;
   usuarioDetalle: string;
+  subtituloPortal?: string;
+  navItems?: readonly ElementoNavPortal[];
+  navMovilItems?: readonly ElementoNavPortal[];
   onLogout?: () => void;
   cerrandoSesion?: boolean;
   children: ReactNode;
 }
 
-const DESKTOP_NAV = [
+const DESKTOP_NAV: readonly ElementoNavPortal[] = [
   { to: "/inicio", label: "Inicio", Icon: Home },
   { to: "/cursos", label: "Cursos", Icon: Library },
   { to: "/calificaciones", label: "Calificaciones", Icon: BookOpenCheck },
@@ -34,20 +45,23 @@ const DESKTOP_NAV = [
   { to: "/asistencia", label: "Asistencia", Icon: CalendarCheck },
   { to: "/mensajes", label: "Mensajes", Icon: Mail },
   { to: "/libreta", label: "Libreta", Icon: FileText },
-] as const;
+];
 
-const MOBILE_NAV = [
+const MOBILE_NAV: readonly ElementoNavPortal[] = [
   { to: "/inicio", label: "Inicio", Icon: Home },
   { to: "/cursos", label: "Cursos", Icon: Library },
   { to: "/calificaciones", label: "Notas", Icon: BookOpenCheck },
   { to: "/trabajos", label: "Tareas", Icon: ClipboardList },
   { to: "/asistencia", label: "Asistencia", Icon: CalendarCheck },
   { to: "/mensajes", label: "Mensajes", Icon: Mail },
-] as const;
+];
 
 export function MarcoPortal({
   usuarioNombre,
   usuarioDetalle,
+  subtituloPortal = "Portal Estudiantil",
+  navItems = DESKTOP_NAV,
+  navMovilItems = MOBILE_NAV,
   onLogout,
   cerrandoSesion = false,
   children,
@@ -97,7 +111,7 @@ export function MarcoPortal({
                 Mariscal Cáceres
               </div>
               <div style={{ fontSize: 11, color: "var(--text-muted)" }}>
-                Portal Estudiantil
+                {subtituloPortal}
               </div>
             </div>
           </div>
@@ -106,7 +120,7 @@ export function MarcoPortal({
             aria-label="Navegación principal"
             style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1 }}
           >
-            {DESKTOP_NAV.map(({ to, label, Icon }) => (
+            {navItems.map(({ to, label, Icon, badge }) => (
               <NavLink
                 key={to}
                 to={to}
@@ -125,7 +139,26 @@ export function MarcoPortal({
                 })}
               >
                 <Icon size={18} />
-                <span>{label}</span>
+                <span style={{ flex: 1, minWidth: 0 }}>{label}</span>
+                {typeof badge === "number" && badge > 0 ? (
+                  <span
+                    style={{
+                      minWidth: 20,
+                      height: 20,
+                      padding: "0 6px",
+                      borderRadius: "var(--radius-pill)",
+                      backgroundColor: "var(--color-primary-light)",
+                      color: "var(--color-primary)",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {badge}
+                  </span>
+                ) : null}
               </NavLink>
             ))}
           </nav>
@@ -272,7 +305,7 @@ export function MarcoPortal({
                 textOverflow: "ellipsis",
               }}
             >
-              Portal Estudiantil
+              {subtituloPortal}
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -345,17 +378,18 @@ export function MarcoPortal({
             backgroundColor: "var(--bg-surface)",
             borderTop: "1px solid var(--border-subtle)",
             display: "grid",
-            gridTemplateColumns: "repeat(6, minmax(0, 1fr))",
+            gridTemplateColumns: `repeat(${Math.max(1, navMovilItems.length)}, minmax(0, 1fr))`,
             alignItems: "center",
             padding: "0 4px",
             zIndex: 20,
           }}
         >
-          {MOBILE_NAV.map(({ to, label, Icon }) => (
+          {navMovilItems.map(({ to, label, Icon, badge }) => (
             <NavLink
               key={to}
               to={to}
               style={({ isActive }) => ({
+                position: "relative",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -370,6 +404,28 @@ export function MarcoPortal({
             >
               <Icon size={18} />
               <span>{label}</span>
+              {typeof badge === "number" && badge > 0 ? (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 2,
+                    right: 10,
+                    minWidth: 16,
+                    height: 16,
+                    padding: "0 4px",
+                    borderRadius: "var(--radius-pill)",
+                    backgroundColor: "var(--color-primary)",
+                    color: "#FFFFFF",
+                    fontSize: 9,
+                    fontWeight: 700,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {badge}
+                </span>
+              ) : null}
             </NavLink>
           ))}
         </nav>
