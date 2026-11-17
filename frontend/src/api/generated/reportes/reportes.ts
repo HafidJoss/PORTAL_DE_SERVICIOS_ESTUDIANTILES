@@ -6,16 +6,20 @@
  * OpenAPI spec version: 0.1.0
  */
 import {
+  useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query';
@@ -23,6 +27,8 @@ import type {
 import type {
   LibretasOut,
   ProblemDetail,
+  ResumenSiagieDocenteOut,
+  SolicitudDescargaSiagieIn,
   UrlDescargaOut
 } from '.././model';
 
@@ -311,3 +317,248 @@ export function useObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteId
 
 
 
+/**
+ * Devuelve estado de preparación SIAGIE y Actas por trimestre y sección.
+ * @summary Obtener Resumen Siagie Docente
+ */
+export type obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse200 = {
+  data: ResumenSiagieDocenteOut
+  status: 200
+}
+
+export type obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponseSuccess = (obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse200) & {
+  headers: Headers;
+};
+export type obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponseError = (obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse401 | obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse403 | obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse404 | obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse422) & {
+  headers: Headers;
+};
+
+export type obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse = (obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponseSuccess | obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponseError)
+
+export const getObtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetUrl = (docenteId: string,) => {
+
+
+  
+
+  return `/api/v1/reportes/docentes/${docenteId}/siagie`
+}
+
+export const obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet = async (docenteId: string, options?: RequestInit): Promise<obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse> => {
+  
+  return customFetch<obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetResponse>(getObtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetUrl(docenteId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+
+
+export const getObtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetQueryKey = (docenteId?: string,) => {
+    return [
+    `/api/v1/reportes/docentes/${docenteId}/siagie`
+    ] as const;
+    }
+
+    
+export const getObtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetQueryOptions = <TData = Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>, TError = ProblemDetail>(docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getObtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetQueryKey(docenteId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>> = ({ signal }) => obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet(docenteId, { signal, ...requestOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(docenteId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ObtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetQueryResult = NonNullable<Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>>
+export type ObtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetQueryError = ProblemDetail
+
+
+export function useObtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet<TData = Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>, TError = ProblemDetail>(
+ docenteId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet<TData = Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>, TError = ProblemDetail>(
+ docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet<TData = Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>, TError = ProblemDetail>(
+ docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener Resumen Siagie Docente
+ */
+
+export function useObtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet<TData = Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>, TError = ProblemDetail>(
+ docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getObtenerResumenSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieGetQueryOptions(docenteId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Emite URL firmada temporal (TTL 15 min) para Excel SIAGIE o Acta preliminar (RF16, RC05).
+ * @summary Generar Descarga Siagie Docente
+ */
+export type generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse200 = {
+  data: UrlDescargaOut
+  status: 200
+}
+
+export type generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponseSuccess = (generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse200) & {
+  headers: Headers;
+};
+export type generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponseError = (generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse401 | generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse403 | generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse404 | generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse422) & {
+  headers: Headers;
+};
+
+export type generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse = (generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponseSuccess | generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponseError)
+
+export const getGenerarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostUrl = (docenteId: string,
+    seccionId: string,) => {
+
+
+  
+
+  return `/api/v1/reportes/docentes/${docenteId}/siagie/${seccionId}/descarga`
+}
+
+export const generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPost = async (docenteId: string,
+    seccionId: string,
+    solicitudDescargaSiagieIn: SolicitudDescargaSiagieIn, options?: RequestInit): Promise<generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse> => {
+  
+  return customFetch<generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostResponse>(getGenerarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostUrl(docenteId,seccionId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      solicitudDescargaSiagieIn,)
+  }
+);}
+
+
+
+
+export const getGenerarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPost>>, TError,{docenteId: string;seccionId: string;data: SolicitudDescargaSiagieIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPost>>, TError,{docenteId: string;seccionId: string;data: SolicitudDescargaSiagieIn}, TContext> => {
+
+const mutationKey = ['generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPost>>, {docenteId: string;seccionId: string;data: SolicitudDescargaSiagieIn}> = (props) => {
+          const {docenteId,seccionId,data} = props ?? {};
+
+          return  generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPost(docenteId,seccionId,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GenerarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostMutationResult = NonNullable<Awaited<ReturnType<typeof generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPost>>>
+    export type GenerarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostMutationBody = SolicitudDescargaSiagieIn
+    export type GenerarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostMutationError = ProblemDetail
+
+    /**
+ * @summary Generar Descarga Siagie Docente
+ */
+export const useGenerarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPost>>, TError,{docenteId: string;seccionId: string;data: SolicitudDescargaSiagieIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof generarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPost>>,
+        TError,
+        {docenteId: string;seccionId: string;data: SolicitudDescargaSiagieIn},
+        TContext
+      > => {
+
+      const mutationOptions = getGenerarDescargaSiagieDocenteApiV1ReportesDocentesDocenteIdSiagieSeccionIdDescargaPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    

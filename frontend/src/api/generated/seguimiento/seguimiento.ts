@@ -25,11 +25,19 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AnuncioSeccionCreateIn,
   CursoDetalleOut,
+  DetalleSeccionDocenteOut,
+  ElementoStreamSeccionOut,
+  InicioDocenteOut,
   InicioEstudianteOut,
   ListaCursosOut,
+  ListaSeccionesDocenteOut,
   NovedadesVistoOut,
-  ProblemDetail
+  OperacionBandejaOut,
+  ProblemDetail,
+  RespuestaBandejaIn,
+  RespuestaBandejaOut
 } from '.././model';
 
 import { customFetch } from '../../clienteHttp';
@@ -557,3 +565,847 @@ export function useObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCur
 
 
 
+/**
+ * Devuelve bandeja, clases del día, pendientes, alertas y etapas del docente.
+ * @summary Obtener Inicio Docente
+ */
+export type obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse200 = {
+  data: InicioDocenteOut
+  status: 200
+}
+
+export type obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponseSuccess = (obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse200) & {
+  headers: Headers;
+};
+export type obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponseError = (obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse401 | obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse403 | obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse404 | obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse422) & {
+  headers: Headers;
+};
+
+export type obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse = (obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponseSuccess | obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponseError)
+
+export const getObtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetUrl = (docenteId: string,) => {
+
+
+  
+
+  return `/api/v1/seguimiento/docentes/${docenteId}/inicio`
+}
+
+export const obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet = async (docenteId: string, options?: RequestInit): Promise<obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse> => {
+  
+  return customFetch<obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetResponse>(getObtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetUrl(docenteId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+
+
+export const getObtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetQueryKey = (docenteId?: string,) => {
+    return [
+    `/api/v1/seguimiento/docentes/${docenteId}/inicio`
+    ] as const;
+    }
+
+    
+export const getObtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetQueryOptions = <TData = Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>, TError = ProblemDetail>(docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getObtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetQueryKey(docenteId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>> = ({ signal }) => obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet(docenteId, { signal, ...requestOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(docenteId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ObtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetQueryResult = NonNullable<Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>>
+export type ObtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetQueryError = ProblemDetail
+
+
+export function useObtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet<TData = Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>, TError = ProblemDetail>(
+ docenteId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet<TData = Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>, TError = ProblemDetail>(
+ docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet<TData = Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>, TError = ProblemDetail>(
+ docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener Inicio Docente
+ */
+
+export function useObtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet<TData = Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>, TError = ProblemDetail>(
+ docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getObtenerInicioDocenteApiV1SeguimientoDocentesDocenteIdInicioGetQueryOptions(docenteId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Marca todos los mensajes de la bandeja docente como leídos.
+ * @summary Marcar Bandeja Docente Leida
+ */
+export type marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse200 = {
+  data: OperacionBandejaOut
+  status: 200
+}
+
+export type marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponseSuccess = (marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse200) & {
+  headers: Headers;
+};
+export type marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponseError = (marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse401 | marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse403 | marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse404 | marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse422) & {
+  headers: Headers;
+};
+
+export type marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse = (marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponseSuccess | marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponseError)
+
+export const getMarcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostUrl = (docenteId: string,) => {
+
+
+  
+
+  return `/api/v1/seguimiento/docentes/${docenteId}/bandeja/leer-todo`
+}
+
+export const marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPost = async (docenteId: string, options?: RequestInit): Promise<marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse> => {
+  
+  return customFetch<marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostResponse>(getMarcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostUrl(docenteId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+
+export const getMarcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPost>>, TError,{docenteId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPost>>, TError,{docenteId: string}, TContext> => {
+
+const mutationKey = ['marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPost>>, {docenteId: string}> = (props) => {
+          const {docenteId} = props ?? {};
+
+          return  marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPost(docenteId,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type MarcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostMutationResult = NonNullable<Awaited<ReturnType<typeof marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPost>>>
+    
+    export type MarcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostMutationError = ProblemDetail
+
+    /**
+ * @summary Marcar Bandeja Docente Leida
+ */
+export const useMarcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPost>>, TError,{docenteId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof marcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPost>>,
+        TError,
+        {docenteId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getMarcarBandejaDocenteLeidaApiV1SeguimientoDocentesDocenteIdBandejaLeerTodoPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Marca un mensaje específico de la bandeja docente como leído.
+ * @summary Marcar Mensaje Bandeja Leido
+ */
+export type marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse200 = {
+  data: OperacionBandejaOut
+  status: 200
+}
+
+export type marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponseSuccess = (marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse200) & {
+  headers: Headers;
+};
+export type marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponseError = (marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse401 | marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse403 | marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse404 | marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse422) & {
+  headers: Headers;
+};
+
+export type marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse = (marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponseSuccess | marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponseError)
+
+export const getMarcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostUrl = (docenteId: string,
+    mensajeId: string,) => {
+
+
+  
+
+  return `/api/v1/seguimiento/docentes/${docenteId}/bandeja/${mensajeId}/leer`
+}
+
+export const marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPost = async (docenteId: string,
+    mensajeId: string, options?: RequestInit): Promise<marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse> => {
+  
+  return customFetch<marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostResponse>(getMarcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostUrl(docenteId,mensajeId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+
+export const getMarcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPost>>, TError,{docenteId: string;mensajeId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPost>>, TError,{docenteId: string;mensajeId: string}, TContext> => {
+
+const mutationKey = ['marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPost>>, {docenteId: string;mensajeId: string}> = (props) => {
+          const {docenteId,mensajeId} = props ?? {};
+
+          return  marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPost(docenteId,mensajeId,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type MarcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostMutationResult = NonNullable<Awaited<ReturnType<typeof marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPost>>>
+    
+    export type MarcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostMutationError = ProblemDetail
+
+    /**
+ * @summary Marcar Mensaje Bandeja Leido
+ */
+export const useMarcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPost>>, TError,{docenteId: string;mensajeId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof marcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPost>>,
+        TError,
+        {docenteId: string;mensajeId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getMarcarMensajeBandejaLeidoApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdLeerPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Registra una respuesta acotada en hilo solo sobre consultas de estudiantes.
+ * @summary Responder Mensaje Bandeja
+ */
+export type responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse200 = {
+  data: RespuestaBandejaOut
+  status: 200
+}
+
+export type responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponseSuccess = (responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse200) & {
+  headers: Headers;
+};
+export type responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponseError = (responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse401 | responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse403 | responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse404 | responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse422) & {
+  headers: Headers;
+};
+
+export type responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse = (responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponseSuccess | responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponseError)
+
+export const getResponderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostUrl = (docenteId: string,
+    mensajeId: string,) => {
+
+
+  
+
+  return `/api/v1/seguimiento/docentes/${docenteId}/bandeja/${mensajeId}/responder`
+}
+
+export const responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPost = async (docenteId: string,
+    mensajeId: string,
+    respuestaBandejaIn: RespuestaBandejaIn, options?: RequestInit): Promise<responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse> => {
+  
+  return customFetch<responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostResponse>(getResponderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostUrl(docenteId,mensajeId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      respuestaBandejaIn,)
+  }
+);}
+
+
+
+
+export const getResponderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPost>>, TError,{docenteId: string;mensajeId: string;data: RespuestaBandejaIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPost>>, TError,{docenteId: string;mensajeId: string;data: RespuestaBandejaIn}, TContext> => {
+
+const mutationKey = ['responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPost>>, {docenteId: string;mensajeId: string;data: RespuestaBandejaIn}> = (props) => {
+          const {docenteId,mensajeId,data} = props ?? {};
+
+          return  responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPost(docenteId,mensajeId,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ResponderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostMutationResult = NonNullable<Awaited<ReturnType<typeof responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPost>>>
+    export type ResponderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostMutationBody = RespuestaBandejaIn
+    export type ResponderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostMutationError = ProblemDetail
+
+    /**
+ * @summary Responder Mensaje Bandeja
+ */
+export const useResponderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPost>>, TError,{docenteId: string;mensajeId: string;data: RespuestaBandejaIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof responderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPost>>,
+        TError,
+        {docenteId: string;mensajeId: string;data: RespuestaBandejaIn},
+        TContext
+      > => {
+
+      const mutationOptions = getResponderMensajeBandejaApiV1SeguimientoDocentesDocenteIdBandejaMensajeIdResponderPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Devuelve las secciones asignadas al docente para la grilla Mis cursos.
+ * @summary Listar Secciones Docente
+ */
+export type listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse200 = {
+  data: ListaSeccionesDocenteOut
+  status: 200
+}
+
+export type listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponseSuccess = (listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse200) & {
+  headers: Headers;
+};
+export type listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponseError = (listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse401 | listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse403 | listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse404 | listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse422) & {
+  headers: Headers;
+};
+
+export type listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse = (listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponseSuccess | listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponseError)
+
+export const getListarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetUrl = (docenteId: string,) => {
+
+
+  
+
+  return `/api/v1/seguimiento/docentes/${docenteId}/cursos`
+}
+
+export const listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet = async (docenteId: string, options?: RequestInit): Promise<listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse> => {
+  
+  return customFetch<listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetResponse>(getListarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetUrl(docenteId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+
+
+export const getListarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetQueryKey = (docenteId?: string,) => {
+    return [
+    `/api/v1/seguimiento/docentes/${docenteId}/cursos`
+    ] as const;
+    }
+
+    
+export const getListarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetQueryOptions = <TData = Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>, TError = ProblemDetail>(docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetQueryKey(docenteId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>> = ({ signal }) => listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet(docenteId, { signal, ...requestOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(docenteId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetQueryResult = NonNullable<Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>>
+export type ListarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetQueryError = ProblemDetail
+
+
+export function useListarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet<TData = Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>, TError = ProblemDetail>(
+ docenteId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>,
+          TError,
+          Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet<TData = Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>, TError = ProblemDetail>(
+ docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>,
+          TError,
+          Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet<TData = Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>, TError = ProblemDetail>(
+ docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Listar Secciones Docente
+ */
+
+export function useListarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet<TData = Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>, TError = ProblemDetail>(
+ docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListarSeccionesDocenteApiV1SeguimientoDocentesDocenteIdCursosGetQueryOptions(docenteId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Devuelve cabecera, distribución de niveles y flujo Novedades de la sección.
+ * @summary Obtener Detalle Seccion Docente
+ */
+export type obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse200 = {
+  data: DetalleSeccionDocenteOut
+  status: 200
+}
+
+export type obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponseSuccess = (obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse200) & {
+  headers: Headers;
+};
+export type obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponseError = (obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse401 | obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse403 | obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse404 | obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse422) & {
+  headers: Headers;
+};
+
+export type obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse = (obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponseSuccess | obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponseError)
+
+export const getObtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetUrl = (docenteId: string,
+    seccionId: string,) => {
+
+
+  
+
+  return `/api/v1/seguimiento/docentes/${docenteId}/secciones/${seccionId}`
+}
+
+export const obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet = async (docenteId: string,
+    seccionId: string, options?: RequestInit): Promise<obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse> => {
+  
+  return customFetch<obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetResponse>(getObtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetUrl(docenteId,seccionId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+
+
+export const getObtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetQueryKey = (docenteId?: string,
+    seccionId?: string,) => {
+    return [
+    `/api/v1/seguimiento/docentes/${docenteId}/secciones/${seccionId}`
+    ] as const;
+    }
+
+    
+export const getObtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetQueryOptions = <TData = Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>, TError = ProblemDetail>(docenteId: string,
+    seccionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getObtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetQueryKey(docenteId,seccionId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>> = ({ signal }) => obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet(docenteId,seccionId, { signal, ...requestOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(docenteId && seccionId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ObtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetQueryResult = NonNullable<Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>>
+export type ObtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetQueryError = ProblemDetail
+
+
+export function useObtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet<TData = Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>, TError = ProblemDetail>(
+ docenteId: string,
+    seccionId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet<TData = Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>, TError = ProblemDetail>(
+ docenteId: string,
+    seccionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet<TData = Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>, TError = ProblemDetail>(
+ docenteId: string,
+    seccionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener Detalle Seccion Docente
+ */
+
+export function useObtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet<TData = Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>, TError = ProblemDetail>(
+ docenteId: string,
+    seccionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getObtenerDetalleSeccionDocenteApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdGetQueryOptions(docenteId,seccionId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Publica un anuncio unidireccional en Novedades de la sección (RF25, RC08).
+ * @summary Publicar Anuncio Seccion
+ */
+export type publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse201 = {
+  data: ElementoStreamSeccionOut
+  status: 201
+}
+
+export type publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponseSuccess = (publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse201) & {
+  headers: Headers;
+};
+export type publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponseError = (publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse401 | publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse403 | publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse404 | publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse422) & {
+  headers: Headers;
+};
+
+export type publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse = (publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponseSuccess | publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponseError)
+
+export const getPublicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostUrl = (docenteId: string,
+    seccionId: string,) => {
+
+
+  
+
+  return `/api/v1/seguimiento/docentes/${docenteId}/secciones/${seccionId}/anuncios`
+}
+
+export const publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPost = async (docenteId: string,
+    seccionId: string,
+    anuncioSeccionCreateIn: AnuncioSeccionCreateIn, options?: RequestInit): Promise<publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse> => {
+  
+  return customFetch<publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostResponse>(getPublicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostUrl(docenteId,seccionId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      anuncioSeccionCreateIn,)
+  }
+);}
+
+
+
+
+export const getPublicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPost>>, TError,{docenteId: string;seccionId: string;data: AnuncioSeccionCreateIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPost>>, TError,{docenteId: string;seccionId: string;data: AnuncioSeccionCreateIn}, TContext> => {
+
+const mutationKey = ['publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPost>>, {docenteId: string;seccionId: string;data: AnuncioSeccionCreateIn}> = (props) => {
+          const {docenteId,seccionId,data} = props ?? {};
+
+          return  publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPost(docenteId,seccionId,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PublicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostMutationResult = NonNullable<Awaited<ReturnType<typeof publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPost>>>
+    export type PublicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostMutationBody = AnuncioSeccionCreateIn
+    export type PublicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostMutationError = ProblemDetail
+
+    /**
+ * @summary Publicar Anuncio Seccion
+ */
+export const usePublicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPost>>, TError,{docenteId: string;seccionId: string;data: AnuncioSeccionCreateIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof publicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPost>>,
+        TError,
+        {docenteId: string;seccionId: string;data: AnuncioSeccionCreateIn},
+        TContext
+      > => {
+
+      const mutationOptions = getPublicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    

@@ -10,6 +10,10 @@ import type { UsuarioSesionOutEstudianteId } from './usuarioSesionOutEstudianteI
 import type { UsuarioSesionOutCodigoEstudiante } from './usuarioSesionOutCodigoEstudiante';
 import type { UsuarioSesionOutGradoSeccion } from './usuarioSesionOutGradoSeccion';
 import type { UsuarioSesionOutTutor } from './usuarioSesionOutTutor';
+import type { UsuarioSesionOutDocenteId } from './usuarioSesionOutDocenteId';
+import type { UsuarioSesionOutEspecialidad } from './usuarioSesionOutEspecialidad';
+import type { UsuarioSesionOutNivelEducativo } from './usuarioSesionOutNivelEducativo';
+import type { UsuarioSesionOutSeccionesACargo } from './usuarioSesionOutSeccionesACargo';
 
 /**
  * Resumen público del usuario autenticado.
@@ -24,4 +28,8 @@ export interface UsuarioSesionOut {
   codigo_estudiante?: UsuarioSesionOutCodigoEstudiante;
   grado_seccion?: UsuarioSesionOutGradoSeccion;
   tutor?: UsuarioSesionOutTutor;
+  docente_id?: UsuarioSesionOutDocenteId;
+  especialidad?: UsuarioSesionOutEspecialidad;
+  nivel_educativo?: UsuarioSesionOutNivelEducativo;
+  secciones_a_cargo?: UsuarioSesionOutSeccionesACargo;
 }

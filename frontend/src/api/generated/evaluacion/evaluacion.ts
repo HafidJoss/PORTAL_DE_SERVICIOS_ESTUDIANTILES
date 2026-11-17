@@ -25,13 +25,26 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ActividadDocenteCreateIn,
+  ActividadDocenteOut,
+  BandejaEnviadosDocenteOut,
   CalificacionesEstudianteOut,
+  ConfirmacionCierreOut,
+  ConfirmarCierreIn,
   LecturaConfirmadaOut,
   ListaActividadesOut,
   ListaMensajesOut,
+  MensajeDocenteCreateIn,
+  MensajeEnviadoDocenteOut,
+  NotasSesionPutIn,
+  ObservacionDocenteCreateIn,
+  ObservacionDocenteOut,
+  PanelEvaluacionSeccionOut,
   ProblemDetail,
   RespuestaHiloOut,
-  RespuestaMensajeIn
+  RespuestaMensajeIn,
+  SesionClaseCreateIn,
+  SesionClaseOut
 } from '.././model';
 
 import { customFetch } from '../../clienteHttp';
@@ -655,6 +668,1045 @@ export const useResponderMensajeApiV1EvaluacionMensajesMensajeIdRespuestasPost =
       > => {
 
       const mutationOptions = getResponderMensajeApiV1EvaluacionMensajesMensajeIdRespuestasPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Devuelve catálogo de competencias, nómina, sesiones, actividades y cierres de sección.
+ * @summary Obtener Panel Evaluacion Seccion
+ */
+export type obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse200 = {
+  data: PanelEvaluacionSeccionOut
+  status: 200
+}
+
+export type obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponseSuccess = (obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse200) & {
+  headers: Headers;
+};
+export type obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponseError = (obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse401 | obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse403 | obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse404 | obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse422) & {
+  headers: Headers;
+};
+
+export type obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse = (obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponseSuccess | obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponseError)
+
+export const getObtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetUrl = (docenteId: string,
+    seccionId: string,) => {
+
+
+  
+
+  return `/api/v1/evaluacion/docentes/${docenteId}/secciones/${seccionId}/clases`
+}
+
+export const obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet = async (docenteId: string,
+    seccionId: string, options?: RequestInit): Promise<obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse> => {
+  
+  return customFetch<obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetResponse>(getObtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetUrl(docenteId,seccionId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+
+
+export const getObtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetQueryKey = (docenteId?: string,
+    seccionId?: string,) => {
+    return [
+    `/api/v1/evaluacion/docentes/${docenteId}/secciones/${seccionId}/clases`
+    ] as const;
+    }
+
+    
+export const getObtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetQueryOptions = <TData = Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>, TError = ProblemDetail>(docenteId: string,
+    seccionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getObtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetQueryKey(docenteId,seccionId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>> = ({ signal }) => obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet(docenteId,seccionId, { signal, ...requestOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(docenteId && seccionId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ObtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetQueryResult = NonNullable<Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>>
+export type ObtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetQueryError = ProblemDetail
+
+
+export function useObtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet<TData = Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>, TError = ProblemDetail>(
+ docenteId: string,
+    seccionId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet<TData = Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>, TError = ProblemDetail>(
+ docenteId: string,
+    seccionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet<TData = Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>, TError = ProblemDetail>(
+ docenteId: string,
+    seccionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener Panel Evaluacion Seccion
+ */
+
+export function useObtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet<TData = Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>, TError = ProblemDetail>(
+ docenteId: string,
+    seccionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getObtenerPanelEvaluacionSeccionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdClasesGetQueryOptions(docenteId,seccionId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Crea una nueva sesión de clase con cuatro criterios evaluables K1..K4.
+ * @summary Crear Sesion Clase
+ */
+export type crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse201 = {
+  data: SesionClaseOut
+  status: 201
+}
+
+export type crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponseSuccess = (crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse201) & {
+  headers: Headers;
+};
+export type crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponseError = (crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse401 | crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse403 | crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse404 | crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse422) & {
+  headers: Headers;
+};
+
+export type crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse = (crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponseSuccess | crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponseError)
+
+export const getCrearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostUrl = (docenteId: string,
+    seccionId: string,) => {
+
+
+  
+
+  return `/api/v1/evaluacion/docentes/${docenteId}/secciones/${seccionId}/sesiones`
+}
+
+export const crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPost = async (docenteId: string,
+    seccionId: string,
+    sesionClaseCreateIn: SesionClaseCreateIn, options?: RequestInit): Promise<crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse> => {
+  
+  return customFetch<crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostResponse>(getCrearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostUrl(docenteId,seccionId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      sesionClaseCreateIn,)
+  }
+);}
+
+
+
+
+export const getCrearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPost>>, TError,{docenteId: string;seccionId: string;data: SesionClaseCreateIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPost>>, TError,{docenteId: string;seccionId: string;data: SesionClaseCreateIn}, TContext> => {
+
+const mutationKey = ['crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPost>>, {docenteId: string;seccionId: string;data: SesionClaseCreateIn}> = (props) => {
+          const {docenteId,seccionId,data} = props ?? {};
+
+          return  crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPost(docenteId,seccionId,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CrearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostMutationResult = NonNullable<Awaited<ReturnType<typeof crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPost>>>
+    export type CrearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostMutationBody = SesionClaseCreateIn
+    export type CrearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostMutationError = ProblemDetail
+
+    /**
+ * @summary Crear Sesion Clase
+ */
+export const useCrearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPost>>, TError,{docenteId: string;seccionId: string;data: SesionClaseCreateIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof crearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPost>>,
+        TError,
+        {docenteId: string;seccionId: string;data: SesionClaseCreateIn},
+        TContext
+      > => {
+
+      const mutationOptions = getCrearSesionClaseApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Guarda avances o publica la sesión exigiendo 4 criterios válidos por estudiante.
+ * @summary Guardar Notas Sesion
+ */
+export type guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse200 = {
+  data: SesionClaseOut
+  status: 200
+}
+
+export type guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponseSuccess = (guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse200) & {
+  headers: Headers;
+};
+export type guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponseError = (guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse401 | guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse403 | guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse404 | guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse422) & {
+  headers: Headers;
+};
+
+export type guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse = (guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponseSuccess | guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponseError)
+
+export const getGuardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutUrl = (docenteId: string,
+    seccionId: string,
+    sesionId: string,) => {
+
+
+  
+
+  return `/api/v1/evaluacion/docentes/${docenteId}/secciones/${seccionId}/sesiones/${sesionId}/notas`
+}
+
+export const guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPut = async (docenteId: string,
+    seccionId: string,
+    sesionId: string,
+    notasSesionPutIn: NotasSesionPutIn, options?: RequestInit): Promise<guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse> => {
+  
+  return customFetch<guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutResponse>(getGuardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutUrl(docenteId,seccionId,sesionId),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      notasSesionPutIn,)
+  }
+);}
+
+
+
+
+export const getGuardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPut>>, TError,{docenteId: string;seccionId: string;sesionId: string;data: NotasSesionPutIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPut>>, TError,{docenteId: string;seccionId: string;sesionId: string;data: NotasSesionPutIn}, TContext> => {
+
+const mutationKey = ['guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPut'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPut>>, {docenteId: string;seccionId: string;sesionId: string;data: NotasSesionPutIn}> = (props) => {
+          const {docenteId,seccionId,sesionId,data} = props ?? {};
+
+          return  guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPut(docenteId,seccionId,sesionId,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GuardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutMutationResult = NonNullable<Awaited<ReturnType<typeof guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPut>>>
+    export type GuardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutMutationBody = NotasSesionPutIn
+    export type GuardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutMutationError = ProblemDetail
+
+    /**
+ * @summary Guardar Notas Sesion
+ */
+export const useGuardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPut = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPut>>, TError,{docenteId: string;seccionId: string;sesionId: string;data: NotasSesionPutIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof guardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPut>>,
+        TError,
+        {docenteId: string;seccionId: string;sesionId: string;data: NotasSesionPutIn},
+        TContext
+      > => {
+
+      const mutationOptions = getGuardarNotasSesionApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdSesionesSesionIdNotasPutMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Registra una actividad académica como borrador o publicada sin adjuntos (RC08).
+ * @summary Crear Actividad Docente
+ */
+export type crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse201 = {
+  data: ActividadDocenteOut
+  status: 201
+}
+
+export type crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponseSuccess = (crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse201) & {
+  headers: Headers;
+};
+export type crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponseError = (crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse401 | crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse403 | crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse404 | crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse422) & {
+  headers: Headers;
+};
+
+export type crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse = (crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponseSuccess | crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponseError)
+
+export const getCrearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostUrl = (docenteId: string,
+    seccionId: string,) => {
+
+
+  
+
+  return `/api/v1/evaluacion/docentes/${docenteId}/secciones/${seccionId}/actividades`
+}
+
+export const crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPost = async (docenteId: string,
+    seccionId: string,
+    actividadDocenteCreateIn: ActividadDocenteCreateIn, options?: RequestInit): Promise<crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse> => {
+  
+  return customFetch<crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostResponse>(getCrearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostUrl(docenteId,seccionId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      actividadDocenteCreateIn,)
+  }
+);}
+
+
+
+
+export const getCrearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPost>>, TError,{docenteId: string;seccionId: string;data: ActividadDocenteCreateIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPost>>, TError,{docenteId: string;seccionId: string;data: ActividadDocenteCreateIn}, TContext> => {
+
+const mutationKey = ['crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPost>>, {docenteId: string;seccionId: string;data: ActividadDocenteCreateIn}> = (props) => {
+          const {docenteId,seccionId,data} = props ?? {};
+
+          return  crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPost(docenteId,seccionId,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CrearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostMutationResult = NonNullable<Awaited<ReturnType<typeof crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPost>>>
+    export type CrearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostMutationBody = ActividadDocenteCreateIn
+    export type CrearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostMutationError = ProblemDetail
+
+    /**
+ * @summary Crear Actividad Docente
+ */
+export const useCrearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPost>>, TError,{docenteId: string;seccionId: string;data: ActividadDocenteCreateIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof crearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPost>>,
+        TError,
+        {docenteId: string;seccionId: string;data: ActividadDocenteCreateIn},
+        TContext
+      > => {
+
+      const mutationOptions = getCrearActividadDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdActividadesPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Publica una actividad que se encontraba en borrador.
+ * @summary Publicar Actividad Docente
+ */
+export type publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse200 = {
+  data: ActividadDocenteOut
+  status: 200
+}
+
+export type publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponseSuccess = (publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse200) & {
+  headers: Headers;
+};
+export type publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponseError = (publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse401 | publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse403 | publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse404 | publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse422) & {
+  headers: Headers;
+};
+
+export type publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse = (publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponseSuccess | publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponseError)
+
+export const getPublicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostUrl = (docenteId: string,
+    actividadId: string,) => {
+
+
+  
+
+  return `/api/v1/evaluacion/docentes/${docenteId}/actividades/${actividadId}/publicar`
+}
+
+export const publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPost = async (docenteId: string,
+    actividadId: string, options?: RequestInit): Promise<publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse> => {
+  
+  return customFetch<publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostResponse>(getPublicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostUrl(docenteId,actividadId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+
+export const getPublicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPost>>, TError,{docenteId: string;actividadId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPost>>, TError,{docenteId: string;actividadId: string}, TContext> => {
+
+const mutationKey = ['publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPost>>, {docenteId: string;actividadId: string}> = (props) => {
+          const {docenteId,actividadId} = props ?? {};
+
+          return  publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPost(docenteId,actividadId,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PublicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostMutationResult = NonNullable<Awaited<ReturnType<typeof publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPost>>>
+    
+    export type PublicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostMutationError = ProblemDetail
+
+    /**
+ * @summary Publicar Actividad Docente
+ */
+export const usePublicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPost>>, TError,{docenteId: string;actividadId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof publicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPost>>,
+        TError,
+        {docenteId: string;actividadId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getPublicarActividadDocenteApiV1EvaluacionDocentesDocenteIdActividadesActividadIdPublicarPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Valida completitud de niveles y conclusiones obligatorias (RF22) al confirmar cierre.
+ * @summary Confirmar Cierre Competencia
+ */
+export type confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse200 = {
+  data: ConfirmacionCierreOut
+  status: 200
+}
+
+export type confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponseSuccess = (confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse200) & {
+  headers: Headers;
+};
+export type confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponseError = (confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse401 | confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse403 | confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse404 | confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse422) & {
+  headers: Headers;
+};
+
+export type confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse = (confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponseSuccess | confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponseError)
+
+export const getConfirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostUrl = (docenteId: string,
+    seccionId: string,) => {
+
+
+  
+
+  return `/api/v1/evaluacion/docentes/${docenteId}/secciones/${seccionId}/cierre/confirmar`
+}
+
+export const confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPost = async (docenteId: string,
+    seccionId: string,
+    confirmarCierreIn: ConfirmarCierreIn, options?: RequestInit): Promise<confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse> => {
+  
+  return customFetch<confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostResponse>(getConfirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostUrl(docenteId,seccionId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      confirmarCierreIn,)
+  }
+);}
+
+
+
+
+export const getConfirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPost>>, TError,{docenteId: string;seccionId: string;data: ConfirmarCierreIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPost>>, TError,{docenteId: string;seccionId: string;data: ConfirmarCierreIn}, TContext> => {
+
+const mutationKey = ['confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPost>>, {docenteId: string;seccionId: string;data: ConfirmarCierreIn}> = (props) => {
+          const {docenteId,seccionId,data} = props ?? {};
+
+          return  confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPost(docenteId,seccionId,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ConfirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostMutationResult = NonNullable<Awaited<ReturnType<typeof confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPost>>>
+    export type ConfirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostMutationBody = ConfirmarCierreIn
+    export type ConfirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostMutationError = ProblemDetail
+
+    /**
+ * @summary Confirmar Cierre Competencia
+ */
+export const useConfirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPost>>, TError,{docenteId: string;seccionId: string;data: ConfirmarCierreIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof confirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPost>>,
+        TError,
+        {docenteId: string;seccionId: string;data: ConfirmarCierreIn},
+        TContext
+      > => {
+
+      const mutationOptions = getConfirmarCierreCompetenciaApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdCierreConfirmarPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Publica una observación cualitativa dirigida al estudiante y su apoderado (RF24).
+ * @summary Registrar Observacion Docente
+ */
+export type registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse201 = {
+  data: ObservacionDocenteOut
+  status: 201
+}
+
+export type registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponseSuccess = (registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse201) & {
+  headers: Headers;
+};
+export type registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponseError = (registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse401 | registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse403 | registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse404 | registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse422) & {
+  headers: Headers;
+};
+
+export type registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse = (registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponseSuccess | registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponseError)
+
+export const getRegistrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostUrl = (docenteId: string,
+    seccionId: string,) => {
+
+
+  
+
+  return `/api/v1/evaluacion/docentes/${docenteId}/secciones/${seccionId}/observaciones`
+}
+
+export const registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPost = async (docenteId: string,
+    seccionId: string,
+    observacionDocenteCreateIn: ObservacionDocenteCreateIn, options?: RequestInit): Promise<registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse> => {
+  
+  return customFetch<registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostResponse>(getRegistrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostUrl(docenteId,seccionId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      observacionDocenteCreateIn,)
+  }
+);}
+
+
+
+
+export const getRegistrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPost>>, TError,{docenteId: string;seccionId: string;data: ObservacionDocenteCreateIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPost>>, TError,{docenteId: string;seccionId: string;data: ObservacionDocenteCreateIn}, TContext> => {
+
+const mutationKey = ['registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPost>>, {docenteId: string;seccionId: string;data: ObservacionDocenteCreateIn}> = (props) => {
+          const {docenteId,seccionId,data} = props ?? {};
+
+          return  registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPost(docenteId,seccionId,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RegistrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostMutationResult = NonNullable<Awaited<ReturnType<typeof registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPost>>>
+    export type RegistrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostMutationBody = ObservacionDocenteCreateIn
+    export type RegistrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostMutationError = ProblemDetail
+
+    /**
+ * @summary Registrar Observacion Docente
+ */
+export const useRegistrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPost>>, TError,{docenteId: string;seccionId: string;data: ObservacionDocenteCreateIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof registrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPost>>,
+        TError,
+        {docenteId: string;seccionId: string;data: ObservacionDocenteCreateIn},
+        TContext
+      > => {
+
+      const mutationOptions = getRegistrarObservacionDocenteApiV1EvaluacionDocentesDocenteIdSeccionesSeccionIdObservacionesPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Devuelve catálogo de secciones/estudiantes e historial de mensajes enviados.
+ * @summary Listar Mensajes Docente
+ */
+export type listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse200 = {
+  data: BandejaEnviadosDocenteOut
+  status: 200
+}
+
+export type listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponseSuccess = (listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse200) & {
+  headers: Headers;
+};
+export type listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponseError = (listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse401 | listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse403 | listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse404 | listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse422) & {
+  headers: Headers;
+};
+
+export type listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse = (listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponseSuccess | listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponseError)
+
+export const getListarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetUrl = (docenteId: string,) => {
+
+
+  
+
+  return `/api/v1/evaluacion/docentes/${docenteId}/mensajes`
+}
+
+export const listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet = async (docenteId: string, options?: RequestInit): Promise<listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse> => {
+  
+  return customFetch<listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetResponse>(getListarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetUrl(docenteId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+
+
+export const getListarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetQueryKey = (docenteId?: string,) => {
+    return [
+    `/api/v1/evaluacion/docentes/${docenteId}/mensajes`
+    ] as const;
+    }
+
+    
+export const getListarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetQueryOptions = <TData = Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>, TError = ProblemDetail>(docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetQueryKey(docenteId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>> = ({ signal }) => listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet(docenteId, { signal, ...requestOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(docenteId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetQueryResult = NonNullable<Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>>
+export type ListarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetQueryError = ProblemDetail
+
+
+export function useListarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet<TData = Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>, TError = ProblemDetail>(
+ docenteId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>,
+          TError,
+          Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet<TData = Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>, TError = ProblemDetail>(
+ docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>,
+          TError,
+          Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet<TData = Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>, TError = ProblemDetail>(
+ docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Listar Mensajes Docente
+ */
+
+export function useListarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet<TData = Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>, TError = ProblemDetail>(
+ docenteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListarMensajesDocenteApiV1EvaluacionDocentesDocenteIdMensajesGetQueryOptions(docenteId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Registra y envía un mensaje docente (Tarea o Recordatorio) sin archivos adjuntos.
+ * @summary Enviar Mensaje Docente
+ */
+export type enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse201 = {
+  data: MensajeEnviadoDocenteOut
+  status: 201
+}
+
+export type enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponseSuccess = (enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse201) & {
+  headers: Headers;
+};
+export type enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponseError = (enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse401 | enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse403 | enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse404 | enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse422) & {
+  headers: Headers;
+};
+
+export type enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse = (enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponseSuccess | enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponseError)
+
+export const getEnviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostUrl = (docenteId: string,) => {
+
+
+  
+
+  return `/api/v1/evaluacion/docentes/${docenteId}/mensajes`
+}
+
+export const enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPost = async (docenteId: string,
+    mensajeDocenteCreateIn: MensajeDocenteCreateIn, options?: RequestInit): Promise<enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse> => {
+  
+  return customFetch<enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostResponse>(getEnviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostUrl(docenteId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      mensajeDocenteCreateIn,)
+  }
+);}
+
+
+
+
+export const getEnviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPost>>, TError,{docenteId: string;data: MensajeDocenteCreateIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPost>>, TError,{docenteId: string;data: MensajeDocenteCreateIn}, TContext> => {
+
+const mutationKey = ['enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPost>>, {docenteId: string;data: MensajeDocenteCreateIn}> = (props) => {
+          const {docenteId,data} = props ?? {};
+
+          return  enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPost(docenteId,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EnviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostMutationResult = NonNullable<Awaited<ReturnType<typeof enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPost>>>
+    export type EnviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostMutationBody = MensajeDocenteCreateIn
+    export type EnviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostMutationError = ProblemDetail
+
+    /**
+ * @summary Enviar Mensaje Docente
+ */
+export const useEnviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPost>>, TError,{docenteId: string;data: MensajeDocenteCreateIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof enviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPost>>,
+        TError,
+        {docenteId: string;data: MensajeDocenteCreateIn},
+        TContext
+      > => {
+
+      const mutationOptions = getEnviarMensajeDocenteApiV1EvaluacionDocentesDocenteIdMensajesPostMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }
