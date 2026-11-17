@@ -14,6 +14,7 @@ import { BannerHero } from "../../shared/components/BannerHero";
 import { Button } from "../../shared/components/Button";
 import { Card } from "../../shared/components/Card";
 import { EstadoVacio } from "../../shared/components/EstadoVacio";
+import { useEsMovil } from "../../shared/hooks/useEsMovil";
 import { resolverEstudianteId } from "../../shared/utils/sesion";
 import {
   META_TIPO_MENSAJE,
@@ -30,6 +31,7 @@ interface MensajesPageProps {
 /** Bandeja de mensajes docentes (/mensajes) con lectura e hilos de respuesta acotados (RF25). */
 export function MensajesPage({ usuario }: MensajesPageProps) {
   const estudianteId = resolverEstudianteId(usuario);
+  const esMovil = useEsMovil();
   const queryClient = useQueryClient();
   const [pestana, setPestana] = useState<PestanaMensajes>("todos");
   const [mensajeSeleccionadoId, setMensajeSeleccionadoId] = useState<string | null>(null);
@@ -232,74 +234,76 @@ export function MensajesPage({ usuario }: MensajesPageProps) {
             alignItems: "start",
           }}
         >
-          <Card style={{ padding: 0, overflow: "hidden" }}>
-            {mensajesFiltrados.map((m) => {
-              const seleccionado = mensajeActivo?.id === m.id;
-              const meta = META_TIPO_MENSAJE[m.tipo];
-              return (
-                <button
-                  key={m.id}
-                  type="button"
-                  aria-pressed={seleccionado}
-                  onClick={() => {
-                    setMensajeSeleccionadoId(m.id);
-                    setMostrarDetalleMovil(true);
-                    setErrorRespuesta(null);
-                    setErrorLectura(null);
-                  }}
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    gap: 12,
-                    alignItems: "flex-start",
-                    padding: "14px 16px",
-                    border: "none",
-                    borderBottom: "1px solid var(--border-card)",
-                    borderLeft: seleccionado
-                      ? "3px solid var(--color-primary)"
-                      : "3px solid transparent",
-                    backgroundColor: m.no_leido ? "var(--bg-subtle)" : "var(--bg-surface)",
-                    textAlign: "left",
-                    cursor: "pointer",
-                  }}
-                >
-                  <AvatarIniciales nombre={m.remitente} size={38} inverted />
-                  <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 4 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", gap: 8, fontSize: 12, color: "var(--text-muted)" }}>
-                      <span>{m.remitente}</span>
-                      <span>{m.fecha}</span>
+          {!esMovil || !mostrarDetalleMovil ? (
+            <Card style={{ padding: 0, overflow: "hidden" }}>
+              {mensajesFiltrados.map((m) => {
+                const seleccionado = mensajeActivo?.id === m.id;
+                const meta = META_TIPO_MENSAJE[m.tipo];
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    aria-pressed={seleccionado}
+                    onClick={() => {
+                      setMensajeSeleccionadoId(m.id);
+                      setMostrarDetalleMovil(true);
+                      setErrorRespuesta(null);
+                      setErrorLectura(null);
+                    }}
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "flex-start",
+                      padding: "14px 16px",
+                      border: "none",
+                      borderBottom: "1px solid var(--border-card)",
+                      borderLeft: seleccionado
+                        ? "3px solid var(--color-primary)"
+                        : "3px solid transparent",
+                      backgroundColor: m.no_leido ? "var(--bg-subtle)" : "var(--bg-surface)",
+                      textAlign: "left",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <AvatarIniciales nombre={m.remitente} size={38} inverted />
+                    <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, fontSize: 12, color: "var(--text-muted)" }}>
+                        <span>{m.remitente}</span>
+                        <span>{m.fecha}</span>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: m.no_leido ? 700 : 500,
+                          color: "var(--text-main)",
+                        }}
+                      >
+                        {m.asunto}
+                      </div>
+                      <span
+                        style={{
+                          alignSelf: "flex-start",
+                          padding: "2px 8px",
+                          borderRadius: "var(--radius-pill)",
+                          backgroundColor: meta.bg,
+                          color: meta.fg,
+                          fontSize: 11,
+                          fontWeight: 600,
+                        }}
+                      >
+                        {meta.etiqueta}
+                      </span>
                     </div>
-                    <div
-                      style={{
-                        fontSize: 14,
-                        fontWeight: m.no_leido ? 700 : 500,
-                        color: "var(--text-main)",
-                      }}
-                    >
-                      {m.asunto}
-                    </div>
-                    <span
-                      style={{
-                        alignSelf: "flex-start",
-                        padding: "2px 8px",
-                        borderRadius: "var(--radius-pill)",
-                        backgroundColor: meta.bg,
-                        color: meta.fg,
-                        fontSize: 11,
-                        fontWeight: 600,
-                      }}
-                    >
-                      {meta.etiqueta}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </Card>
+                  </button>
+                );
+              })}
+            </Card>
+          ) : null}
 
-          {mensajeActivo ? (
+          {mensajeActivo && (!esMovil || mostrarDetalleMovil) ? (
             <Card style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {mostrarDetalleMovil ? (
+              {esMovil && mostrarDetalleMovil ? (
                 <button
                   type="button"
                   onClick={() => setMostrarDetalleMovil(false)}

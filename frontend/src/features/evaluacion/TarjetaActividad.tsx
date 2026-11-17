@@ -11,7 +11,7 @@ interface TarjetaActividadProps {
 const BADGE_ESTADO: Record<ActividadOut["estado"], { bg: string; fg: string }> = {
   pendiente: { bg: "var(--status-warning-bg)", fg: "var(--status-warning-fg)" },
   vencido: { bg: "var(--status-danger-bg)", fg: "var(--status-danger)" },
-  entregado: { bg: "#EFF6FF", fg: "#1D4ED8" },
+  entregado: { bg: "var(--status-info-bg)", fg: "var(--status-info-fg)" },
   calificado: { bg: "var(--status-success-bg)", fg: "var(--status-success-fg)" },
 };
 

@@ -36,8 +36,8 @@ export const META_TIPO_MENSAJE: Record<
   },
   ObsMej: {
     etiqueta: "Observación de mejora",
-    bg: "#EFF6FF",
-    fg: "#1D4ED8",
+    bg: "var(--status-info-bg)",
+    fg: "var(--status-info-fg)",
   },
 };
 

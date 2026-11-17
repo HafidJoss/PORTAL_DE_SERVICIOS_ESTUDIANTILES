@@ -30,8 +30,8 @@ export const LEYENDA_ASISTENCIA: ReadonlyArray<ItemLeyendaAsistencia> = [
   { codigo: "P", etiqueta: "Presente", bg: "var(--status-success-bg)", fg: "var(--status-success-fg)" },
   { codigo: "T", etiqueta: "Tardanza", bg: "var(--status-warning-bg)", fg: "var(--status-warning-fg)" },
   { codigo: "F", etiqueta: "Falta injustificada", bg: "var(--status-danger-bg)", fg: "var(--status-danger)" },
-  { codigo: "FJ", etiqueta: "Falta justificada", bg: "#EFF6FF", fg: "#1D4ED8" },
-  { codigo: "TJ", etiqueta: "Tardanza justificada", bg: "#EFF6FF", fg: "#1D4ED8" },
+  { codigo: "FJ", etiqueta: "Falta justificada", bg: "var(--status-info-bg)", fg: "var(--status-info-fg)" },
+  { codigo: "TJ", etiqueta: "Tardanza justificada", bg: "var(--status-info-bg)", fg: "var(--status-info-fg)" },
   { codigo: "FE", etiqueta: "Feriado / evento", bg: "var(--bg-subtle)", fg: "var(--text-muted)" },
 ];
 
@@ -42,8 +42,8 @@ export const ESTILO_CODIGO_ASISTENCIA: Record<
   P: { bg: "var(--status-success-bg)", fg: "var(--status-success-fg)" },
   T: { bg: "var(--status-warning-bg)", fg: "var(--status-warning-fg)" },
   F: { bg: "var(--status-danger-bg)", fg: "var(--status-danger)" },
-  FJ: { bg: "#EFF6FF", fg: "#1D4ED8" },
-  TJ: { bg: "#EFF6FF", fg: "#1D4ED8" },
+  FJ: { bg: "var(--status-info-bg)", fg: "var(--status-info-fg)" },
+  TJ: { bg: "var(--status-info-bg)", fg: "var(--status-info-fg)" },
   FE: { bg: "var(--bg-subtle)", fg: "var(--text-muted)" },
   "": { bg: "var(--bg-subtle)", fg: "var(--text-muted)" },
 };

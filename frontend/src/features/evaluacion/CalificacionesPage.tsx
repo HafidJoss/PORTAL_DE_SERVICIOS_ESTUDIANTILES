@@ -8,6 +8,7 @@ import { BannerHero } from "../../shared/components/BannerHero";
 import { Button } from "../../shared/components/Button";
 import { Card } from "../../shared/components/Card";
 import { EstadoVacio } from "../../shared/components/EstadoVacio";
+import { useEsMovil } from "../../shared/hooks/useEsMovil";
 import { resolverEstudianteId } from "../../shared/utils/sesion";
 import {
   LEYENDA_NIVELES_LOGRO,
@@ -22,6 +23,7 @@ interface CalificacionesPageProps {
 /** Vista Calificaciones (/calificaciones) por competencias y escala cualitativa (RVM 094-2020). */
 export function CalificacionesPage({ usuario }: CalificacionesPageProps) {
   const estudianteId = resolverEstudianteId(usuario);
+  const esMovil = useEsMovil();
   const [asignaturaSeleccionada, setAsignaturaSeleccionada] = useState<string | null>(null);
   const [detalleMovilAbierto, setDetalleMovilAbierto] = useState(false);
 
@@ -121,66 +123,69 @@ export function CalificacionesPage({ usuario }: CalificacionesPageProps) {
             alignItems: "start",
           }}
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {datos.cursos.map((curso) => {
-              const seleccionado = curso.asignatura_id === cursoActivo.asignatura_id;
-              const mini = obtenerMiniNivelesCurso(curso);
-              return (
+          {!esMovil || !detalleMovilAbierto ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {datos.cursos.map((curso) => {
+                const seleccionado = curso.asignatura_id === cursoActivo.asignatura_id;
+                const mini = obtenerMiniNivelesCurso(curso);
+                return (
+                  <button
+                    key={curso.asignatura_id}
+                    type="button"
+                    aria-pressed={seleccionado}
+                    onClick={() => {
+                      setAsignaturaSeleccionada(curso.asignatura_id);
+                      setDetalleMovilAbierto(true);
+                    }}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 6,
+                      padding: "14px 16px",
+                      borderRadius: "var(--radius-lg)",
+                      border: seleccionado
+                        ? "2px solid var(--color-primary)"
+                        : "1px solid var(--border-card)",
+                      backgroundColor: "var(--bg-surface)",
+                      textAlign: "left",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <span style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: 15 }}>
+                      {curso.nombre}
+                    </span>
+                    <span style={{ fontSize: 12, color: "var(--text-muted)" }}>{curso.docente}</span>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 2 }}>
+                      {mini.map((nivel, idx) => (
+                        <BadgeNivel key={`${curso.asignatura_id}-${idx}`} nivel={nivel} />
+                      ))}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+
+          {!esMovil || detalleMovilAbierto ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+              {esMovil && detalleMovilAbierto ? (
                 <button
-                  key={curso.asignatura_id}
                   type="button"
-                  aria-pressed={seleccionado}
-                  onClick={() => {
-                    setAsignaturaSeleccionada(curso.asignatura_id);
-                    setDetalleMovilAbierto(true);
-                  }}
+                  onClick={() => setDetalleMovilAbierto(false)}
                   style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 6,
-                    padding: "14px 16px",
-                    borderRadius: "var(--radius-lg)",
-                    border: seleccionado
-                      ? "2px solid var(--color-primary)"
-                      : "1px solid var(--border-card)",
-                    backgroundColor: "var(--bg-surface)",
-                    textAlign: "left",
+                    alignSelf: "flex-start",
+                    border: "none",
+                    background: "none",
+                    color: "var(--color-primary)",
+                    fontSize: 13,
+                    fontWeight: 600,
                     cursor: "pointer",
+                    padding: 0,
                   }}
                 >
-                  <span style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: 15 }}>
-                    {curso.nombre}
-                  </span>
-                  <span style={{ fontSize: 12, color: "var(--text-muted)" }}>{curso.docente}</span>
-                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 2 }}>
-                    {mini.map((nivel, idx) => (
-                      <BadgeNivel key={`${curso.asignatura_id}-${idx}`} nivel={nivel} />
-                    ))}
-                  </div>
+                  ← Volver a cursos
                 </button>
-              );
-            })}
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-            {detalleMovilAbierto ? (
-              <button
-                type="button"
-                onClick={() => setDetalleMovilAbierto(false)}
-                style={{
-                  alignSelf: "flex-start",
-                  border: "none",
-                  background: "none",
-                  color: "var(--color-primary)",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  padding: 0,
-                }}
-              >
-                ← Volver a cursos
-              </button>
-            ) : null}
+              ) : null}
 
             <Card style={{ padding: 0, overflow: "hidden" }}>
               <div style={{ padding: 20, borderBottom: "1px solid var(--border-card)" }}>
@@ -319,6 +324,7 @@ export function CalificacionesPage({ usuario }: CalificacionesPageProps) {
               )}
             </Card>
           </div>
+          ) : null}
         </div>
       )}
     </div>

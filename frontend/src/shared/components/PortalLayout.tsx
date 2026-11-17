@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import {
   BookOpenCheck,
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { useTheme } from "../../app/ThemeProvider";
+import { useEsMovil } from "../hooks/useEsMovil";
 import { AvatarIniciales } from "./AvatarIniciales";
 
 interface PortalLayoutProps {
@@ -43,20 +44,6 @@ const MOBILE_NAV = [
   { to: "/asistencia", label: "Asistencia", Icon: CalendarCheck },
   { to: "/mensajes", label: "Mensajes", Icon: Mail },
 ] as const;
-
-function useEsMovil(): boolean {
-  const [esMovil, setEsMovil] = useState<boolean>(
-    () => typeof window !== "undefined" && window.innerWidth < 1024,
-  );
-
-  useEffect(() => {
-    const actualizar = () => setEsMovil(window.innerWidth < 1024);
-    window.addEventListener("resize", actualizar);
-    return () => window.removeEventListener("resize", actualizar);
-  }, []);
-
-  return esMovil;
-}
 
 export function PortalLayout({
   usuarioNombre,
