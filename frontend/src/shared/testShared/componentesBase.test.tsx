@@ -2,8 +2,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { AvatarIniciales } from "../AvatarIniciales";
-import { BadgeNivel } from "../BadgeNivel";
+import { AvatarIniciales } from "../components/AvatarIniciales";
+import { BadgeNivel } from "../components/BadgeNivel";
 
 describe("AvatarIniciales", () => {
   it("muestra las dos iniciales del nombre sin ofrecer subida de archivos", () => {

@@ -230,4 +230,52 @@ describe("MensajesPage", () => {
     });
     expect(screen.getByText(/Vista disponible solo para estudiantes/i)).toBeInTheDocument();
   });
+
+  it("alterna entre bandeja y detalle de mensaje en viewport movil (< 1024 px)", async () => {
+    const anchoOriginal = window.innerWidth;
+    Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 390 });
+    try {
+      const user = userEvent.setup();
+      server.use(
+        http.get("*/api/v1/evaluacion/estudiantes/est-1/mensajes", () => {
+          return HttpResponse.json(MENSAJES_INICIALES);
+        }),
+      );
+
+      renderMensajes();
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: /Nueva ficha: funciones lineales/i }),
+        ).toBeInTheDocument();
+      });
+
+      // En móvil inicialmente solo se muestra la bandeja, sin el detalle
+      expect(
+        screen.queryByRole("heading", { name: "Nueva ficha: funciones lineales" }),
+      ).not.toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: /Nueva ficha: funciones lineales/i }));
+      expect(
+        screen.getByRole("heading", { name: "Nueva ficha: funciones lineales" }),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: /Destacado compañerismo en equipo/i }),
+      ).not.toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: /Volver a mensajes/i }));
+      expect(
+        screen.getByRole("button", { name: /Destacado compañerismo en equipo/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole("heading", { name: "Nueva ficha: funciones lineales" }),
+      ).not.toBeInTheDocument();
+    } finally {
+      Object.defineProperty(window, "innerWidth", {
+        writable: true,
+        configurable: true,
+        value: anchoOriginal,
+      });
+    }
+  });
 });

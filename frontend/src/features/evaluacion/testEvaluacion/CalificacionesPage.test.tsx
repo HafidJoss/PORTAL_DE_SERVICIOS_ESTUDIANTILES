@@ -184,4 +184,40 @@ describe("CalificacionesPage", () => {
     });
     expect(screen.getByText(/Vista disponible solo para estudiantes/i)).toBeInTheDocument();
   });
+
+  it("alterna entre listado de cursos y detalle en viewport movil (< 1024 px)", async () => {
+    const anchoOriginal = window.innerWidth;
+    Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 390 });
+    try {
+      const user = userEvent.setup();
+      server.use(
+        http.get("*/api/v1/evaluacion/estudiantes/est-1/calificaciones", () => {
+          return HttpResponse.json(CALIFICACIONES_DEMO);
+        }),
+      );
+
+      renderCalificaciones();
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /Matemática/i })).toBeInTheDocument();
+      });
+
+      // En móvil inicialmente solo se muestra la lista de cursos, sin el detalle
+      expect(screen.queryByRole("heading", { name: "Matemática" })).not.toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: /Matemática/i }));
+      expect(screen.getByRole("heading", { name: "Matemática" })).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /Comunicación/i })).not.toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: /Volver a cursos/i }));
+      expect(screen.getByRole("button", { name: /Comunicación/i })).toBeInTheDocument();
+      expect(screen.queryByRole("heading", { name: "Matemática" })).not.toBeInTheDocument();
+    } finally {
+      Object.defineProperty(window, "innerWidth", {
+        writable: true,
+        configurable: true,
+        value: anchoOriginal,
+      });
+    }
+  });
 });

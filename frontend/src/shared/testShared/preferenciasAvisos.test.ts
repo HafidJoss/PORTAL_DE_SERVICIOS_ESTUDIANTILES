@@ -5,7 +5,7 @@ import {
   AVISOS_POR_DEFECTO,
   guardarPreferenciasAvisos,
   leerPreferenciasAvisos,
-} from "../preferenciasAvisos";
+} from "../preferencias/preferenciasAvisos";
 
 describe("shared/preferenciasAvisos", () => {
   beforeEach(() => {

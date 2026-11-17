@@ -3,8 +3,8 @@ import { act, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it } from "vitest";
 
-import { ThemeProvider } from "../../../app/ThemeProvider";
-import { PortalLayout } from "../PortalLayout";
+import { ThemeProvider } from "../../app/ThemeProvider";
+import { PortalLayout } from "../components/PortalLayout";
 
 function definirAnchoVentana(ancho: number) {
   Object.defineProperty(window, "innerWidth", {
