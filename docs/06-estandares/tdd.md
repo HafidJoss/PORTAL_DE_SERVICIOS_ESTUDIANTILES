@@ -163,13 +163,32 @@ No se simula lo que se está probando, y en `test_repository.py` y `test_api.py`
 
 ## 7. Frontend
 
-La arquitectura no define herramientas de prueba para el frontend. Se **propone** Vitest y React Testing Library, a confirmar al configurar el frontend.
+Herramientas oficiales: **Vitest**, **React Testing Library** y **MSW** para simular peticiones HTTP.
 
 | Qué se prueba | Enfoque |
 |---|---|
-| Reglas de la interfaz (permisos visibles, formato de notas) | Prueba primero |
+| Reglas de la interfaz (permisos visibles, formato de notas) | Prueba primero (`filtros*.ts`, utilidades puras) |
 | Componentes y pantallas | Desde lo que ve y hace el usuario, no desde detalles internos |
-| Llamadas a la API | Se simula la API; el cliente de `api/generated/` no se edita ni se prueba |
+| Llamadas a la API | Se simula la API con MSW; el cliente de `api/generated/` no se edita ni se prueba |
+
+### 7.1 Estructura de carpetas del frontend
+
+Se usa organización **híbrida limpia** en `camelCase` con prefijo `test` y un distintivo según la función de cada carpeta (ver [nomenclatura.md](nomenclatura.md)), evitando carpetas `__tests__/` genéricas:
+
+```text
+frontend/src/
+├── testSetup/
+│   └── setup.ts                  Arranque global de Vitest y limpieza DOM
+├── api/
+│   └── testApi/                  Pruebas del cliente HTTP y manejo RFC 9457
+├── app/
+│   └── testApp/                  Pruebas de rutas, ciclo e2e y proveedor de tema
+├── shared/
+│   └── testShared/               Pruebas unificadas de components/, hooks/ y preferencias/
+└── features/<modulo>/
+    └── test<Modulo>/             Ej.: testIdentidad/, testSeguimiento/, testEvaluacion/,
+                                       testAsistencia/, testReportes/
+```
 
 ---
 
