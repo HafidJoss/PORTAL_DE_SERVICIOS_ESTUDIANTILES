@@ -14,6 +14,8 @@ import type { UsuarioSesionOutDocenteId } from './usuarioSesionOutDocenteId';
 import type { UsuarioSesionOutEspecialidad } from './usuarioSesionOutEspecialidad';
 import type { UsuarioSesionOutNivelEducativo } from './usuarioSesionOutNivelEducativo';
 import type { UsuarioSesionOutSeccionesACargo } from './usuarioSesionOutSeccionesACargo';
+import type { UsuarioSesionOutApoderadoId } from './usuarioSesionOutApoderadoId';
+import type { HijoVinculadoOut } from './hijoVinculadoOut';
 
 /**
  * Resumen público del usuario autenticado.
@@ -32,4 +34,6 @@ export interface UsuarioSesionOut {
   especialidad?: UsuarioSesionOutEspecialidad;
   nivel_educativo?: UsuarioSesionOutNivelEducativo;
   secciones_a_cargo?: UsuarioSesionOutSeccionesACargo;
+  apoderado_id?: UsuarioSesionOutApoderadoId;
+  hijos_vinculados?: HijoVinculadoOut[];
 }

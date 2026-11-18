@@ -29,11 +29,14 @@ import type {
   CursoDetalleOut,
   DetalleSeccionDocenteOut,
   ElementoStreamSeccionOut,
+  InicioApoderadoOut,
   InicioDocenteOut,
   InicioEstudianteOut,
   ListaCursosOut,
   ListaSeccionesDocenteOut,
+  ListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetParams,
   NovedadesVistoOut,
+  ObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetParams,
   OperacionBandejaOut,
   ProblemDetail,
   RespuestaBandejaIn,
@@ -288,7 +291,7 @@ export const useMarcarNovedadesVistasApiV1SeguimientoEstudiantesEstudianteIdNove
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * Devuelve la lista de cursos del estudiante (contrato stub).
+ * Devuelve la lista de cursos del estudiante contextualizada por menor (RF04, DA05).
  * @summary Listar Cursos Estudiante
  */
 export type listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetResponse200 = {
@@ -325,17 +328,26 @@ export type listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosG
 
 export type listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetResponse = (listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetResponseSuccess | listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetResponseError)
 
-export const getListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetUrl = (estudianteId: string,) => {
+export const getListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetUrl = (estudianteId: string,
+    params?: ListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-  
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/seguimiento/estudiantes/${estudianteId}/cursos`
+  return stringifiedParams.length > 0 ? `/api/v1/seguimiento/estudiantes/${estudianteId}/cursos?${stringifiedParams}` : `/api/v1/seguimiento/estudiantes/${estudianteId}/cursos`
 }
 
-export const listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet = async (estudianteId: string, options?: RequestInit): Promise<listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetResponse> => {
+export const listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet = async (estudianteId: string,
+    params?: ListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetParams, options?: RequestInit): Promise<listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetResponse> => {
   
-  return customFetch<listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetResponse>(getListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetUrl(estudianteId),
+  return customFetch<listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetResponse>(getListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetUrl(estudianteId,params),
   {      
     ...options,
     method: 'GET'
@@ -348,23 +360,25 @@ export const listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursos
 
 
 
-export const getListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetQueryKey = (estudianteId?: string,) => {
+export const getListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetQueryKey = (estudianteId?: string,
+    params?: ListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetParams,) => {
     return [
-    `/api/v1/seguimiento/estudiantes/${estudianteId}/cursos`
+    `/api/v1/seguimiento/estudiantes/${estudianteId}/cursos`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetQueryOptions = <TData = Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError = ProblemDetail>(estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetQueryOptions = <TData = Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError = ProblemDetail>(estudianteId: string,
+    params?: ListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetQueryKey(estudianteId);
+  const queryKey =  queryOptions?.queryKey ?? getListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetQueryKey(estudianteId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>> = ({ signal }) => listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet(estudianteId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>> = ({ signal }) => listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet(estudianteId,params, { signal, ...requestOptions });
 
       
 
@@ -378,7 +392,8 @@ export type ListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosG
 
 
 export function useListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet<TData = Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError = ProblemDetail>(
- estudianteId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError, TData>> & Pick<
+ estudianteId: string,
+    params: undefined |  ListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>,
           TError,
@@ -388,7 +403,8 @@ export function useListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteId
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet<TData = Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError, TData>> & Pick<
+ estudianteId: string,
+    params?: ListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>,
           TError,
@@ -398,7 +414,8 @@ export function useListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteId
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet<TData = Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ estudianteId: string,
+    params?: ListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -406,11 +423,12 @@ export function useListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteId
  */
 
 export function useListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet<TData = Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ estudianteId: string,
+    params?: ListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetQueryOptions(estudianteId,options)
+  const queryOptions = getListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGetQueryOptions(estudianteId,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -423,7 +441,7 @@ export function useListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteId
 
 
 /**
- * Devuelve el detalle del curso con novedades, competencias y plana docente.
+ * Devuelve el detalle del curso con novedades, competencias y plana docente (RF04, DA05).
  * @summary Obtener Detalle Curso
  */
 export type obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetResponse200 = {
@@ -461,18 +479,27 @@ export type obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsig
 export type obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetResponse = (obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetResponseSuccess | obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetResponseError)
 
 export const getObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetUrl = (estudianteId: string,
-    asignaturaId: string,) => {
+    asignaturaId: string,
+    params?: ObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-  
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/seguimiento/estudiantes/${estudianteId}/cursos/${asignaturaId}`
+  return stringifiedParams.length > 0 ? `/api/v1/seguimiento/estudiantes/${estudianteId}/cursos/${asignaturaId}?${stringifiedParams}` : `/api/v1/seguimiento/estudiantes/${estudianteId}/cursos/${asignaturaId}`
 }
 
 export const obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet = async (estudianteId: string,
-    asignaturaId: string, options?: RequestInit): Promise<obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetResponse> => {
+    asignaturaId: string,
+    params?: ObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetParams, options?: RequestInit): Promise<obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetResponse> => {
   
-  return customFetch<obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetResponse>(getObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetUrl(estudianteId,asignaturaId),
+  return customFetch<obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetResponse>(getObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetUrl(estudianteId,asignaturaId,params),
   {      
     ...options,
     method: 'GET'
@@ -486,24 +513,26 @@ export const obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsi
 
 
 export const getObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetQueryKey = (estudianteId?: string,
-    asignaturaId?: string,) => {
+    asignaturaId?: string,
+    params?: ObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetParams,) => {
     return [
-    `/api/v1/seguimiento/estudiantes/${estudianteId}/cursos/${asignaturaId}`
+    `/api/v1/seguimiento/estudiantes/${estudianteId}/cursos/${asignaturaId}`, ...(params ? [params]: [])
     ] as const;
     }
 
     
 export const getObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetQueryOptions = <TData = Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError = ProblemDetail>(estudianteId: string,
-    asignaturaId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    asignaturaId: string,
+    params?: ObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetQueryKey(estudianteId,asignaturaId);
+  const queryKey =  queryOptions?.queryKey ?? getObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetQueryKey(estudianteId,asignaturaId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>> = ({ signal }) => obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet(estudianteId,asignaturaId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>> = ({ signal }) => obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet(estudianteId,asignaturaId,params, { signal, ...requestOptions });
 
       
 
@@ -518,7 +547,8 @@ export type ObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsig
 
 export function useObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet<TData = Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError = ProblemDetail>(
  estudianteId: string,
-    asignaturaId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError, TData>> & Pick<
+    asignaturaId: string,
+    params: undefined |  ObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>,
           TError,
@@ -529,7 +559,8 @@ export function useObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCur
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet<TData = Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError = ProblemDetail>(
  estudianteId: string,
-    asignaturaId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError, TData>> & Pick<
+    asignaturaId: string,
+    params?: ObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>,
           TError,
@@ -540,7 +571,8 @@ export function useObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCur
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet<TData = Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError = ProblemDetail>(
  estudianteId: string,
-    asignaturaId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    asignaturaId: string,
+    params?: ObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -549,11 +581,12 @@ export function useObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCur
 
 export function useObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet<TData = Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError = ProblemDetail>(
  estudianteId: string,
-    asignaturaId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    asignaturaId: string,
+    params?: ObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetQueryOptions(estudianteId,asignaturaId,options)
+  const queryOptions = getObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGetQueryOptions(estudianteId,asignaturaId,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -1405,6 +1438,256 @@ export const usePublicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSecciones
       > => {
 
       const mutationOptions = getPublicarAnuncioSeccionApiV1SeguimientoDocentesDocenteIdSeccionesSeccionIdAnunciosPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Devuelve bandeja, entregas y resumen de asistencia del hijo vinculado activo (RF01, DA05).
+ * @summary Obtener Inicio Apoderado
+ */
+export type obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse200 = {
+  data: InicioApoderadoOut
+  status: 200
+}
+
+export type obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponseSuccess = (obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse200) & {
+  headers: Headers;
+};
+export type obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponseError = (obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse401 | obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse403 | obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse404 | obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse422) & {
+  headers: Headers;
+};
+
+export type obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse = (obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponseSuccess | obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponseError)
+
+export const getObtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetUrl = (apoderadoId: string,
+    estudianteId: string,) => {
+
+
+  
+
+  return `/api/v1/seguimiento/apoderados/${apoderadoId}/hijos/${estudianteId}/inicio`
+}
+
+export const obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet = async (apoderadoId: string,
+    estudianteId: string, options?: RequestInit): Promise<obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse> => {
+  
+  return customFetch<obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetResponse>(getObtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetUrl(apoderadoId,estudianteId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+
+
+export const getObtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetQueryKey = (apoderadoId?: string,
+    estudianteId?: string,) => {
+    return [
+    `/api/v1/seguimiento/apoderados/${apoderadoId}/hijos/${estudianteId}/inicio`
+    ] as const;
+    }
+
+    
+export const getObtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetQueryOptions = <TData = Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>, TError = ProblemDetail>(apoderadoId: string,
+    estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getObtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetQueryKey(apoderadoId,estudianteId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>> = ({ signal }) => obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet(apoderadoId,estudianteId, { signal, ...requestOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(apoderadoId && estudianteId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ObtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetQueryResult = NonNullable<Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>>
+export type ObtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetQueryError = ProblemDetail
+
+
+export function useObtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet<TData = Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>, TError = ProblemDetail>(
+ apoderadoId: string,
+    estudianteId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet<TData = Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>, TError = ProblemDetail>(
+ apoderadoId: string,
+    estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet<TData = Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>, TError = ProblemDetail>(
+ apoderadoId: string,
+    estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Obtener Inicio Apoderado
+ */
+
+export function useObtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet<TData = Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>, TError = ProblemDetail>(
+ apoderadoId: string,
+    estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getObtenerInicioApoderadoApiV1SeguimientoApoderadosApoderadoIdHijosEstudianteIdInicioGetQueryOptions(apoderadoId,estudianteId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Registra la confirmación de lectura de un comunicado institucional (RF25, DA05).
+ * @summary Confirmar Lectura Comunicado Apoderado
+ */
+export type confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse200 = {
+  data: OperacionBandejaOut
+  status: 200
+}
+
+export type confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponseSuccess = (confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse200) & {
+  headers: Headers;
+};
+export type confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponseError = (confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse401 | confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse403 | confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse404 | confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse422) & {
+  headers: Headers;
+};
+
+export type confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse = (confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponseSuccess | confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponseError)
+
+export const getConfirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostUrl = (apoderadoId: string,
+    comunicadoId: string,) => {
+
+
+  
+
+  return `/api/v1/seguimiento/apoderados/${apoderadoId}/comunicados/${comunicadoId}/confirmar-lectura`
+}
+
+export const confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPost = async (apoderadoId: string,
+    comunicadoId: string, options?: RequestInit): Promise<confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse> => {
+  
+  return customFetch<confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostResponse>(getConfirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostUrl(apoderadoId,comunicadoId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+
+export const getConfirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPost>>, TError,{apoderadoId: string;comunicadoId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPost>>, TError,{apoderadoId: string;comunicadoId: string}, TContext> => {
+
+const mutationKey = ['confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPost>>, {apoderadoId: string;comunicadoId: string}> = (props) => {
+          const {apoderadoId,comunicadoId} = props ?? {};
+
+          return  confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPost(apoderadoId,comunicadoId,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ConfirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostMutationResult = NonNullable<Awaited<ReturnType<typeof confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPost>>>
+    
+    export type ConfirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostMutationError = ProblemDetail
+
+    /**
+ * @summary Confirmar Lectura Comunicado Apoderado
+ */
+export const useConfirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPost>>, TError,{apoderadoId: string;comunicadoId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof confirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPost>>,
+        TError,
+        {apoderadoId: string;comunicadoId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getConfirmarLecturaComunicadoApoderadoApiV1SeguimientoApoderadosApoderadoIdComunicadosComunicadoIdConfirmarLecturaPostMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

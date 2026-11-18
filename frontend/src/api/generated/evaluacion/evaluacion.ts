@@ -34,11 +34,14 @@ import type {
   LecturaConfirmadaOut,
   ListaActividadesOut,
   ListaMensajesOut,
+  ListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetParams,
+  ListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetParams,
   MensajeDocenteCreateIn,
   MensajeEnviadoDocenteOut,
   NotasSesionPutIn,
   ObservacionDocenteCreateIn,
   ObservacionDocenteOut,
+  ObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetParams,
   PanelEvaluacionSeccionOut,
   ProblemDetail,
   RespuestaHiloOut,
@@ -55,7 +58,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
- * Devuelve niveles por competencia, conclusiones y calificativos publicados.
+ * Devuelve niveles por competencia, conclusiones y calificativos publicados (RF08, DA05).
  * @summary Obtener Calificaciones Estudiante
  */
 export type obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetResponse200 = {
@@ -92,17 +95,26 @@ export type obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteI
 
 export type obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetResponse = (obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetResponseSuccess | obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetResponseError)
 
-export const getObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetUrl = (estudianteId: string,) => {
+export const getObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetUrl = (estudianteId: string,
+    params?: ObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-  
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/evaluacion/estudiantes/${estudianteId}/calificaciones`
+  return stringifiedParams.length > 0 ? `/api/v1/evaluacion/estudiantes/${estudianteId}/calificaciones?${stringifiedParams}` : `/api/v1/evaluacion/estudiantes/${estudianteId}/calificaciones`
 }
 
-export const obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet = async (estudianteId: string, options?: RequestInit): Promise<obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetResponse> => {
+export const obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet = async (estudianteId: string,
+    params?: ObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetParams, options?: RequestInit): Promise<obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetResponse> => {
   
-  return customFetch<obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetResponse>(getObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetUrl(estudianteId),
+  return customFetch<obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetResponse>(getObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetUrl(estudianteId,params),
   {      
     ...options,
     method: 'GET'
@@ -115,23 +127,25 @@ export const obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudiante
 
 
 
-export const getObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetQueryKey = (estudianteId?: string,) => {
+export const getObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetQueryKey = (estudianteId?: string,
+    params?: ObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetParams,) => {
     return [
-    `/api/v1/evaluacion/estudiantes/${estudianteId}/calificaciones`
+    `/api/v1/evaluacion/estudiantes/${estudianteId}/calificaciones`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetQueryOptions = <TData = Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError = ProblemDetail>(estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetQueryOptions = <TData = Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError = ProblemDetail>(estudianteId: string,
+    params?: ObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetQueryKey(estudianteId);
+  const queryKey =  queryOptions?.queryKey ?? getObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetQueryKey(estudianteId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>> = ({ signal }) => obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet(estudianteId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>> = ({ signal }) => obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet(estudianteId,params, { signal, ...requestOptions });
 
       
 
@@ -145,7 +159,8 @@ export type ObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteI
 
 
 export function useObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet<TData = Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError = ProblemDetail>(
- estudianteId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError, TData>> & Pick<
+ estudianteId: string,
+    params: undefined |  ObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>,
           TError,
@@ -155,7 +170,8 @@ export function useObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstu
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet<TData = Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError, TData>> & Pick<
+ estudianteId: string,
+    params?: ObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>,
           TError,
@@ -165,7 +181,8 @@ export function useObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstu
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet<TData = Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ estudianteId: string,
+    params?: ObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -173,11 +190,12 @@ export function useObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstu
  */
 
 export function useObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet<TData = Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ estudianteId: string,
+    params?: ObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetQueryOptions(estudianteId,options)
+  const queryOptions = getObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGetQueryOptions(estudianteId,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -190,7 +208,7 @@ export function useObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstu
 
 
 /**
- * Lista trabajos y sesiones de clase (nota del día) del estudiante.
+ * Lista trabajos y sesiones de clase (nota del día) del estudiante (RF23, DA05).
  * @summary Listar Actividades Estudiante
  */
 export type listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetResponse200 = {
@@ -227,17 +245,26 @@ export type listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdAct
 
 export type listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetResponse = (listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetResponseSuccess | listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetResponseError)
 
-export const getListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetUrl = (estudianteId: string,) => {
+export const getListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetUrl = (estudianteId: string,
+    params?: ListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-  
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/evaluacion/estudiantes/${estudianteId}/actividades`
+  return stringifiedParams.length > 0 ? `/api/v1/evaluacion/estudiantes/${estudianteId}/actividades?${stringifiedParams}` : `/api/v1/evaluacion/estudiantes/${estudianteId}/actividades`
 }
 
-export const listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet = async (estudianteId: string, options?: RequestInit): Promise<listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetResponse> => {
+export const listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet = async (estudianteId: string,
+    params?: ListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetParams, options?: RequestInit): Promise<listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetResponse> => {
   
-  return customFetch<listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetResponse>(getListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetUrl(estudianteId),
+  return customFetch<listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetResponse>(getListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetUrl(estudianteId,params),
   {      
     ...options,
     method: 'GET'
@@ -250,23 +277,25 @@ export const listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdAc
 
 
 
-export const getListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetQueryKey = (estudianteId?: string,) => {
+export const getListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetQueryKey = (estudianteId?: string,
+    params?: ListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetParams,) => {
     return [
-    `/api/v1/evaluacion/estudiantes/${estudianteId}/actividades`
+    `/api/v1/evaluacion/estudiantes/${estudianteId}/actividades`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetQueryOptions = <TData = Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError = ProblemDetail>(estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetQueryOptions = <TData = Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError = ProblemDetail>(estudianteId: string,
+    params?: ListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetQueryKey(estudianteId);
+  const queryKey =  queryOptions?.queryKey ?? getListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetQueryKey(estudianteId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>> = ({ signal }) => listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet(estudianteId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>> = ({ signal }) => listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet(estudianteId,params, { signal, ...requestOptions });
 
       
 
@@ -280,7 +309,8 @@ export type ListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdAct
 
 
 export function useListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet<TData = Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError = ProblemDetail>(
- estudianteId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError, TData>> & Pick<
+ estudianteId: string,
+    params: undefined |  ListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>,
           TError,
@@ -290,7 +320,8 @@ export function useListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudian
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet<TData = Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError, TData>> & Pick<
+ estudianteId: string,
+    params?: ListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>,
           TError,
@@ -300,7 +331,8 @@ export function useListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudian
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet<TData = Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ estudianteId: string,
+    params?: ListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -308,11 +340,12 @@ export function useListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudian
  */
 
 export function useListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet<TData = Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ estudianteId: string,
+    params?: ListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetQueryOptions(estudianteId,options)
+  const queryOptions = getListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGetQueryOptions(estudianteId,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -325,7 +358,7 @@ export function useListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudian
 
 
 /**
- * Devuelve la bandeja de mensajes e hilos del estudiante.
+ * Devuelve la bandeja de mensajes e hilos del estudiante o apoderado (RF25, DA05).
  * @summary Listar Mensajes Estudiante
  */
 export type listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetResponse200 = {
@@ -362,17 +395,26 @@ export type listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensaj
 
 export type listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetResponse = (listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetResponseSuccess | listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetResponseError)
 
-export const getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetUrl = (estudianteId: string,) => {
+export const getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetUrl = (estudianteId: string,
+    params?: ListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-  
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/evaluacion/estudiantes/${estudianteId}/mensajes`
+  return stringifiedParams.length > 0 ? `/api/v1/evaluacion/estudiantes/${estudianteId}/mensajes?${stringifiedParams}` : `/api/v1/evaluacion/estudiantes/${estudianteId}/mensajes`
 }
 
-export const listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet = async (estudianteId: string, options?: RequestInit): Promise<listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetResponse> => {
+export const listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet = async (estudianteId: string,
+    params?: ListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetParams, options?: RequestInit): Promise<listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetResponse> => {
   
-  return customFetch<listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetResponse>(getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetUrl(estudianteId),
+  return customFetch<listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetResponse>(getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetUrl(estudianteId,params),
   {      
     ...options,
     method: 'GET'
@@ -385,23 +427,25 @@ export const listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensa
 
 
 
-export const getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetQueryKey = (estudianteId?: string,) => {
+export const getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetQueryKey = (estudianteId?: string,
+    params?: ListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetParams,) => {
     return [
-    `/api/v1/evaluacion/estudiantes/${estudianteId}/mensajes`
+    `/api/v1/evaluacion/estudiantes/${estudianteId}/mensajes`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetQueryOptions = <TData = Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError = ProblemDetail>(estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetQueryOptions = <TData = Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError = ProblemDetail>(estudianteId: string,
+    params?: ListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetQueryKey(estudianteId);
+  const queryKey =  queryOptions?.queryKey ?? getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetQueryKey(estudianteId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>> = ({ signal }) => listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet(estudianteId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>> = ({ signal }) => listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet(estudianteId,params, { signal, ...requestOptions });
 
       
 
@@ -415,7 +459,8 @@ export type ListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensaj
 
 
 export function useListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet<TData = Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError = ProblemDetail>(
- estudianteId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError, TData>> & Pick<
+ estudianteId: string,
+    params: undefined |  ListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>,
           TError,
@@ -425,7 +470,8 @@ export function useListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteI
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet<TData = Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError, TData>> & Pick<
+ estudianteId: string,
+    params?: ListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>,
           TError,
@@ -435,7 +481,8 @@ export function useListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteI
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet<TData = Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ estudianteId: string,
+    params?: ListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -443,11 +490,12 @@ export function useListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteI
  */
 
 export function useListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet<TData = Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ estudianteId: string,
+    params?: ListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetQueryOptions(estudianteId,options)
+  const queryOptions = getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetQueryOptions(estudianteId,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

@@ -11,8 +11,11 @@ import type { IncidenciaAsistenciaOutCodigo } from './incidenciaAsistenciaOutCod
  * Detalle de tardanza, falta o justificación del mes.
  */
 export interface IncidenciaAsistenciaOut {
+  id?: string;
   fecha: string;
   codigo: IncidenciaAsistenciaOutCodigo;
   nombre_estado: string;
   detalle: string;
+  puede_justificar?: boolean;
+  justificacion_enviada?: boolean;
 }

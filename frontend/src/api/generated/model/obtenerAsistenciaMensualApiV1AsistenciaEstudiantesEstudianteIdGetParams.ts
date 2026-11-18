@@ -17,4 +17,5 @@ mes?: number;
  * @maximum 2100
  */
 anio?: number;
+apoderado_id?: string | null;
 };

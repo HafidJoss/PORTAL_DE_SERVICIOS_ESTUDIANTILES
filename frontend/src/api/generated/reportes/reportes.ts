@@ -26,6 +26,8 @@ import type {
 
 import type {
   LibretasOut,
+  ObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetParams,
+  ObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetParams,
   ProblemDetail,
   ResumenSiagieDocenteOut,
   SolicitudDescargaSiagieIn,
@@ -40,7 +42,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
- * Devuelve las libretas trimestrales y situación final (contrato stub).
+ * Devuelve las libretas trimestrales y situación final (contrato stub, DA05).
  * @summary Obtener Libretas Estudiante
  */
 export type obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetResponse200 = {
@@ -77,17 +79,26 @@ export type obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibreta
 
 export type obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetResponse = (obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetResponseSuccess | obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetResponseError)
 
-export const getObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetUrl = (estudianteId: string,) => {
+export const getObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetUrl = (estudianteId: string,
+    params?: ObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-  
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/reportes/estudiantes/${estudianteId}/libretas`
+  return stringifiedParams.length > 0 ? `/api/v1/reportes/estudiantes/${estudianteId}/libretas?${stringifiedParams}` : `/api/v1/reportes/estudiantes/${estudianteId}/libretas`
 }
 
-export const obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet = async (estudianteId: string, options?: RequestInit): Promise<obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetResponse> => {
+export const obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet = async (estudianteId: string,
+    params?: ObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetParams, options?: RequestInit): Promise<obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetResponse> => {
   
-  return customFetch<obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetResponse>(getObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetUrl(estudianteId),
+  return customFetch<obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetResponse>(getObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetUrl(estudianteId,params),
   {      
     ...options,
     method: 'GET'
@@ -100,23 +111,25 @@ export const obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibret
 
 
 
-export const getObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetQueryKey = (estudianteId?: string,) => {
+export const getObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetQueryKey = (estudianteId?: string,
+    params?: ObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetParams,) => {
     return [
-    `/api/v1/reportes/estudiantes/${estudianteId}/libretas`
+    `/api/v1/reportes/estudiantes/${estudianteId}/libretas`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetQueryOptions = <TData = Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError = ProblemDetail>(estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetQueryOptions = <TData = Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError = ProblemDetail>(estudianteId: string,
+    params?: ObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetQueryKey(estudianteId);
+  const queryKey =  queryOptions?.queryKey ?? getObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetQueryKey(estudianteId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>> = ({ signal }) => obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet(estudianteId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>> = ({ signal }) => obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet(estudianteId,params, { signal, ...requestOptions });
 
       
 
@@ -130,7 +143,8 @@ export type ObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibreta
 
 
 export function useObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet<TData = Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError = ProblemDetail>(
- estudianteId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError, TData>> & Pick<
+ estudianteId: string,
+    params: undefined |  ObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>,
           TError,
@@ -140,7 +154,8 @@ export function useObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteId
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet<TData = Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError, TData>> & Pick<
+ estudianteId: string,
+    params?: ObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>,
           TError,
@@ -150,7 +165,8 @@ export function useObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteId
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet<TData = Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ estudianteId: string,
+    params?: ObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -158,11 +174,12 @@ export function useObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteId
  */
 
 export function useObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet<TData = Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError = ProblemDetail>(
- estudianteId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ estudianteId: string,
+    params?: ObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetQueryOptions(estudianteId,options)
+  const queryOptions = getObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGetQueryOptions(estudianteId,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -175,7 +192,7 @@ export function useObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteId
 
 
 /**
- * Devuelve una URL firmada temporal de 15 min para descargar el PDF (RC05).
+ * Devuelve una URL firmada temporal de 15 min para descargar el PDF (RC05, DA05).
  * @summary Obtener Url Descarga Libreta
  */
 export type obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetResponse200 = {
@@ -213,18 +230,27 @@ export type obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibreta
 export type obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetResponse = (obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetResponseSuccess | obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetResponseError)
 
 export const getObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetUrl = (estudianteId: string,
-    trimestreId: number,) => {
+    trimestreId: number,
+    params?: ObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-  
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/reportes/estudiantes/${estudianteId}/libretas/${trimestreId}/descarga`
+  return stringifiedParams.length > 0 ? `/api/v1/reportes/estudiantes/${estudianteId}/libretas/${trimestreId}/descarga?${stringifiedParams}` : `/api/v1/reportes/estudiantes/${estudianteId}/libretas/${trimestreId}/descarga`
 }
 
 export const obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet = async (estudianteId: string,
-    trimestreId: number, options?: RequestInit): Promise<obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetResponse> => {
+    trimestreId: number,
+    params?: ObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetParams, options?: RequestInit): Promise<obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetResponse> => {
   
-  return customFetch<obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetResponse>(getObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetUrl(estudianteId,trimestreId),
+  return customFetch<obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetResponse>(getObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetUrl(estudianteId,trimestreId,params),
   {      
     ...options,
     method: 'GET'
@@ -238,24 +264,26 @@ export const obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibret
 
 
 export const getObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetQueryKey = (estudianteId?: string,
-    trimestreId?: number,) => {
+    trimestreId?: number,
+    params?: ObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetParams,) => {
     return [
-    `/api/v1/reportes/estudiantes/${estudianteId}/libretas/${trimestreId}/descarga`
+    `/api/v1/reportes/estudiantes/${estudianteId}/libretas/${trimestreId}/descarga`, ...(params ? [params]: [])
     ] as const;
     }
 
     
 export const getObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetQueryOptions = <TData = Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError = ProblemDetail>(estudianteId: string,
-    trimestreId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    trimestreId: number,
+    params?: ObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetQueryKey(estudianteId,trimestreId);
+  const queryKey =  queryOptions?.queryKey ?? getObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetQueryKey(estudianteId,trimestreId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>> = ({ signal }) => obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet(estudianteId,trimestreId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>> = ({ signal }) => obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet(estudianteId,trimestreId,params, { signal, ...requestOptions });
 
       
 
@@ -270,7 +298,8 @@ export type ObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibreta
 
 export function useObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet<TData = Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError = ProblemDetail>(
  estudianteId: string,
-    trimestreId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError, TData>> & Pick<
+    trimestreId: number,
+    params: undefined |  ObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>,
           TError,
@@ -281,7 +310,8 @@ export function useObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteId
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet<TData = Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError = ProblemDetail>(
  estudianteId: string,
-    trimestreId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError, TData>> & Pick<
+    trimestreId: number,
+    params?: ObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>,
           TError,
@@ -292,7 +322,8 @@ export function useObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteId
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet<TData = Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError = ProblemDetail>(
  estudianteId: string,
-    trimestreId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    trimestreId: number,
+    params?: ObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -301,11 +332,12 @@ export function useObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteId
 
 export function useObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet<TData = Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError = ProblemDetail>(
  estudianteId: string,
-    trimestreId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    trimestreId: number,
+    params?: ObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetQueryOptions(estudianteId,trimestreId,options)
+  const queryOptions = getObtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGetQueryOptions(estudianteId,trimestreId,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

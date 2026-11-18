@@ -6,22 +6,28 @@
  * OpenAPI spec version: 0.1.0
  */
 import {
+  useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
   AsistenciaMesOut,
+  JustificacionCreateIn,
+  JustificacionOut,
   ObtenerAsistenciaMensualApiV1AsistenciaEstudiantesEstudianteIdGetParams,
   ProblemDetail
 } from '.././model';
@@ -34,7 +40,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
- * Devuelve KPIs, calendario mensual e incidencias de asistencia (stub).
+ * Devuelve KPIs, calendario mensual e incidencias de asistencia (RF20, DA05).
  * @summary Obtener Asistencia Mensual
  */
 export type obtenerAsistenciaMensualApiV1AsistenciaEstudiantesEstudianteIdGetResponse200 = {
@@ -183,3 +189,113 @@ export function useObtenerAsistenciaMensualApiV1AsistenciaEstudiantesEstudianteI
 
 
 
+/**
+ * Registra una justificación escrita enviada por el apoderado al auxiliar (RF20, RC08, DA05).
+ * @summary Enviar Justificacion Asistencia
+ */
+export type enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse201 = {
+  data: JustificacionOut
+  status: 201
+}
+
+export type enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse401 = {
+  data: ProblemDetail
+  status: 401
+}
+
+export type enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse403 = {
+  data: ProblemDetail
+  status: 403
+}
+
+export type enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse404 = {
+  data: ProblemDetail
+  status: 404
+}
+
+export type enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse422 = {
+  data: ProblemDetail
+  status: 422
+}
+    
+export type enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponseSuccess = (enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse201) & {
+  headers: Headers;
+};
+export type enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponseError = (enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse401 | enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse403 | enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse404 | enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse422) & {
+  headers: Headers;
+};
+
+export type enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse = (enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponseSuccess | enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponseError)
+
+export const getEnviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostUrl = (apoderadoId: string,
+    estudianteId: string,) => {
+
+
+  
+
+  return `/api/v1/asistencia/apoderados/${apoderadoId}/hijos/${estudianteId}/justificaciones`
+}
+
+export const enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPost = async (apoderadoId: string,
+    estudianteId: string,
+    justificacionCreateIn: JustificacionCreateIn, options?: RequestInit): Promise<enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse> => {
+  
+  return customFetch<enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostResponse>(getEnviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostUrl(apoderadoId,estudianteId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      justificacionCreateIn,)
+  }
+);}
+
+
+
+
+export const getEnviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostMutationOptions = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPost>>, TError,{apoderadoId: string;estudianteId: string;data: JustificacionCreateIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPost>>, TError,{apoderadoId: string;estudianteId: string;data: JustificacionCreateIn}, TContext> => {
+
+const mutationKey = ['enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPost>>, {apoderadoId: string;estudianteId: string;data: JustificacionCreateIn}> = (props) => {
+          const {apoderadoId,estudianteId,data} = props ?? {};
+
+          return  enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPost(apoderadoId,estudianteId,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EnviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostMutationResult = NonNullable<Awaited<ReturnType<typeof enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPost>>>
+    export type EnviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostMutationBody = JustificacionCreateIn
+    export type EnviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostMutationError = ProblemDetail
+
+    /**
+ * @summary Enviar Justificacion Asistencia
+ */
+export const useEnviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPost = <TError = ProblemDetail,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPost>>, TError,{apoderadoId: string;estudianteId: string;data: JustificacionCreateIn}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof enviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPost>>,
+        TError,
+        {apoderadoId: string;estudianteId: string;data: JustificacionCreateIn},
+        TContext
+      > => {
+
+      const mutationOptions = getEnviarJustificacionAsistenciaApiV1AsistenciaApoderadosApoderadoIdHijosEstudianteIdJustificacionesPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    
