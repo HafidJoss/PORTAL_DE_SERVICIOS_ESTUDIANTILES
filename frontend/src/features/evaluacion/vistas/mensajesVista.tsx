@@ -15,7 +15,10 @@ import { Boton } from "../../../shared/componentes/boton";
 import { Tarjeta } from "../../../shared/componentes/tarjeta";
 import { EstadoVacio } from "../../../shared/componentes/estadoVacio";
 import { useEsMovil } from "../../../shared/ganchos/useEsMovil";
-import { resolverEstudianteId } from "../../../shared/utilidades/sesion";
+import {
+  resolverContextoEstudiante,
+  resolverHijoActivo,
+} from "../../../shared/utilidades/sesion";
 import {
   META_TIPO_MENSAJE,
   PESTANAS_MENSAJES,
@@ -26,11 +29,15 @@ import {
 
 interface MensajesVistaProps {
   usuario: UsuarioSesionOut;
+  hijoActivoId?: string | null;
 }
 
 /** Bandeja de mensajes docentes (/mensajes) con lectura e hilos de respuesta acotados (RF25). */
-export function MensajesVista({ usuario }: MensajesVistaProps) {
-  const estudianteId = resolverEstudianteId(usuario);
+export function MensajesVista({ usuario, hijoActivoId }: MensajesVistaProps) {
+  const { estudianteId, apoderadoId } = resolverContextoEstudiante(usuario, hijoActivoId);
+  const esApoderado = usuario.rol === "Apoderado";
+  const hijoActivo = esApoderado ? resolverHijoActivo(usuario, hijoActivoId) : null;
+  const paramsApoderado = apoderadoId ? { apoderado_id: apoderadoId } : undefined;
   const esMovil = useEsMovil();
   const queryClient = useQueryClient();
   const [pestana, setPestana] = useState<PestanaMensajes>("todos");
@@ -43,6 +50,7 @@ export function MensajesVista({ usuario }: MensajesVistaProps) {
   const consulta =
     useListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGet(
       estudianteId,
+      paramsApoderado,
       {
         query: {
           enabled: Boolean(estudianteId),
@@ -71,6 +79,7 @@ export function MensajesVista({ usuario }: MensajesVistaProps) {
   const queryKey =
     getListarMensajesEstudianteApiV1EvaluacionEstudiantesEstudianteIdMensajesGetQueryKey(
       estudianteId,
+      paramsApoderado,
     );
 
   async function manejarConfirmarLectura(mensajeId: string) {
@@ -150,7 +159,11 @@ export function MensajesVista({ usuario }: MensajesVistaProps) {
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <BannerPortada
         titulo="Mensajes"
-        subtitulo="Tareas, recordatorios y observaciones de tus docentes."
+        subtitulo={
+          hijoActivo
+            ? `${hijoActivo.nombres} ${hijoActivo.apellidos} · Comunicaciones docentes del menor.`
+            : "Tareas, recordatorios y observaciones de tus docentes."
+        }
         acciones={
           datos ? (
             <div>
@@ -418,39 +431,51 @@ export function MensajesVista({ usuario }: MensajesVistaProps) {
                   </div>
                 ))}
 
-                <form onSubmit={(e) => void manejarEnviarRespuesta(e)} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <label style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 13, fontWeight: 600 }}>
-                    Responder en el hilo
-                    <textarea
-                      rows={3}
-                      value={borradorRespuesta}
-                      onChange={(e) => setBorradorRespuesta(e.target.value)}
-                      placeholder="Escribe tu consulta para el docente (máximo 2000 caracteres)"
-                      style={{
-                        borderRadius: "var(--radius-md)",
-                        border: "1px solid var(--border-input)",
-                        padding: 10,
-                        fontFamily: "inherit",
-                        fontSize: 14,
-                        backgroundColor: "var(--bg-surface)",
-                        color: "var(--text-main)",
-                      }}
-                    />
-                  </label>
-                  {errorRespuesta ? (
-                    <div role="alert" style={{ fontSize: 13, color: "var(--status-danger)" }}>
-                      {errorRespuesta}
+                {esApoderado ? (
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: 13,
+                      color: "var(--text-muted)",
+                    }}
+                  >
+                    Mensaje informativo: no admite respuestas. Consultas, directamente con el docente o la tutora.
+                  </p>
+                ) : (
+                  <form onSubmit={(e) => void manejarEnviarRespuesta(e)} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    <label style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 13, fontWeight: 600 }}>
+                      Responder en el hilo
+                      <textarea
+                        rows={3}
+                        value={borradorRespuesta}
+                        onChange={(e) => setBorradorRespuesta(e.target.value)}
+                        placeholder="Escribe tu consulta para el docente (máximo 2000 caracteres)"
+                        style={{
+                          borderRadius: "var(--radius-md)",
+                          border: "1px solid var(--border-input)",
+                          padding: 10,
+                          fontFamily: "inherit",
+                          fontSize: 14,
+                          backgroundColor: "var(--bg-surface)",
+                          color: "var(--text-main)",
+                        }}
+                      />
+                    </label>
+                    {errorRespuesta ? (
+                      <div role="alert" style={{ fontSize: 13, color: "var(--status-danger)" }}>
+                        {errorRespuesta}
+                      </div>
+                    ) : null}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
+                      <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                        Solo texto en hilo con tu docente; no se adjuntan archivos.
+                      </span>
+                      <Boton type="submit" variant="primary" disabled={mutRespuesta.isPending}>
+                        {mutRespuesta.isPending ? "Enviando..." : "Enviar respuesta"}
+                      </Boton>
                     </div>
-                  ) : null}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
-                    <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                      Solo texto en hilo con tu docente; no se adjuntan archivos.
-                    </span>
-                    <Boton type="submit" variant="primary" disabled={mutRespuesta.isPending}>
-                      {mutRespuesta.isPending ? "Enviando..." : "Enviar respuesta"}
-                    </Boton>
-                  </div>
-                </form>
+                  </form>
+                )}
               </section>
             </Tarjeta>
           ) : null}

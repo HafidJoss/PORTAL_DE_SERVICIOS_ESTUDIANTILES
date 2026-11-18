@@ -195,4 +195,93 @@ describe("TrabajosVista", () => {
 
     expect(screen.getByText(/Vista disponible solo para estudiantes/i)).toBeInTheDocument();
   });
+
+  // Spec: evaluacion · Requirement: Consulta multi-hijo de calificaciones cualitativas y trabajos para el apoderado (RF08, RF22, RF23, HU06, HU10, DA05, RC08)
+  it("renderiza trabajos por menor vinculado y actualiza al cambiar hijoActivoId", async () => {
+    const apoderado: UsuarioSesionOut = {
+      id: "apo-demo-1",
+      dni: "40871256",
+      nombres: "Rosa",
+      apellidos: "Huamán Ccori",
+      rol: "Apoderado",
+      apoderado_id: "apo-demo-1",
+      hijos_vinculados: [
+        {
+          estudiante_id: "est-demo-1",
+          codigo: "20260001",
+          nombres: "Luis Ángel",
+          apellidos: "Quispe Huamán",
+          grado_seccion: "3.° de Secundaria B",
+          iniciales: "LQ",
+          tutor: "Prof. Carlos Mendoza",
+        },
+        {
+          estudiante_id: "est-demo-2",
+          codigo: "20260002",
+          nombres: "Sofía",
+          apellidos: "Quispe Huamán",
+          grado_seccion: "1.° de Secundaria A",
+          iniciales: "SQ",
+          tutor: "Prof. Ana Lucía Torres",
+        },
+      ],
+    };
+
+    server.use(
+      http.get("*/api/v1/evaluacion/estudiantes/est-demo-1/actividades", ({ request }) => {
+        expect(new URL(request.url).searchParams.get("apoderado_id")).toBe("apo-demo-1");
+        return HttpResponse.json(RESPUESTA_ACTIVIDADES);
+      }),
+      http.get("*/api/v1/evaluacion/estudiantes/est-demo-2/actividades", ({ request }) => {
+        expect(new URL(request.url).searchParams.get("apoderado_id")).toBe("apo-demo-1");
+        return HttpResponse.json({
+          pendientes: 1,
+          vencen_pronto: 0,
+          actividades: [
+            {
+              id: "act-cta-1",
+              tipo: "trabajo",
+              titulo: "Maqueta del sistema solar",
+              curso: "Ciencia y Tecnología",
+              asignada: "10 nov",
+              fecha_entrega: "17 nov",
+              estado: "pendiente",
+              urgente: false,
+              competencia: "Explica el mundo físico",
+              capacidad: "Comprende conocimientos",
+              descripcion: "Presentar maqueta rotulada en clase.",
+            },
+          ],
+        });
+      }),
+    );
+
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    const { container, rerender } = render(
+      <QueryClientProvider client={qc}>
+        <ProveedorTema>
+          <TrabajosVista usuario={apoderado} hijoActivoId="est-demo-1" />
+        </ProveedorTema>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Ficha: funciones lineales")).toBeInTheDocument();
+    });
+
+    rerender(
+      <QueryClientProvider client={qc}>
+        <ProveedorTema>
+          <TrabajosVista usuario={apoderado} hijoActivoId="est-demo-2" />
+        </ProveedorTema>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Maqueta del sistema solar")).toBeInTheDocument();
+    });
+    expect(container.querySelector('input[type="file"]')).toBeNull();
+  });
 });

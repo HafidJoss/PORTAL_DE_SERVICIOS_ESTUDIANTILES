@@ -12,7 +12,10 @@ import { BannerPortada } from "../../../shared/componentes/bannerPortada";
 import { Boton } from "../../../shared/componentes/boton";
 import { Tarjeta } from "../../../shared/componentes/tarjeta";
 import { EstadoVacio } from "../../../shared/componentes/estadoVacio";
-import { resolverEstudianteId } from "../../../shared/utilidades/sesion";
+import {
+  resolverContextoEstudiante,
+  resolverHijoActivo,
+} from "../../../shared/utilidades/sesion";
 import {
   contarPublicadas,
   etiquetaSituacionFinal,
@@ -22,19 +25,23 @@ import {
 
 interface LibretaVistaProps {
   usuario: UsuarioSesionOut;
+  hijoActivoId?: string | null;
 }
 
 /** Vista Libreta de notas (/libreta) con vista previa oficial y descarga por URL firmada (RC05). */
-export function LibretaVista({ usuario }: LibretaVistaProps) {
-  const estudianteId = resolverEstudianteId(usuario);
+export function LibretaVista({ usuario, hijoActivoId }: LibretaVistaProps) {
+  const { estudianteId, apoderadoId } = resolverContextoEstudiante(usuario, hijoActivoId);
+  const hijoActivo = usuario.rol === "Apoderado" ? resolverHijoActivo(usuario, hijoActivoId) : null;
+  const paramsApoderado = apoderadoId ? { apoderado_id: apoderadoId } : undefined;
   const [trimestreElegidoId, setTrimestreElegidoId] = useState<number | null>(null);
-  const [descargaPorTrimestre, setDescargaPorTrimestre] = useState<Record<number, UrlDescargaOut>>(
+  const [descargaPorTrimestre, setDescargaPorTrimestre] = useState<Record<string, UrlDescargaOut>>(
     {},
   );
   const [errorDescarga, setErrorDescarga] = useState<string | null>(null);
 
   const consulta = useObtenerLibretasEstudianteApiV1ReportesEstudiantesEstudianteIdLibretasGet(
     estudianteId,
+    paramsApoderado,
     {
       query: {
         enabled: Boolean(estudianteId),
@@ -48,11 +55,12 @@ export function LibretaVista({ usuario }: LibretaVistaProps) {
         await obtenerUrlDescargaLibretaApiV1ReportesEstudiantesEstudianteIdLibretasTrimestreIdDescargaGet(
           estudianteId,
           trimestreId,
+          paramsApoderado,
         );
       if (resp.status !== 200) {
         throw new Error("No se pudo generar el enlace temporal.");
       }
-      return { trimestreId, datos: resp.data };
+      return { clave: `${estudianteId}-${trimestreId}`, datos: resp.data };
     },
   });
 
@@ -71,7 +79,9 @@ export function LibretaVista({ usuario }: LibretaVistaProps) {
     trimestreElegidoId ?? (datos ? seleccionarTrimestreInicial(datos.trimestres) : null);
   const trimestreActivo = datos?.trimestres.find((t) => t.trimestre_id === trimestreIdActivo);
   const descargaActiva =
-    trimestreActivo !== undefined ? descargaPorTrimestre[trimestreActivo.trimestre_id] : undefined;
+    trimestreActivo !== undefined
+      ? descargaPorTrimestre[`${estudianteId}-${trimestreActivo.trimestre_id}`]
+      : undefined;
 
   async function manejarSolicitarDescarga(trimestreId: number) {
     setErrorDescarga(null);
@@ -79,7 +89,7 @@ export function LibretaVista({ usuario }: LibretaVistaProps) {
       const resultado = await mutDescarga.mutateAsync(trimestreId);
       setDescargaPorTrimestre((prev) => ({
         ...prev,
-        [resultado.trimestreId]: resultado.datos,
+        [resultado.clave]: resultado.datos,
       }));
     } catch {
       setErrorDescarga("No se pudo generar el enlace de descarga. Inténtalo nuevamente.");
@@ -92,8 +102,10 @@ export function LibretaVista({ usuario }: LibretaVistaProps) {
         titulo="Libreta de notas"
         subtitulo={
           datos
-            ? `Informe de progreso del aprendizaje por trimestre · Año escolar ${datos.anio_escolar}`
-            : "Informe de progreso del aprendizaje por trimestre"
+            ? `${hijoActivo ? `${hijoActivo.nombres} ${hijoActivo.apellidos} · ` : ""}Informe de progreso del aprendizaje por trimestre · Año escolar ${datos.anio_escolar}`
+            : hijoActivo
+              ? `${hijoActivo.nombres} ${hijoActivo.apellidos} · Informe de progreso del aprendizaje por trimestre`
+              : "Informe de progreso del aprendizaje por trimestre"
         }
         acciones={
           datos ? (

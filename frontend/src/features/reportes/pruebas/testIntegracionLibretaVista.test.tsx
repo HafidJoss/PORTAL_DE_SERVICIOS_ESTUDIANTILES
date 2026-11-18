@@ -226,4 +226,125 @@ describe("LibretaVista", () => {
     });
     expect(screen.getByText(/Vista disponible solo para estudiantes/i)).toBeInTheDocument();
   });
+
+  // Spec: reportes · Requirement: Consulta y descarga temporal firmada de libreta multi-hijo para el apoderado (RF15, RF27, RF28, RC05, DA05)
+  it("consulta libretas y genera enlace firmado por menor vinculado en Apoderado", async () => {
+    const user = userEvent.setup();
+    const apoderado: UsuarioSesionOut = {
+      id: "apo-demo-1",
+      dni: "40871256",
+      nombres: "Rosa",
+      apellidos: "Huamán Ccori",
+      rol: "Apoderado",
+      apoderado_id: "apo-demo-1",
+      hijos_vinculados: [
+        {
+          estudiante_id: "est-demo-1",
+          codigo: "20260001",
+          nombres: "Luis Ángel",
+          apellidos: "Quispe Huamán",
+          grado_seccion: "3.° de Secundaria B",
+          iniciales: "LQ",
+          tutor: "Prof. Carlos Mendoza",
+        },
+        {
+          estudiante_id: "est-demo-2",
+          codigo: "20260002",
+          nombres: "Sofía",
+          apellidos: "Quispe Huamán",
+          grado_seccion: "1.° de Secundaria A",
+          iniciales: "SQ",
+          tutor: "Prof. Ana Lucía Torres",
+        },
+      ],
+    };
+
+    server.use(
+      http.get("*/api/v1/reportes/estudiantes/est-demo-1/libretas", ({ request }) => {
+        expect(new URL(request.url).searchParams.get("apoderado_id")).toBe("apo-demo-1");
+        return HttpResponse.json({
+          ...LIBRETAS_DEMO,
+          estudiante_id: "est-demo-1",
+          grado_seccion: "3.° Secundaria · B",
+        });
+      }),
+      http.get("*/api/v1/reportes/estudiantes/est-demo-2/libretas", ({ request }) => {
+        expect(new URL(request.url).searchParams.get("apoderado_id")).toBe("apo-demo-1");
+        return HttpResponse.json({
+          ...LIBRETAS_DEMO,
+          estudiante_id: "est-demo-2",
+          grado_seccion: "1.° Secundaria · A",
+          trimestres: [
+            {
+              trimestre_id: 2,
+              nombre: "II Trimestre",
+              rango_fechas: "1 jun – 11 sep",
+              publicada: true,
+              fecha_publicacion: "2026-09-11",
+              areas: [
+                {
+                  nombre: "Ciencia y Tecnología",
+                  competencias: [
+                    {
+                      competencia: "Indaga mediante métodos científicos",
+                      nivel: "AD",
+                      conclusion: "Sobresale en experimentación.",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        });
+      }),
+      http.get("*/api/v1/reportes/estudiantes/est-demo-2/libretas/2/descarga", ({ request }) => {
+        expect(new URL(request.url).searchParams.get("apoderado_id")).toBe("apo-demo-1");
+        return HttpResponse.json({
+          url_firmada:
+            "https://storage.googleapis.com/portal-mariscal-stub/libreta-est-demo-2-t2.pdf?X-Goog-Expires=900",
+          expira_en_segundos: 900,
+          nombre_archivo: "libreta_T2_est-demo-2.pdf",
+        });
+      }),
+    );
+
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    const { rerender } = render(
+      <QueryClientProvider client={qc}>
+        <ProveedorTema>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <LibretaVista usuario={apoderado} hijoActivoId="est-demo-1" />
+          </MemoryRouter>
+        </ProveedorTema>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/3\.° Secundaria · B/)).toBeInTheDocument();
+    });
+
+    rerender(
+      <QueryClientProvider client={qc}>
+        <ProveedorTema>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <LibretaVista usuario={apoderado} hijoActivoId="est-demo-2" />
+          </MemoryRouter>
+        </ProveedorTema>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/1\.° Secundaria · A/)).toBeInTheDocument();
+    });
+    expect(screen.getByText("Ciencia y Tecnología")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /Descargar PDF/i }));
+    await waitFor(() => {
+      expect(
+        screen.getByRole("link", { name: /libreta_T2_est-demo-2\.pdf/i }),
+      ).toBeInTheDocument();
+    });
+  });
 });

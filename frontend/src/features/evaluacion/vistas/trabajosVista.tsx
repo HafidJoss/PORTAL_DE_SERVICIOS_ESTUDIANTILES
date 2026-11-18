@@ -5,7 +5,10 @@ import type { UsuarioSesionOut } from "../../../api/generated/model";
 import { BannerPortada } from "../../../shared/componentes/bannerPortada";
 import { Boton } from "../../../shared/componentes/boton";
 import { EstadoVacio } from "../../../shared/componentes/estadoVacio";
-import { resolverEstudianteId } from "../../../shared/utilidades/sesion";
+import {
+  resolverContextoEstudiante,
+  resolverHijoActivo,
+} from "../../../shared/utilidades/sesion";
 import {
   filtrarActividadesPorPestana,
   type PestanaTrabajos,
@@ -14,6 +17,7 @@ import { TarjetaActividad } from "../componentes/tarjetaActividad";
 
 interface TrabajosVistaProps {
   usuario: UsuarioSesionOut;
+  hijoActivoId?: string | null;
 }
 
 const PESTANAS: ReadonlyArray<{ id: PestanaTrabajos; etiqueta: string }> = [
@@ -23,13 +27,15 @@ const PESTANAS: ReadonlyArray<{ id: PestanaTrabajos; etiqueta: string }> = [
 ];
 
 /** Vista Trabajos y pendientes (/trabajos) para consulta de trabajos y notas del día. */
-export function TrabajosVista({ usuario }: TrabajosVistaProps) {
-  const estudianteId = resolverEstudianteId(usuario);
+export function TrabajosVista({ usuario, hijoActivoId }: TrabajosVistaProps) {
+  const { estudianteId, apoderadoId } = resolverContextoEstudiante(usuario, hijoActivoId);
+  const hijoActivo = usuario.rol === "Apoderado" ? resolverHijoActivo(usuario, hijoActivoId) : null;
   const [pestana, setPestana] = useState<PestanaTrabajos>("pendientes");
 
   const consulta =
     useListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet(
       estudianteId,
+      apoderadoId ? { apoderado_id: apoderadoId } : undefined,
       {
         query: {
           enabled: Boolean(estudianteId),
@@ -55,7 +61,11 @@ export function TrabajosVista({ usuario }: TrabajosVistaProps) {
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <BannerPortada
         titulo="Trabajos y pendientes"
-        subtitulo="Revisa tus tareas asignadas y las notas del día registradas en clase."
+        subtitulo={
+          hijoActivo
+            ? `${hijoActivo.nombres} ${hijoActivo.apellidos} · Tareas asignadas y notas del día registradas en clase.`
+            : "Revisa tus tareas asignadas y las notas del día registradas en clase."
+        }
         acciones={
           datos ? (
             <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>

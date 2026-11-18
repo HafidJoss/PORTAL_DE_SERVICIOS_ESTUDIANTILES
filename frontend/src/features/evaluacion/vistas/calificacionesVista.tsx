@@ -9,7 +9,10 @@ import { Boton } from "../../../shared/componentes/boton";
 import { Tarjeta } from "../../../shared/componentes/tarjeta";
 import { EstadoVacio } from "../../../shared/componentes/estadoVacio";
 import { useEsMovil } from "../../../shared/ganchos/useEsMovil";
-import { resolverEstudianteId } from "../../../shared/utilidades/sesion";
+import {
+  resolverContextoEstudiante,
+  resolverHijoActivo,
+} from "../../../shared/utilidades/sesion";
 import {
   LEYENDA_NIVELES_LOGRO,
   obtenerMiniNivelesCurso,
@@ -18,11 +21,13 @@ import {
 
 interface CalificacionesVistaProps {
   usuario: UsuarioSesionOut;
+  hijoActivoId?: string | null;
 }
 
 /** Vista Calificaciones (/calificaciones) por competencias y escala cualitativa (RVM 094-2020). */
-export function CalificacionesVista({ usuario }: CalificacionesVistaProps) {
-  const estudianteId = resolverEstudianteId(usuario);
+export function CalificacionesVista({ usuario, hijoActivoId }: CalificacionesVistaProps) {
+  const { estudianteId, apoderadoId } = resolverContextoEstudiante(usuario, hijoActivoId);
+  const hijoActivo = usuario.rol === "Apoderado" ? resolverHijoActivo(usuario, hijoActivoId) : null;
   const esMovil = useEsMovil();
   const [asignaturaSeleccionada, setAsignaturaSeleccionada] = useState<string | null>(null);
   const [detalleMovilAbierto, setDetalleMovilAbierto] = useState(false);
@@ -30,6 +35,7 @@ export function CalificacionesVista({ usuario }: CalificacionesVistaProps) {
   const consulta =
     useObtenerCalificacionesEstudianteApiV1EvaluacionEstudiantesEstudianteIdCalificacionesGet(
       estudianteId,
+      apoderadoId ? { apoderado_id: apoderadoId } : undefined,
       {
         query: {
           enabled: Boolean(estudianteId),
@@ -57,8 +63,10 @@ export function CalificacionesVista({ usuario }: CalificacionesVistaProps) {
         titulo="Calificaciones"
         subtitulo={
           datos
-            ? `Niveles de logro por competencia · Trimestre ${datos.trimestre_actual} (${datos.estado_trimestre})`
-            : "Niveles de logro por competencia"
+            ? `${hijoActivo ? `${hijoActivo.nombres} ${hijoActivo.apellidos} · ` : ""}Niveles de logro por competencia · Trimestre ${datos.trimestre_actual} (${datos.estado_trimestre})`
+            : hijoActivo
+              ? `${hijoActivo.nombres} ${hijoActivo.apellidos} · Niveles de logro por competencia`
+              : "Niveles de logro por competencia"
         }
         acciones={
           <Link

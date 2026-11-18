@@ -278,4 +278,95 @@ describe("MensajesVista", () => {
       });
     }
   });
+
+  // Spec: evaluacion · Requirement: Lectura de mensajes informativos multi-hijo del apoderado sin respuesta abierta ni adjuntos (RF24, RF25, HU15, DA05, RC08)
+  it("muestra mensajes del menor seleccionado para Apoderado con confirmacion de lectura y sin respuesta abierta", async () => {
+    const user = userEvent.setup();
+    const apoderado: UsuarioSesionOut = {
+      id: "apo-demo-1",
+      dni: "40871256",
+      nombres: "Rosa",
+      apellidos: "Huamán Ccori",
+      rol: "Apoderado",
+      apoderado_id: "apo-demo-1",
+      hijos_vinculados: [
+        {
+          estudiante_id: "est-demo-2",
+          codigo: "20260002",
+          nombres: "Sofía",
+          apellidos: "Quispe Huamán",
+          grado_seccion: "1.° de Secundaria A",
+          iniciales: "SQ",
+          tutor: "Prof. Ana Lucía Torres",
+        },
+      ],
+    };
+
+    let estadoSof = {
+      sin_leer: 1,
+      mensajes: [
+        {
+          id: "msg-sof-1",
+          tipo: "Tarea" as const,
+          remitente: "Prof. Ana Lucía Torres",
+          curso: "Ciencia y Tecnología",
+          asunto: "Indicaciones de maqueta del sistema solar para Sofía",
+          fecha: "Hoy",
+          fecha_larga: "hoy, 09:20",
+          destinatarios: "1.° A · Sofía Quispe Huamán",
+          cuerpo: "Traer la maqueta rotulada el martes 17.",
+          actividad_id: "act-cta-1",
+          no_leido: true,
+          lectura_confirmada: false,
+          respuestas: [],
+        },
+      ],
+    };
+
+    server.use(
+      http.get("*/api/v1/evaluacion/estudiantes/est-demo-2/mensajes", ({ request }) => {
+        expect(new URL(request.url).searchParams.get("apoderado_id")).toBe("apo-demo-1");
+        return HttpResponse.json(estadoSof);
+      }),
+      http.post("*/api/v1/evaluacion/mensajes/msg-sof-1/leer", () => {
+        estadoSof = {
+          ...estadoSof,
+          sin_leer: 0,
+          mensajes: estadoSof.mensajes.map((m) =>
+            m.id === "msg-sof-1" ? { ...m, no_leido: false, lectura_confirmada: true } : m,
+          ),
+        };
+        return HttpResponse.json({ mensaje_id: "msg-sof-1", lectura_confirmada: true });
+      }),
+    );
+
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    const { container } = render(
+      <QueryClientProvider client={qc}>
+        <ProveedorTema>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <MensajesVista usuario={apoderado} hijoActivoId="est-demo-2" />
+          </MemoryRouter>
+        </ProveedorTema>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: "Indicaciones de maqueta del sistema solar para Sofía" }),
+      ).toBeInTheDocument();
+    });
+
+    expect(container.querySelector('input[type="file"]')).toBeNull();
+    expect(screen.queryByRole("button", { name: /Enviar respuesta/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/Mensaje informativo: no admite respuestas/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Ver en Trabajos/i })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /Confirmar lectura/i }));
+    await waitFor(() => {
+      expect(screen.getByText(/Lectura confirmada/i)).toBeInTheDocument();
+    });
+  });
 });

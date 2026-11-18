@@ -220,4 +220,98 @@ describe("CalificacionesVista", () => {
       });
     }
   });
+
+  // Spec: evaluacion · Requirement: Consulta multi-hijo de calificaciones cualitativas y trabajos para el apoderado (RF08, RF22, RF23, HU06, HU10, DA05, RC08)
+  it("consulta calificaciones por menor vinculado y recarga al cambiar hijoActivoId", async () => {
+    const apoderado: UsuarioSesionOut = {
+      id: "apo-demo-1",
+      dni: "40871256",
+      nombres: "Rosa",
+      apellidos: "Huamán Ccori",
+      rol: "Apoderado",
+      apoderado_id: "apo-demo-1",
+      hijos_vinculados: [
+        {
+          estudiante_id: "est-demo-1",
+          codigo: "20260001",
+          nombres: "Luis Ángel",
+          apellidos: "Quispe Huamán",
+          grado_seccion: "3.° de Secundaria B",
+          iniciales: "LQ",
+          tutor: "Prof. Carlos Mendoza",
+        },
+        {
+          estudiante_id: "est-demo-2",
+          codigo: "20260002",
+          nombres: "Sofía",
+          apellidos: "Quispe Huamán",
+          grado_seccion: "1.° de Secundaria A",
+          iniciales: "SQ",
+          tutor: "Prof. Ana Lucía Torres",
+        },
+      ],
+    };
+
+    server.use(
+      http.get("*/api/v1/evaluacion/estudiantes/est-demo-1/calificaciones", ({ request }) => {
+        expect(new URL(request.url).searchParams.get("apoderado_id")).toBe("apo-demo-1");
+        return HttpResponse.json(CALIFICACIONES_DEMO);
+      }),
+      http.get("*/api/v1/evaluacion/estudiantes/est-demo-2/calificaciones", ({ request }) => {
+        expect(new URL(request.url).searchParams.get("apoderado_id")).toBe("apo-demo-1");
+        return HttpResponse.json({
+          trimestre_actual: 3,
+          estado_trimestre: "En Evaluación",
+          criterio_sugerencia: "mediana_capacidades",
+          cursos: [
+            {
+              asignatura_id: "cta",
+              nombre: "Ciencia y Tecnología",
+              docente: "Prof. Ana Lucía Torres",
+              competencias: [
+                {
+                  nombre: "Indaga mediante métodos científicos",
+                  trimestres: ["AD", "A", "AD"],
+                },
+              ],
+              conclusiones: [],
+              calificativos_publicados: [],
+            },
+          ],
+        });
+      }),
+    );
+
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    const { rerender } = render(
+      <QueryClientProvider client={qc}>
+        <ProveedorTema>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <CalificacionesVista usuario={apoderado} hijoActivoId="est-demo-1" />
+          </MemoryRouter>
+        </ProveedorTema>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Resuelve problemas de cantidad")).toBeInTheDocument();
+    });
+
+    rerender(
+      <QueryClientProvider client={qc}>
+        <ProveedorTema>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <CalificacionesVista usuario={apoderado} hijoActivoId="est-demo-2" />
+          </MemoryRouter>
+        </ProveedorTema>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Indaga mediante métodos científicos")).toBeInTheDocument();
+    });
+    expect(screen.queryByText(/Promedio general/i)).not.toBeInTheDocument();
+  });
 });
