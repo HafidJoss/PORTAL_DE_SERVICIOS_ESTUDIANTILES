@@ -25,3 +25,4 @@ Siempre que concluya una fase del proyecto (tras ejecutar `/opsx:archive` y veri
 |---|---|---|---|
 | Fase 1 | [fase-01-estudiante-v2-frontend.md](fase-01-estudiante-v2-frontend.md) | Completada | Frontend completo del rol Estudiante v2 + API contractual stub OpenAPI |
 | Fase 2 | [fase-02-docente-frontend.md](fase-02-docente-frontend.md) | Completada | Frontend completo del rol Docente (inicio, secciones en 6 pestañas, Nota del día, cierre CNEB, mensajes y SIAGIE) + API contractual OpenAPI |
+| Fase 3 | [fase-03-apoderado-frontend.md](fase-03-apoderado-frontend.md) | Completada | Frontend completo del rol Apoderado / Portal de Familias multi-hijo (selector contextual, bandeja familiar, vistas académicas, asistencia y justificaciones escritas) + API contractual OpenAPI |

@@ -134,3 +134,38 @@ El portal SHALL permitir al docente redactar y publicar anuncios en la pestaña 
 - **GIVEN** un docente abre el publicador de anuncios dentro de `Novedades` de una sección
 - **WHEN** intenta publicar con menos de 3 caracteres, y luego redacta un aviso válido y acciona `Publicar`
 - **THEN** el sistema bloquea el envío vacío y, al publicar un texto válido, lo agrega al inicio del flujo cronológico de la sección indicando que es comunicación en un solo sentido
+
+### Requirement: Tablero de inicio del apoderado por menor y bandeja familiar (RF01, RF26, HU01, AC01)
+El portal SHALL mostrar al apoderado autenticado el inicio correspondiente al hijo seleccionado con saludo personalizado, KPIs (`Sin leer`, `Tareas pendientes`, `Asistencia`), bandeja familiar filtrable (`Todos`, `No leídos`, `Institución`, `Docentes`), próximas entregas y accesos rápidos, validando que el menor pertenezca al apoderado (`DA05`).
+
+#### Scenario: Consulta del tablero inicial familiar y filtrado de bandeja por categoría
+- **GIVEN** un apoderado autenticado visualiza `/inicio` para uno de sus hijos vinculados
+- **WHEN** alterna entre los filtros `No leídos`, `Institución` y `Docentes` o cambia de hijo seleccionado
+- **THEN** la bandeja filtra correctamente cada categoría mostrando estado vacío si no hay coincidencias, y al cambiar de menor actualiza los datos para ese estudiante
+
+#### Scenario: Rechazo por intento de acceso a un estudiante ajeno al apoderado (DA05)
+- **GIVEN** un apoderado intenta consultar el inicio de un identificador de estudiante no vinculado a su perfil
+- **WHEN** solicita el recurso al backend de seguimiento
+- **THEN** el servicio rechaza la operación con error `403` en formato Problem Details sin exponer información del estudiante ajeno
+
+### Requirement: Confirmación de lectura de comunicados institucionales para apoderados (RF25, RC08)
+El sistema SHALL permitir al apoderado marcar toda la bandeja como leída y confirmar expresamente la lectura de comunicados institucionales que lo requieran desde su bandeja de entrada, manteniendo de solo lectura los avisos docentes que no habilitan chat libre (`RC08`).
+
+#### Scenario: Confirmación de lectura institucional y marcado masivo en bandeja familiar
+- **GIVEN** un apoderado abre un comunicado de Dirección con confirmación requerida en su bandeja
+- **WHEN** acciona `Confirmar lectura` o pulsa `Marcar todo como leído`
+- **THEN** el sistema registra la confirmación en el servidor mostrando el indicador de lectura confirmada y reduce a cero el conteo de sin leer cuando corresponde
+
+### Requirement: Consulta multi-hijo de cursos y detalle de curso para el apoderado (RF04, HU12, DA05, RC08)
+
+El portal MUST permitir al apoderado autenticado consultar la grilla de asignaturas (`Cursos`) y el detalle completo de cada curso (`Novedades`, `Trabajos`, `Calificaciones` y `Personas`, sin subida de archivos conforme a `RC08`) del menor vinculado seleccionado (`hijoActivo`), diferenciando los datos por grado y nivel cuando cambia de menor desde el selector del marco y bloqueando con `403 Problem Details` (`DA05`) cualquier consulta con un `estudiante_id` no vinculado al apoderado.
+
+#### Scenario: Consulta de cursos y detalle por menor vinculado en Apoderado
+- **GIVEN** un apoderado autenticado con al menos dos menores vinculados en grados distintos (`est-demo-1` y `est-demo-2`)
+- **WHEN** accede a `/cursos`, ingresa al detalle de un curso del menor activo y luego cambia de menor en `Cambiar de menor`
+- **THEN** la grilla de cursos y las cuatro pestañas del detalle muestran exclusivamente las asignaturas, docentes, niveles `AD/A/B/C` y actividades del menor activo (`RC08`, sin campos `<input type="file">`) y se actualizan automáticamente al seleccionar otro menor vinculado
+
+#### Scenario: Rechazo de pertenencia ante menor no vinculado en cursos (DA05)
+- **GIVEN** una solicitud académica de cursos o detalle de curso asociada a un identificador `apoderado_id` válido y a un `estudiante_id` que no pertenece a ese apoderado
+- **WHEN** el servidor procesa la consulta con ese contexto de apoderado
+- **THEN** responde con estado `403` en formato Problem Details (`RFC 9457`) sin exponer información del estudiante ajeno

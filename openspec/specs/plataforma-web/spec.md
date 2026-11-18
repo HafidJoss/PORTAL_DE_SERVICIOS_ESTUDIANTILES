@@ -118,3 +118,34 @@ La API del portal SHALL exponer bajo `/api/v1` los endpoints contractuales docen
 - **GIVEN** un docente autenticado navega hacia `/mensajes` o `/siagie` desde el menú lateral o móvil
 - **WHEN** se renderiza la vista correspondiente
 - **THEN** la aplicación muestra el redactor con historial de enviados o el panel trimestral de descargas SIAGIE sin marcadores temporales de pantalla en preparación
+
+### Requirement: Selector global de hijo y enrutamiento inicial de Apoderado (RC01, RC03, AC06, AC07)
+La aplicación web SHALL mostrar al rol `Apoderado` un selector de menor activo (`Cambiar de menor`) dentro del marco responsivo del portal en escritorio y móvil, habilitar `/inicio` y `/configuracion` con rutas puente temporales para las vistas académicas de los bloques siguientes, y declarar los contratos familiares en OpenAPI bajo `/api/v1`.
+
+#### Scenario: Cambio de menor desde la cabecera en escritorio y móvil sin desbordamiento (AC07)
+- **GIVEN** un apoderado autenticado con al menos dos hijos vinculados navega en el portal
+- **WHEN** abre `Cambiar de menor` en escritorio o móvil (`360x640 px`) y selecciona a otro hijo vinculado
+- **THEN** el marco actualiza el menor activo mostrado y resuelve sin desbordamiento horizontal ni pérdida de sesión
+
+#### Scenario: Esquema OpenAPI declara endpoints familiares bajo seguimiento e identidad
+- **GIVEN** la API expone su esquema OpenAPI vigente
+- **WHEN** se consultan `UsuarioSesionOut` y las rutas bajo `/api/v1/seguimiento/apoderados/{apoderado_id}/`
+- **THEN** están declarados `apoderado_id`, `hijos_vinculados`, la consulta por hijo `inicio` con control de pertenencia y `comunicados/{comunicado_id}/confirmar-lectura`
+
+### Requirement: Rutas académicas multi-hijo de Apoderado y parámetro de pertenencia en contratos OpenAPI (AC04, AC06, RC03, DA05)
+
+El enrutador del portal web MUST reemplazar las vistas puente temporales de `Apoderado` en `/cursos`, `/cursos/:asignaturaId`, `/calificaciones`, `/trabajos`, `/mensajes` y `/libreta` por las vistas académicas reales enlazadas al menor seleccionado (`hijoActivoId`), conservando únicamente `/asistencia` como puente hacia el Bloque 3 y manteniendo los contratos OpenAPI/Orval con parámetro opcional `apoderado_id` para validar pertenencia `DA05` sin romper las rutas del rol `Estudiante`.
+
+#### Scenario: Navegación completa de Apoderado por vistas académicas reales y cambio de menor en vivo
+- **GIVEN** un apoderado autenticado en `/inicio` con `est-demo-1` y `est-demo-2` vinculados
+- **WHEN** navega por `/cursos`, `/cursos/:asignaturaId`, `/calificaciones`, `/trabajos`, `/mensajes` y `/libreta` y cambia de menor desde `Cambiar de menor`
+- **THEN** cada ruta renderiza su vista académica real con los datos del menor activo sin mostrar pantallas de módulo en preparación (salvo `/asistencia`), refresca la vista activa ante el cambio de menor y mantiene la protección frente al rol `Estudiante` y `Docente`
+
+### Requirement: Activación definitiva de Asistencia para Apoderado y cierre de puentes de Fase 3 (AC04, AC06, AC07, RC03)
+
+El enrutador principal del portal MUST habilitar la vista real de `/asistencia` para el rol `Apoderado` enlazada al menor activo (`hijoActivoId`), retirando las vistas puente temporales de la Fase 3 y actualizando el contrato OpenAPI/Orval con el endpoint de justificaciones escritas (`39` rutas totales).
+
+#### Scenario: Navegación completa en Portal de Familias sin vistas puente
+- **GIVEN** un apoderado autenticado con dos menores vinculados navegando desde `/inicio` o la barra lateral/móvil hacia `/asistencia`
+- **WHEN** consulta y cambia entre sus menores vinculados en `/asistencia`
+- **THEN** visualiza la asistencia real del menor seleccionado sin ninguna pantalla de módulo en preparación (`Módulo en preparación`) y manteniendo el aislamiento de navegación respecto de `Estudiante` y `Docente`
