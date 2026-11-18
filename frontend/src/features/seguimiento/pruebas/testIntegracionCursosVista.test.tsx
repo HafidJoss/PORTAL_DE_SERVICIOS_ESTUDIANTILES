@@ -141,4 +141,97 @@ describe("CursosVista", () => {
     expect(screen.getByText(/Vista disponible solo para estudiantes/i)).toBeInTheDocument();
     unmount();
   });
+
+  // Spec: seguimiento · Requirement: Consulta multi-hijo de cursos y detalle de curso para el apoderado (RF04, HU12, DA05, RC08)
+  it("renderiza los cursos del menor activo y actualiza al cambiar hijoActivoId", async () => {
+    const apoderado: UsuarioSesionOut = {
+      id: "apo-demo-1",
+      dni: "40871256",
+      nombres: "Rosa",
+      apellidos: "Huamán Ccori",
+      rol: "Apoderado",
+      apoderado_id: "apo-demo-1",
+      hijos_vinculados: [
+        {
+          estudiante_id: "est-demo-1",
+          codigo: "20260001",
+          nombres: "Luis Ángel",
+          apellidos: "Quispe Huamán",
+          grado_seccion: "3.° de Secundaria B",
+          iniciales: "LQ",
+          tutor: "Prof. Carlos Mendoza",
+        },
+        {
+          estudiante_id: "est-demo-2",
+          codigo: "20260002",
+          nombres: "Sofía",
+          apellidos: "Quispe Huamán",
+          grado_seccion: "1.° de Secundaria A",
+          iniciales: "SQ",
+          tutor: "Prof. Ana Lucía Torres",
+        },
+      ],
+    };
+
+    server.use(
+      http.get("*/api/v1/seguimiento/estudiantes/est-demo-1/cursos", ({ request }) => {
+        const url = new URL(request.url);
+        expect(url.searchParams.get("apoderado_id")).toBe("apo-demo-1");
+        return HttpResponse.json(CURSOS_DEMO);
+      }),
+      http.get("*/api/v1/seguimiento/estudiantes/est-demo-2/cursos", ({ request }) => {
+        const url = new URL(request.url);
+        expect(url.searchParams.get("apoderado_id")).toBe("apo-demo-1");
+        return HttpResponse.json({
+          grado_seccion: "1.° de Secundaria A",
+          total_pendientes: 1,
+          cursos: [
+            {
+              asignatura_id: "cta",
+              nombre: "Ciencia y Tecnología",
+              docente: "Prof. Ana Lucía Torres",
+              rol_docente: "Docente titular",
+              horario: "Mar · Jue",
+              horas_semanales: 5,
+              pendientes: 1,
+              proximo_vencimiento: "Maqueta del sistema solar · 17 nov",
+              mini_niveles: ["AD", "AD", "A"],
+            },
+          ],
+        });
+      }),
+    );
+
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    const { rerender } = render(
+      <QueryClientProvider client={qc}>
+        <ProveedorTema>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <CursosVista usuario={apoderado} hijoActivoId="est-demo-1" />
+          </MemoryRouter>
+        </ProveedorTema>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Matemática")).toBeInTheDocument();
+    });
+
+    rerender(
+      <QueryClientProvider client={qc}>
+        <ProveedorTema>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <CursosVista usuario={apoderado} hijoActivoId="est-demo-2" />
+          </MemoryRouter>
+        </ProveedorTema>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Ciencia y Tecnología")).toBeInTheDocument();
+    });
+    expect(screen.getByText("Prof. Ana Lucía Torres")).toBeInTheDocument();
+  });
 });

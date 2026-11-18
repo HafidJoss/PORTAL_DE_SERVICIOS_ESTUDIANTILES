@@ -8,13 +8,14 @@ import { InsigniaNivel } from "../../../shared/componentes/insigniaNivel";
 import { BannerPortada } from "../../../shared/componentes/bannerPortada";
 import { Tarjeta } from "../../../shared/componentes/tarjeta";
 import { EstadoVacio } from "../../../shared/componentes/estadoVacio";
-import { resolverEstudianteId } from "../../../shared/utilidades/sesion";
+import { resolverContextoEstudiante } from "../../../shared/utilidades/sesion";
 import { TarjetaActividad } from "../../evaluacion/componentes/tarjetaActividad";
 import { filtrarActividadesPorPestana } from "../../evaluacion/utilidades/filtrosActividades";
 import { obtenerInicialesTexto } from "../utilidades/filtrosSeguimiento";
 
 interface CursoDetalleVistaProps {
   usuario: UsuarioSesionOut;
+  hijoActivoId?: string | null;
 }
 
 type PestanaCurso = "novedades" | "trabajos" | "calificaciones" | "personas";
@@ -34,16 +35,18 @@ function normalizarPestana(valor: string | null): PestanaCurso {
 }
 
 /** Detalle de curso (/cursos/:asignaturaId) con 4 pestañas: Novedades, Trabajos, Calificaciones y Personas. */
-export function CursoDetalleVista({ usuario }: CursoDetalleVistaProps) {
-  const estudianteId = resolverEstudianteId(usuario);
+export function CursoDetalleVista({ usuario, hijoActivoId }: CursoDetalleVistaProps) {
+  const { estudianteId, apoderadoId } = resolverContextoEstudiante(usuario, hijoActivoId);
   const { asignaturaId = "" } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const pestanaActiva = normalizarPestana(searchParams.get("tab"));
+  const paramsApoderado = apoderadoId ? { apoderado_id: apoderadoId } : undefined;
 
   const consultaCurso =
     useObtenerDetalleCursoApiV1SeguimientoEstudiantesEstudianteIdCursosAsignaturaIdGet(
       estudianteId,
       asignaturaId,
+      paramsApoderado,
       {
         query: {
           enabled: Boolean(estudianteId && asignaturaId),
@@ -54,6 +57,7 @@ export function CursoDetalleVista({ usuario }: CursoDetalleVistaProps) {
   const consultaActividades =
     useListarActividadesEstudianteApiV1EvaluacionEstudiantesEstudianteIdActividadesGet(
       estudianteId,
+      paramsApoderado,
       {
         query: {
           enabled: Boolean(estudianteId),

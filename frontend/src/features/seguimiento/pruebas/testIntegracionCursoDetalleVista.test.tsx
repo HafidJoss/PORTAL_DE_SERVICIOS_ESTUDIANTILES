@@ -194,4 +194,69 @@ describe("CursoDetalleVista", () => {
     });
     expect(screen.getByRole("link", { name: /Volver a Mis cursos/i })).toHaveAttribute("href", "/cursos");
   });
+
+  // Spec: seguimiento · Requirement: Consulta multi-hijo de cursos y detalle de curso para el apoderado (RF04, HU12, DA05, RC08)
+  it("carga el detalle del curso para el menor seleccionado en Apoderado sin subida de archivos", async () => {
+    const apoderado: UsuarioSesionOut = {
+      id: "apo-demo-1",
+      dni: "40871256",
+      nombres: "Rosa",
+      apellidos: "Huamán Ccori",
+      rol: "Apoderado",
+      apoderado_id: "apo-demo-1",
+      hijos_vinculados: [
+        {
+          estudiante_id: "est-demo-2",
+          codigo: "20260002",
+          nombres: "Sofía",
+          apellidos: "Quispe Huamán",
+          grado_seccion: "1.° de Secundaria A",
+          iniciales: "SQ",
+          tutor: "Prof. Ana Lucía Torres",
+        },
+      ],
+    };
+
+    server.use(
+      http.get("*/api/v1/seguimiento/estudiantes/est-demo-2/cursos/cta", ({ request }) => {
+        expect(new URL(request.url).searchParams.get("apoderado_id")).toBe("apo-demo-1");
+        return HttpResponse.json({
+          ...DETALLE_MAT,
+          asignatura_id: "cta",
+          nombre: "Ciencia y Tecnología",
+          docente: "Prof. Ana Lucía Torres",
+        });
+      }),
+      http.get("*/api/v1/evaluacion/estudiantes/est-demo-2/actividades", ({ request }) => {
+        expect(new URL(request.url).searchParams.get("apoderado_id")).toBe("apo-demo-1");
+        return HttpResponse.json(ACTIVIDADES_DEMO);
+      }),
+    );
+
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    const { container } = render(
+      <QueryClientProvider client={qc}>
+        <ProveedorTema>
+          <MemoryRouter
+            initialEntries={["/cursos/cta"]}
+            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+          >
+            <Routes>
+              <Route
+                path="/cursos/:asignaturaId"
+                element={<CursoDetalleVista usuario={apoderado} hijoActivoId="est-demo-2" />}
+              />
+            </Routes>
+          </MemoryRouter>
+        </ProveedorTema>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Ciencia y Tecnología" })).toBeInTheDocument();
+    });
+    expect(container.querySelector('input[type="file"]')).toBeNull();
+  });
 });

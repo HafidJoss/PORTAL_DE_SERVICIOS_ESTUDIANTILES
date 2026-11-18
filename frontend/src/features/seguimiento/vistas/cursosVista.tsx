@@ -8,19 +8,25 @@ import { BannerPortada } from "../../../shared/componentes/bannerPortada";
 import { Boton } from "../../../shared/componentes/boton";
 import { Tarjeta } from "../../../shared/componentes/tarjeta";
 import { EstadoVacio } from "../../../shared/componentes/estadoVacio";
-import { resolverEstudianteId } from "../../../shared/utilidades/sesion";
+import {
+  resolverContextoEstudiante,
+  resolverHijoActivo,
+} from "../../../shared/utilidades/sesion";
 import { obtenerInicialesTexto } from "../utilidades/filtrosSeguimiento";
 
 interface CursosVistaProps {
   usuario: UsuarioSesionOut;
+  hijoActivoId?: string | null;
 }
 
-/** Grilla de asignaturas del estudiante (/cursos) con accesos rápidos por curso. */
-export function CursosVista({ usuario }: CursosVistaProps) {
-  const estudianteId = resolverEstudianteId(usuario);
+/** Grilla de asignaturas del estudiante o menor vinculado (/cursos). */
+export function CursosVista({ usuario, hijoActivoId }: CursosVistaProps) {
+  const { estudianteId, apoderadoId } = resolverContextoEstudiante(usuario, hijoActivoId);
+  const hijoActivo = usuario.rol === "Apoderado" ? resolverHijoActivo(usuario, hijoActivoId) : null;
 
   const consulta = useListarCursosEstudianteApiV1SeguimientoEstudiantesEstudianteIdCursosGet(
     estudianteId,
+    apoderadoId ? { apoderado_id: apoderadoId } : undefined,
     {
       query: {
         enabled: Boolean(estudianteId),
@@ -39,15 +45,17 @@ export function CursosVista({ usuario }: CursosVistaProps) {
 
   const datos = consulta.data?.status === 200 ? consulta.data.data : undefined;
 
+  const subtituloBanner = hijoActivo
+    ? `${hijoActivo.nombres} ${hijoActivo.apellidos} · ${datos?.grado_seccion ?? hijoActivo.grado_seccion}`
+    : datos
+      ? `${datos.grado_seccion} · Año escolar 2026`
+      : `${usuario.grado_seccion ?? "Año escolar 2026"}`;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <BannerPortada
-        titulo="Mis cursos"
-        subtitulo={
-          datos
-            ? `${datos.grado_seccion} · Año escolar 2026`
-            : `${usuario.grado_seccion ?? "Año escolar 2026"}`
-        }
+        titulo={hijoActivo ? "Cursos de su menor" : "Mis cursos"}
+        subtitulo={subtituloBanner}
         acciones={
           datos ? (
             <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
