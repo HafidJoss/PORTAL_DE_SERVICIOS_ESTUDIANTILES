@@ -1,7 +1,11 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import {
+  BookOpenCheck,
+  CalendarCheck,
+  ClipboardList,
   FileSpreadsheet,
+  FileText,
   Home,
   Library,
   Mail,
@@ -36,9 +40,11 @@ import { CursoDetalleVista } from "../features/seguimiento/vistas/cursoDetalleVi
 import { CursoDocenteDetalleVista } from "../features/seguimiento/vistas/cursoDocenteDetalleVista";
 import { CursosDocenteVista } from "../features/seguimiento/vistas/cursosDocenteVista";
 import { CursosVista } from "../features/seguimiento/vistas/cursosVista";
+import { InicioApoderadoVista } from "../features/seguimiento/vistas/inicioApoderadoVista";
 import { InicioDocenteVista } from "../features/seguimiento/vistas/inicioDocenteVista";
 import { InicioVista } from "../features/seguimiento/vistas/inicioVista";
 import { MarcoPortal, type ElementoNavPortal } from "../shared/componentes/marcoPortal";
+import { resolverHijoActivo } from "../shared/utilidades/sesion";
 import { crearClienteConsultas } from "./clienteConsultas";
 import { ProveedorTema } from "./proveedorTema";
 
@@ -82,15 +88,35 @@ const NAV_DOCENTE_MOVIL: readonly ElementoNavPortal[] = [
   { to: "/siagie", label: "SIAGIE", Icon: FileSpreadsheet },
 ];
 
+const NAV_APODERADO_ESCRITORIO: readonly ElementoNavPortal[] = [
+  { to: "/inicio", label: "Inicio", Icon: Home },
+  { to: "/cursos", label: "Cursos", Icon: Library },
+  { to: "/calificaciones", label: "Calificaciones", Icon: BookOpenCheck },
+  { to: "/trabajos", label: "Trabajos", Icon: ClipboardList },
+  { to: "/asistencia", label: "Asistencia", Icon: CalendarCheck },
+  { to: "/mensajes", label: "Mensajes", Icon: Mail },
+  { to: "/libreta", label: "Libreta oficial", Icon: FileText },
+];
+
+const NAV_APODERADO_MOVIL: readonly ElementoNavPortal[] = [
+  { to: "/inicio", label: "Inicio", Icon: Home },
+  { to: "/cursos", label: "Cursos", Icon: Library },
+  { to: "/calificaciones", label: "Notas", Icon: BookOpenCheck },
+  { to: "/asistencia", label: "Asistencia", Icon: CalendarCheck },
+  { to: "/libreta", label: "Libreta", Icon: FileText },
+];
+
 function PortalAutenticado() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const logoutMutation = useCerrarSesionApiV1IdentidadLogoutPost();
+  const [hijoSeleccionadoId, setHijoSeleccionadoId] = useState("");
 
   async function manejarLogout() {
     try {
       await logoutMutation.mutateAsync();
     } finally {
+      setHijoSeleccionadoId("");
       queryClient.clear();
       navigate("/ingresar", { replace: true });
     }
@@ -133,6 +159,120 @@ function PortalAutenticado() {
                 <Route
                   path="/siagie"
                   element={<ExportarSiagieVista usuario={usuario} />}
+                />
+                <Route
+                  path="/configuracion"
+                  element={<ConfiguracionVista usuario={usuario} />}
+                />
+                <Route path="*" element={<Navigate to="/inicio" replace />} />
+              </Routes>
+            </MarcoPortal>
+          );
+        }
+
+        if (usuario.rol === "Apoderado") {
+          const hijos = usuario.hijos_vinculados ?? [];
+          const hijoActivo = resolverHijoActivo(usuario, hijoSeleccionadoId);
+          const detalleApoderado =
+            hijos.length > 0 ? `Apoderado · ${hijos.length} hijos` : usuario.rol;
+
+          return (
+            <MarcoPortal
+              usuarioNombre={nombreCompleto}
+              usuarioDetalle={detalleApoderado}
+              subtituloPortal="Portal de Familias"
+              navItems={NAV_APODERADO_ESCRITORIO}
+              navMovilItems={NAV_APODERADO_MOVIL}
+              selectorContexto={
+                hijoActivo
+                  ? {
+                      etiquetaAccion: "Cambiar de menor",
+                      seleccionadoId: hijoActivo.estudiante_id,
+                      onSeleccionar: setHijoSeleccionadoId,
+                      opciones: hijos.map((h) => ({
+                        id: h.estudiante_id,
+                        etiqueta: `${h.nombres} ${h.apellidos}`.trim(),
+                        detalle: h.grado_seccion,
+                        iniciales: h.iniciales,
+                      })),
+                    }
+                  : undefined
+              }
+              onLogout={manejarLogout}
+              cerrandoSesion={logoutMutation.isPending}
+            >
+              <Routes>
+                <Route
+                  path="/inicio"
+                  element={
+                    <InicioApoderadoVista
+                      usuario={usuario}
+                      hijoActivoId={hijoActivo?.estudiante_id}
+                    />
+                  }
+                />
+                <Route
+                  path="/cursos"
+                  element={
+                    <CursosVista
+                      usuario={usuario}
+                      hijoActivoId={hijoActivo?.estudiante_id}
+                    />
+                  }
+                />
+                <Route
+                  path="/cursos/:asignaturaId"
+                  element={
+                    <CursoDetalleVista
+                      usuario={usuario}
+                      hijoActivoId={hijoActivo?.estudiante_id}
+                    />
+                  }
+                />
+                <Route
+                  path="/calificaciones"
+                  element={
+                    <CalificacionesVista
+                      usuario={usuario}
+                      hijoActivoId={hijoActivo?.estudiante_id}
+                    />
+                  }
+                />
+                <Route
+                  path="/trabajos"
+                  element={
+                    <TrabajosVista
+                      usuario={usuario}
+                      hijoActivoId={hijoActivo?.estudiante_id}
+                    />
+                  }
+                />
+                <Route
+                  path="/mensajes"
+                  element={
+                    <MensajesVista
+                      usuario={usuario}
+                      hijoActivoId={hijoActivo?.estudiante_id}
+                    />
+                  }
+                />
+                <Route
+                  path="/libreta"
+                  element={
+                    <LibretaVista
+                      usuario={usuario}
+                      hijoActivoId={hijoActivo?.estudiante_id}
+                    />
+                  }
+                />
+                <Route
+                  path="/asistencia"
+                  element={
+                    <AsistenciaVista
+                      usuario={usuario}
+                      hijoActivoId={hijoActivo?.estudiante_id}
+                    />
+                  }
                 />
                 <Route
                   path="/configuracion"
