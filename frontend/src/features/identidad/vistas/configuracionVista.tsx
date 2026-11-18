@@ -117,6 +117,9 @@ export function ConfiguracionVista({ usuario }: { usuario: UsuarioSesionOut }) {
       ? `${nombreCompleto} · ${usuario.rol} · ${usuario.grado_seccion}`
       : `${nombreCompleto} · ${usuario.rol}`;
 
+  const esApoderado = usuario.rol === "Apoderado";
+  const hijosVinculados = usuario.hijos_vinculados ?? [];
+
   const datosPersonales = esDocente
     ? [
         ["Nombres", usuario.nombres],
@@ -126,14 +129,22 @@ export function ConfiguracionVista({ usuario }: { usuario: UsuarioSesionOut }) {
         ["Nivel", usuario.nivel_educativo ?? "—"],
         ["Secciones a cargo", usuario.secciones_a_cargo?.join(", ") || "—"],
       ]
-    : [
-        ["Nombres", usuario.nombres],
-        ["Apellidos", usuario.apellidos],
-        ["DNI", usuario.dni],
-        ["Código de estudiante", usuario.codigo_estudiante ?? "—"],
-        ["Grado y sección", usuario.grado_seccion ?? "—"],
-        ["Tutora / Tutor", usuario.tutor ?? "—"],
-      ];
+    : esApoderado
+      ? [
+          ["Nombres", usuario.nombres],
+          ["Apellidos", usuario.apellidos],
+          ["DNI", usuario.dni],
+          ["Perfil", "Apoderado / Familia"],
+          ["Menores vinculados", `${hijosVinculados.length}`],
+        ]
+      : [
+          ["Nombres", usuario.nombres],
+          ["Apellidos", usuario.apellidos],
+          ["DNI", usuario.dni],
+          ["Código de estudiante", usuario.codigo_estudiante ?? "—"],
+          ["Grado y sección", usuario.grado_seccion ?? "—"],
+          ["Tutora / Tutor", usuario.tutor ?? "—"],
+        ];
 
   const avisosLista = esDocente ? AVISOS_DOCENTE : AVISOS_CONFIG;
 
@@ -267,6 +278,63 @@ export function ConfiguracionVista({ usuario }: { usuario: UsuarioSesionOut }) {
               <span>Para corregir tus datos, acércate a Secretaría Académica.</span>
             </div>
           </Tarjeta>
+
+          {esApoderado ? (
+            <Tarjeta style={{ padding: 0, overflow: "hidden" }}>
+              <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-subtle)" }}>
+                <h2
+                  style={{
+                    fontFamily: "var(--font-heading)",
+                    fontWeight: 600,
+                    fontSize: 16,
+                    margin: 0,
+                  }}
+                >
+                  Menores vinculados
+                </h2>
+              </div>
+              {hijosVinculados.length === 0 ? (
+                <div style={{ padding: "16px 20px", fontSize: 13, color: "var(--text-muted)" }}>
+                  No hay estudiantes vinculados registrados en tu cuenta.
+                </div>
+              ) : (
+                <div>
+                  {hijosVinculados.map((hijo) => {
+                    const nombreHijo = `${hijo.nombres} ${hijo.apellidos}`.trim();
+                    return (
+                      <div
+                        key={hijo.estudiante_id}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          padding: "12px 20px",
+                          borderBottom: "1px solid var(--border-subtle)",
+                        }}
+                      >
+                        <AvatarIniciales
+                          nombre={nombreHijo}
+                          iniciales={hijo.iniciales}
+                          size={38}
+                        />
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-main)" }}>
+                            {nombreHijo}
+                          </div>
+                          <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                            {hijo.grado_seccion}
+                          </div>
+                          <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                            Código {hijo.codigo} · {hijo.tutor}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </Tarjeta>
+          ) : null}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>

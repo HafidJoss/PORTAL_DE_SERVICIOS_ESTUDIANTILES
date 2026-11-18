@@ -18,6 +18,13 @@ import {
 import { useTema } from "../../app/proveedorTema";
 import { useEsMovil } from "../ganchos/useEsMovil";
 import { AvatarIniciales } from "./avatarIniciales";
+import {
+  SelectorContextoHijo,
+  type OpcionSelectorContexto,
+  type SelectorContextoPortal,
+} from "./selectorContextoHijo";
+
+export type { OpcionSelectorContexto, SelectorContextoPortal };
 
 export interface ElementoNavPortal {
   to: string;
@@ -32,6 +39,7 @@ interface MarcoPortalProps {
   subtituloPortal?: string;
   navItems?: readonly ElementoNavPortal[];
   navMovilItems?: readonly ElementoNavPortal[];
+  selectorContexto?: SelectorContextoPortal;
   onLogout?: () => void;
   cerrandoSesion?: boolean;
   children: ReactNode;
@@ -62,6 +70,7 @@ export function MarcoPortal({
   subtituloPortal = "Portal Estudiantil",
   navItems = DESKTOP_NAV,
   navMovilItems = MOBILE_NAV,
+  selectorContexto,
   onLogout,
   cerrandoSesion = false,
   children,
@@ -115,6 +124,8 @@ export function MarcoPortal({
               </div>
             </div>
           </div>
+
+          {selectorContexto ? <SelectorContextoHijo selector={selectorContexto} /> : null}
 
           <nav
             aria-label="Navegación principal"
@@ -277,7 +288,8 @@ export function MarcoPortal({
           </div>
         </aside>
       ) : (
-        <header
+        <>
+          <header
           style={{
             height: 56,
             padding: "0 16px",
@@ -352,7 +364,19 @@ export function MarcoPortal({
               </button>
             ) : null}
           </div>
-        </header>
+          </header>
+          {selectorContexto ? (
+            <div
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "var(--bg-surface)",
+                borderBottom: "1px solid var(--border-subtle)",
+              }}
+            >
+              <SelectorContextoHijo selector={selectorContexto} compacto />
+            </div>
+          ) : null}
+        </>
       )}
 
       <main

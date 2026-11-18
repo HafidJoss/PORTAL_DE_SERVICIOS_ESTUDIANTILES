@@ -174,4 +174,56 @@ describe("ConfiguracionVista", () => {
       screen.getByText(/Para corregir tus datos, acércate a Secretaría Académica/i),
     ).toBeInTheDocument();
   });
+
+  // Spec: identidad · Scenario: Visualización de perfil de apoderado y menores vinculados en solo lectura (RC07, RC08)
+  it("muestra perfil de apoderado con hijos vinculados en solo lectura y sin subida de imagen", () => {
+    const apoUsuario: UsuarioSesionOut = {
+      id: "apo-demo-1",
+      dni: "40871256",
+      nombres: "Rosa",
+      apellidos: "Huamán Ccori",
+      rol: "Apoderado",
+      apoderado_id: "apo-demo-1",
+      hijos_vinculados: [
+        {
+          estudiante_id: "est-demo-1",
+          codigo: "20260001",
+          nombres: "Luis Ángel",
+          apellidos: "Quispe Huamán",
+          grado_seccion: "3.° de Secundaria B",
+          iniciales: "LQ",
+          tutor: "Prof. Carlos Mendoza",
+        },
+        {
+          estudiante_id: "est-demo-2",
+          codigo: "20260002",
+          nombres: "Sofía",
+          apellidos: "Quispe Huamán",
+          grado_seccion: "1.° de Secundaria A",
+          iniciales: "SQ",
+          tutor: "Prof. Ana Lucía Torres",
+        },
+      ],
+    };
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    const { container } = render(
+      <QueryClientProvider client={qc}>
+        <ProveedorTema>
+          <ConfiguracionVista usuario={apoUsuario} />
+        </ProveedorTema>
+      </QueryClientProvider>,
+    );
+
+    expect(container.querySelector('input[type="file"]')).toBeNull();
+    expect(screen.getByText("40871256")).toBeInTheDocument();
+    expect(screen.getByText("Luis Ángel Quispe Huamán")).toBeInTheDocument();
+    expect(screen.getByText("3.° de Secundaria B")).toBeInTheDocument();
+    expect(screen.getByText("Sofía Quispe Huamán")).toBeInTheDocument();
+    expect(screen.getByText("1.° de Secundaria A")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Para corregir tus datos, acércate a Secretaría Académica/i),
+    ).toBeInTheDocument();
+  });
 });
