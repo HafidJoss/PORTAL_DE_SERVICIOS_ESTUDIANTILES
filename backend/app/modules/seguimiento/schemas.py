@@ -332,3 +332,46 @@ class AnuncioSeccionCreateIn(BaseModel):
         if len(limpio) < 3:
             raise ValueError("El anuncio debe tener al menos 3 caracteres.")
         return limpio
+
+
+
+class MensajeBandejaApoderadoOut(BaseModel):
+    """Mensaje o comunicado en la bandeja familiar del apoderado."""
+
+    id: str
+    origen: Literal["institucion", "asistencia", "docente"]
+    remitente: str
+    iniciales: str = ""
+    curso: str = ""
+    asunto: str
+    cuerpo: str
+    fecha: str
+    leido: bool
+    requiere_confirmacion: bool = False
+    lectura_confirmada: bool = False
+    etiqueta: str
+    ruta_destino: str = ""
+
+
+class ResumenAsistenciaApoderadoOut(BaseModel):
+    """Indicadores rápidos de asistencia del mes para el hijo seleccionado."""
+
+    porcentaje: str
+    presentes: int
+    tardanzas: int
+    faltas: int
+
+
+class InicioApoderadoOut(BaseModel):
+    """Tablero inicial del apoderado filtrado para un hijo vinculado (RF01, DA05)."""
+
+    apoderado_id: str
+    estudiante_id: str
+    estudiante_nombre: str
+    grado_seccion: str
+    sin_leer: int
+    pendientes_total: int
+    asistencia_porcentaje: str
+    mensajes_bandeja: list[MensajeBandejaApoderadoOut]
+    proximas_entregas: list[EntregaProximaOut]
+    resumen_asistencia: ResumenAsistenciaApoderadoOut

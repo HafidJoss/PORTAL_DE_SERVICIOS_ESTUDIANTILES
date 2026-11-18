@@ -3,6 +3,7 @@
 from fastapi import APIRouter
 
 from app.core.errores import ErrorAplicacion
+from app.core.pertenencia import validar_pertenencia_apoderado
 
 from .schemas import (
     AlertaDocenteOut,
@@ -18,12 +19,14 @@ from .schemas import (
     EntregaProximaOut,
     EtapaTrimestreOut,
     EventoAgendaOut,
+    InicioApoderadoOut,
     InicioDocenteOut,
     InicioEstudianteOut,
     IntegranteEquipoOut,
     KpiInicioOut,
     ListaCursosOut,
     ListaSeccionesDocenteOut,
+    MensajeBandejaApoderadoOut,
     MensajeBandejaDocenteOut,
     NotaPendienteDocenteOut,
     NovedadItemOut,
@@ -32,6 +35,7 @@ from .schemas import (
     PendienteSeccionOut,
     RespuestaBandejaIn,
     RespuestaBandejaOut,
+    ResumenAsistenciaApoderadoOut,
     SeccionDocenteOut,
     StreamCursoOut,
 )
@@ -139,9 +143,41 @@ def marcar_novedades_vistas(estudiante_id: str) -> NovedadesVistoOut:
 
 
 @router.get("/estudiantes/{estudiante_id}/cursos", response_model=ListaCursosOut)
-def listar_cursos_estudiante(estudiante_id: str) -> ListaCursosOut:
-    """Devuelve la lista de cursos del estudiante (contrato stub)."""
-    _ = estudiante_id
+def listar_cursos_estudiante(
+    estudiante_id: str,
+    apoderado_id: str | None = None,
+) -> ListaCursosOut:
+    """Devuelve la lista de cursos del estudiante contextualizada por menor (RF04, DA05)."""
+    validar_pertenencia_apoderado(apoderado_id, estudiante_id)
+    if estudiante_id == "est-demo-2":
+        return ListaCursosOut(
+            grado_seccion="1.° de Secundaria A",
+            total_pendientes=1,
+            cursos=[
+                CursoResumenOut(
+                    asignatura_id="cta",
+                    nombre="Ciencia y Tecnología",
+                    docente="Prof. Ana Lucía Torres",
+                    rol_docente="Docente titular",
+                    horario="Mar · Jue",
+                    horas_semanales=5,
+                    pendientes=1,
+                    proximo_vencimiento="Maqueta del sistema solar · 17 nov",
+                    mini_niveles=["AD", "AD", "A"],
+                ),
+                CursoResumenOut(
+                    asignatura_id="mat",
+                    nombre="Matemática",
+                    docente="Prof. Luis Herrera Paredes",
+                    rol_docente="Docente titular",
+                    horario="Lun · Mié · Vie",
+                    horas_semanales=6,
+                    pendientes=0,
+                    proximo_vencimiento="Sin pendientes próximos",
+                    mini_niveles=["A", "AD", "A", "A"],
+                ),
+            ],
+        )
     return ListaCursosOut(
         grado_seccion="3.° de Secundaria B",
         total_pendientes=1,
@@ -165,9 +201,50 @@ def listar_cursos_estudiante(estudiante_id: str) -> ListaCursosOut:
     "/estudiantes/{estudiante_id}/cursos/{asignatura_id}",
     response_model=CursoDetalleOut,
 )
-def obtener_detalle_curso(estudiante_id: str, asignatura_id: str) -> CursoDetalleOut:
-    """Devuelve el detalle del curso con novedades, competencias y plana docente."""
-    _ = estudiante_id
+def obtener_detalle_curso(
+    estudiante_id: str,
+    asignatura_id: str,
+    apoderado_id: str | None = None,
+) -> CursoDetalleOut:
+    """Devuelve el detalle del curso con novedades, competencias y plana docente (RF04, DA05)."""
+    validar_pertenencia_apoderado(apoderado_id, estudiante_id)
+    if estudiante_id == "est-demo-2" and asignatura_id == "cta":
+        return CursoDetalleOut(
+            asignatura_id="cta",
+            nombre="Ciencia y Tecnología",
+            docente="Prof. Ana Lucía Torres",
+            rol_docente="Docente titular",
+            horario="Mar · Jue",
+            horas_semanales=5,
+            stream=[
+                StreamCursoOut(
+                    titulo="Práctica de laboratorio: sistema solar",
+                    subtitulo="Se publicó tu calificativo",
+                    fecha="12 nov",
+                    tipo="calificativo",
+                    nivel="AD",
+                    cuerpo="Sofía demostró dominio del método científico y trabajo en equipo.",
+                )
+            ],
+            competencias=[
+                CompetenciaCursoResumenOut(
+                    nombre="Indaga mediante métodos científicos",
+                    trimestres=["AD", "A", "AD"],
+                )
+            ],
+            equipo=[
+                IntegranteEquipoOut(
+                    nombre="Prof. Ana Lucía Torres",
+                    rol="Docente titular",
+                    grupo="docente",
+                ),
+                IntegranteEquipoOut(
+                    nombre="Prof. Elena Soto Vega",
+                    rol="Tutora de 1.° A",
+                    grupo="equipo_seccion",
+                ),
+            ],
+        )
     if asignatura_id != "mat":
         raise ErrorAplicacion(
             title="Curso no encontrado",
@@ -638,4 +715,218 @@ def publicar_anuncio_seccion(
         subtitulo="Comunicación unidireccional en la sección",
         fecha="Ahora",
         cuerpo=datos.texto,
+    )
+
+
+
+_APODERADO_HIJOS_DEMO: dict[str, dict[str, object]] = {
+    "est-demo-1": {
+        "nombre": "Luis Ángel Quispe Huamán",
+        "grado_seccion": "3.° de Secundaria B",
+        "pendientes_total": 2,
+        "asistencia_porcentaje": "96%",
+        "resumen_asistencia": ResumenAsistenciaApoderadoOut(
+            porcentaje="96%",
+            presentes=48,
+            tardanzas=1,
+            faltas=1,
+        ),
+        "proximas_entregas": [
+            EntregaProximaOut(
+                id="ent-apo-1",
+                titulo="Resolución de sistemas 2×2",
+                curso="Matemática",
+                fecha_entrega="Vie 13 nov · 18:00",
+                estado_etiqueta="Pendiente",
+                urgente=True,
+            ),
+            EntregaProximaOut(
+                id="ent-apo-2",
+                titulo="Ensayo breve sobre la Independencia",
+                curso="Ciencias Sociales",
+                fecha_entrega="Lun 16 nov · 20:00",
+                estado_etiqueta="En curso",
+                urgente=False,
+            ),
+        ],
+    },
+    "est-demo-2": {
+        "nombre": "Sofía Quispe Huamán",
+        "grado_seccion": "1.° de Secundaria A",
+        "pendientes_total": 1,
+        "asistencia_porcentaje": "98%",
+        "resumen_asistencia": ResumenAsistenciaApoderadoOut(
+            porcentaje="98%",
+            presentes=49,
+            tardanzas=1,
+            faltas=0,
+        ),
+        "proximas_entregas": [
+            EntregaProximaOut(
+                id="ent-apo-3",
+                titulo="Maqueta del sistema solar",
+                curso="Ciencia y Tecnología",
+                fecha_entrega="Mar 17 nov · 14:00",
+                estado_etiqueta="En curso",
+                urgente=False,
+            ),
+        ],
+    },
+}
+
+_COMUNICADOS_APODERADO_IDS = {"i1", "i2", "i3", "i4", "m1", "m3"}
+
+
+def _construir_bandeja_apoderado(estudiante_id: str) -> list[MensajeBandejaApoderadoOut]:
+    """Construye los comunicados y mensajes contextualizados al estudiante activo."""
+    es_primero = estudiante_id == "est-demo-2"
+    curso_docente = "Ciencia y Tecnología" if es_primero else "Matemática"
+    docente_remitente = "Prof. Ana Lucía Torres" if es_primero else "Prof. Carlos Mendoza"
+    iniciales_docente = "AT" if es_primero else "CM"
+    nombre_corto = "Sofía" if es_primero else "Luis Ángel"
+
+    return [
+        MensajeBandejaApoderadoOut(
+            id="i1",
+            origen="institucion",
+            remitente="Dirección",
+            iniciales="IE",
+            curso="",
+            asunto="Entrega de libretas del III Trimestre — viernes 20 nov",
+            cuerpo=(
+                "Estimadas familias: las libretas oficiales estarán disponibles en el portal "
+                "desde las 10:00 a.m. y la atención presencial por tutoría será de 15:00 a 18:00."
+            ),
+            fecha="Hoy, 09:00",
+            leido=False,
+            requiere_confirmacion=True,
+            lectura_confirmada=False,
+            etiqueta="Institución",
+            ruta_destino="/libreta",
+        ),
+        MensajeBandejaApoderadoOut(
+            id="i2",
+            origen="asistencia",
+            remitente="Asistencia",
+            iniciales="AS",
+            curso="",
+            asunto=f"Tardanza registrada de {nombre_corto} (07:52)",
+            cuerpo=(
+                f"{nombre_corto} ingresó a las 07:52 a la institución. Puedes revisar el historial "
+                "y enviar una justificación escrita si corresponde."
+            ),
+            fecha="Hoy, 08:15",
+            leido=False,
+            requiere_confirmacion=False,
+            lectura_confirmada=False,
+            etiqueta="Asistencia",
+            ruta_destino="/asistencia",
+        ),
+        MensajeBandejaApoderadoOut(
+            id="m1",
+            origen="docente",
+            remitente=docente_remitente,
+            iniciales=iniciales_docente,
+            curso=curso_docente,
+            asunto=f"Avance positivo de {nombre_corto} en el III Trimestre",
+            cuerpo=(
+                f"Compartimos que {nombre_corto} completó las últimas actividades de {curso_docente} "
+                "con participación destacada en clase."
+            ),
+            fecha="Ayer, 17:40",
+            leido=False,
+            requiere_confirmacion=False,
+            lectura_confirmada=False,
+            etiqueta="Docente",
+            ruta_destino="/cursos",
+        ),
+        MensajeBandejaApoderadoOut(
+            id="m3",
+            origen="docente",
+            remitente="Tutoría de grado",
+            iniciales="TU",
+            curso="Tutoría y Orientación",
+            asunto="Recordatorio de jornada de convivencia escolar",
+            cuerpo=(
+                "Se recuerda a las familias confirmar el horario de salida del viernes por "
+                "actividad formativa de cierre de unidad."
+            ),
+            fecha="Lun 10 nov",
+            leido=True,
+            requiere_confirmacion=False,
+            lectura_confirmada=False,
+            etiqueta="Docente",
+            ruta_destino="/mensajes",
+        ),
+        MensajeBandejaApoderadoOut(
+            id="i3",
+            origen="institucion",
+            remitente="Tesorería",
+            iniciales="IE",
+            curso="",
+            asunto="Cronograma de matrícula regular y ratificación 2027",
+            cuerpo="El proceso de ratificación de vacante se habilitará del 1 al 15 de diciembre.",
+            fecha="Vie 07 nov",
+            leido=True,
+            requiere_confirmacion=False,
+            lectura_confirmada=False,
+            etiqueta="Institución",
+            ruta_destino="/inicio",
+        ),
+    ]
+
+
+def _validar_pertenencia_apoderado(apoderado_id: str, estudiante_id: str | None = None) -> None:
+    """Garantiza DA05: el apoderado solo accede a sus propios hijos vinculados."""
+    if apoderado_id != "apo-demo-1" or (
+        estudiante_id is not None and estudiante_id not in _APODERADO_HIJOS_DEMO
+    ):
+        raise ErrorAplicacion(
+            title="Acceso no autorizado",
+            detail="El estudiante solicitado no está vinculado a este apoderado.",
+            status_code=403,
+        )
+
+
+@router.get(
+    "/apoderados/{apoderado_id}/hijos/{estudiante_id}/inicio",
+    response_model=InicioApoderadoOut,
+)
+def obtener_inicio_apoderado(apoderado_id: str, estudiante_id: str) -> InicioApoderadoOut:
+    """Devuelve bandeja, entregas y resumen de asistencia del hijo vinculado activo (RF01, DA05)."""
+    _validar_pertenencia_apoderado(apoderado_id, estudiante_id)
+    hijo = _APODERADO_HIJOS_DEMO[estudiante_id]
+    bandeja = _construir_bandeja_apoderado(estudiante_id)
+    return InicioApoderadoOut(
+        apoderado_id=apoderado_id,
+        estudiante_id=estudiante_id,
+        estudiante_nombre=str(hijo["nombre"]),
+        grado_seccion=str(hijo["grado_seccion"]),
+        sin_leer=sum(1 for mensaje in bandeja if not mensaje.leido),
+        pendientes_total=int(hijo["pendientes_total"]),  # type: ignore[arg-type]
+        asistencia_porcentaje=str(hijo["asistencia_porcentaje"]),
+        mensajes_bandeja=bandeja,
+        proximas_entregas=list(hijo["proximas_entregas"]),  # type: ignore[arg-type]
+        resumen_asistencia=hijo["resumen_asistencia"],  # type: ignore[arg-type]
+    )
+
+
+@router.post(
+    "/apoderados/{apoderado_id}/comunicados/{comunicado_id}/confirmar-lectura",
+    response_model=OperacionBandejaOut,
+)
+def confirmar_lectura_comunicado_apoderado(
+    apoderado_id: str, comunicado_id: str
+) -> OperacionBandejaOut:
+    """Registra la confirmación de lectura de un comunicado institucional (RF25, DA05)."""
+    _validar_pertenencia_apoderado(apoderado_id)
+    if comunicado_id not in _COMUNICADOS_APODERADO_IDS:
+        raise ErrorAplicacion(
+            title="Comunicado no encontrado",
+            detail=f"No existe el comunicado '{comunicado_id}' para el apoderado.",
+            status_code=404,
+        )
+    return OperacionBandejaOut(
+        ok=True,
+        mensaje="Lectura confirmada. Dirección fue notificada.",
     )

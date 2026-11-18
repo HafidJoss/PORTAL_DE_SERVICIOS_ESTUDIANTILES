@@ -3,6 +3,7 @@
 from fastapi import APIRouter
 
 from app.core.errores import ErrorAplicacion
+from app.core.pertenencia import validar_pertenencia_apoderado
 
 from .schemas import (
     ActividadDocenteCreateIn,
@@ -44,9 +45,63 @@ router = APIRouter(prefix="/evaluacion", tags=["evaluacion"])
     "/estudiantes/{estudiante_id}/calificaciones",
     response_model=CalificacionesEstudianteOut,
 )
-def obtener_calificaciones_estudiante(estudiante_id: str) -> CalificacionesEstudianteOut:
-    """Devuelve niveles por competencia, conclusiones y calificativos publicados."""
-    _ = estudiante_id
+def obtener_calificaciones_estudiante(
+    estudiante_id: str,
+    apoderado_id: str | None = None,
+) -> CalificacionesEstudianteOut:
+    """Devuelve niveles por competencia, conclusiones y calificativos publicados (RF08, DA05)."""
+    validar_pertenencia_apoderado(apoderado_id, estudiante_id)
+    if estudiante_id == "est-demo-2":
+        return CalificacionesEstudianteOut(
+            trimestre_actual=3,
+            estado_trimestre="En Evaluación",
+            criterio_sugerencia="mediana_capacidades",
+            cursos=[
+                CursoCalificacionesOut(
+                    asignatura_id="cta",
+                    nombre="Ciencia y Tecnología",
+                    docente="Prof. Ana Lucía Torres",
+                    competencias=[
+                        CompetenciaNivelOut(
+                            nombre="Indaga mediante métodos científicos",
+                            trimestres=["AD", "A", "AD"],
+                        )
+                    ],
+                    conclusiones=[
+                        ConclusionOut(
+                            trimestre="II Trimestre",
+                            competencia="Explica el mundo físico basándose en conocimientos",
+                            nivel="A",
+                            texto="Formula hipótesis claras y argumenta con evidencias de laboratorio.",
+                        )
+                    ],
+                    calificativos_publicados=[
+                        CalificativoPublicadoOut(
+                            id="act-cta-2",
+                            tipo="sesion_clase",
+                            titulo="Sesión 12: Método científico",
+                            fecha="12 nov",
+                            competencia="Indaga mediante métodos científicos",
+                            nivel="AD",
+                            comentario="Sofía lideró el registro de observaciones en laboratorio.",
+                        )
+                    ],
+                ),
+                CursoCalificacionesOut(
+                    asignatura_id="mat",
+                    nombre="Matemática",
+                    docente="Prof. Luis Herrera Paredes",
+                    competencias=[
+                        CompetenciaNivelOut(
+                            nombre="Resuelve problemas de cantidad",
+                            trimestres=["A", "AD", "A"],
+                        )
+                    ],
+                    conclusiones=[],
+                    calificativos_publicados=[],
+                ),
+            ],
+        )
     return CalificacionesEstudianteOut(
         trimestre_actual=3,
         estado_trimestre="En Evaluación",
@@ -90,9 +145,45 @@ def obtener_calificaciones_estudiante(estudiante_id: str) -> CalificacionesEstud
     "/estudiantes/{estudiante_id}/actividades",
     response_model=ListaActividadesOut,
 )
-def listar_actividades_estudiante(estudiante_id: str) -> ListaActividadesOut:
-    """Lista trabajos y sesiones de clase (nota del día) del estudiante."""
-    _ = estudiante_id
+def listar_actividades_estudiante(
+    estudiante_id: str,
+    apoderado_id: str | None = None,
+) -> ListaActividadesOut:
+    """Lista trabajos y sesiones de clase (nota del día) del estudiante (RF23, DA05)."""
+    validar_pertenencia_apoderado(apoderado_id, estudiante_id)
+    if estudiante_id == "est-demo-2":
+        return ListaActividadesOut(
+            pendientes=1,
+            vencen_pronto=0,
+            actividades=[
+                ActividadOut(
+                    id="act-cta-1",
+                    tipo="trabajo",
+                    titulo="Maqueta del sistema solar",
+                    curso="Ciencia y Tecnología",
+                    asignada="10 nov",
+                    fecha_entrega="17 nov",
+                    estado="pendiente",
+                    urgente=False,
+                    competencia="Explica el mundo físico basándose en conocimientos",
+                    capacidad="Comprende y usa conocimientos sobre los seres vivos y universo",
+                    descripcion="Presentar maqueta rotulada en clase con materiales reciclados.",
+                ),
+                ActividadOut(
+                    id="act-cta-s1",
+                    tipo="sesion_clase",
+                    titulo="Sesión 12: Método científico (Nota del día)",
+                    curso="Ciencia y Tecnología",
+                    asignada="12 nov",
+                    fecha_entrega=None,
+                    estado="calificado",
+                    competencia="Indaga mediante métodos científicos",
+                    capacidad="Genera y registra datos e información",
+                    nivel="AD",
+                    comentario="Excelente desempeño durante el experimento guiado.",
+                ),
+            ],
+        )
     return ListaActividadesOut(
         pendientes=1,
         vencen_pronto=1,
@@ -131,9 +222,33 @@ def listar_actividades_estudiante(estudiante_id: str) -> ListaActividadesOut:
     "/estudiantes/{estudiante_id}/mensajes",
     response_model=ListaMensajesOut,
 )
-def listar_mensajes_estudiante(estudiante_id: str) -> ListaMensajesOut:
-    """Devuelve la bandeja de mensajes e hilos del estudiante."""
-    _ = estudiante_id
+def listar_mensajes_estudiante(
+    estudiante_id: str,
+    apoderado_id: str | None = None,
+) -> ListaMensajesOut:
+    """Devuelve la bandeja de mensajes e hilos del estudiante o apoderado (RF25, DA05)."""
+    validar_pertenencia_apoderado(apoderado_id, estudiante_id)
+    if estudiante_id == "est-demo-2":
+        return ListaMensajesOut(
+            sin_leer=1,
+            mensajes=[
+                MensajeOut(
+                    id="msg-sof-1",
+                    tipo="Tarea",
+                    remitente="Prof. Ana Lucía Torres",
+                    curso="Ciencia y Tecnología",
+                    asunto="Indicaciones de maqueta del sistema solar para Sofía",
+                    fecha="Hoy",
+                    fecha_larga="hoy, 09:20",
+                    destinatarios="1.° A · Sofía Quispe Huamán",
+                    cuerpo="Se recuerda traer la maqueta con rótulos legibles el martes 17.",
+                    actividad_id="act-cta-1",
+                    no_leido=True,
+                    lectura_confirmada=False,
+                    respuestas=[],
+                )
+            ],
+        )
     return ListaMensajesOut(
         sin_leer=1,
         mensajes=[

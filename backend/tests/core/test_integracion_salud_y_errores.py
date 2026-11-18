@@ -70,6 +70,8 @@ def test_openapi_expone_las_18_rutas_base_de_estudiante_v2():
         "/api/v1/seguimiento/docentes/{docente_id}/cursos",
         "/api/v1/seguimiento/docentes/{docente_id}/secciones/{seccion_id}",
         "/api/v1/seguimiento/docentes/{docente_id}/secciones/{seccion_id}/anuncios",
+        "/api/v1/seguimiento/apoderados/{apoderado_id}/hijos/{estudiante_id}/inicio",
+        "/api/v1/seguimiento/apoderados/{apoderado_id}/comunicados/{comunicado_id}/confirmar-lectura",
         "/api/v1/evaluacion/estudiantes/{estudiante_id}/calificaciones",
         "/api/v1/evaluacion/estudiantes/{estudiante_id}/actividades",
         "/api/v1/evaluacion/estudiantes/{estudiante_id}/mensajes",
@@ -84,11 +86,12 @@ def test_openapi_expone_las_18_rutas_base_de_estudiante_v2():
         "/api/v1/evaluacion/docentes/{docente_id}/secciones/{seccion_id}/observaciones",
         "/api/v1/evaluacion/docentes/{docente_id}/mensajes",
         "/api/v1/asistencia/estudiantes/{estudiante_id}",
+        "/api/v1/asistencia/apoderados/{apoderado_id}/hijos/{estudiante_id}/justificaciones",
         "/api/v1/reportes/estudiantes/{estudiante_id}/libretas",
         "/api/v1/reportes/estudiantes/{estudiante_id}/libretas/{trimestre_id}/descarga",
         "/api/v1/reportes/docentes/{docente_id}/siagie",
         "/api/v1/reportes/docentes/{docente_id}/siagie/{seccion_id}/descarga",
     }
     assert rutas_esperadas.issubset(paths)
-    assert len(paths) == 36
+    assert len(paths) == 39
 

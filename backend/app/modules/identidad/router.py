@@ -7,6 +7,7 @@ from .schemas import (
     ActivacionOut,
     AvisoPrivacidadOut,
     CambioContrasenaIn,
+    HijoVinculadoOut,
     LoginIn,
     MensajeOperacionOut,
     SesionOut,
@@ -17,6 +18,35 @@ router = APIRouter(prefix="/identidad", tags=["identidad"])
 
 
 def _usuario_demo(dni: str = "72458193") -> UsuarioSesionOut:
+    if dni == "40871256":
+        return UsuarioSesionOut(
+            id="apo-demo-1",
+            dni=dni,
+            nombres="Rosa",
+            apellidos="Huamán Ccori",
+            rol="Apoderado",
+            apoderado_id="apo-demo-1",
+            hijos_vinculados=[
+                HijoVinculadoOut(
+                    estudiante_id="est-demo-1",
+                    codigo="05123487210042",
+                    nombres="Luis Ángel",
+                    apellidos="Quispe Huamán",
+                    grado_seccion="3.° de Secundaria B",
+                    iniciales="LQ",
+                    tutor="Prof. Rosa Cárdenas Palomino",
+                ),
+                HijoVinculadoOut(
+                    estudiante_id="est-demo-2",
+                    codigo="05123487210187",
+                    nombres="Sofía",
+                    apellidos="Quispe Huamán",
+                    grado_seccion="1.° de Secundaria A",
+                    iniciales="SQ",
+                    tutor="Prof. Karen Lozano Bendezú",
+                ),
+            ],
+        )
     if dni == "41257836":
         return UsuarioSesionOut(
             id="doc-demo-1",

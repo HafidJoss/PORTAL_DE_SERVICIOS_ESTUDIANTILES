@@ -147,3 +147,77 @@ def test_seguimiento_docente_detalle_seccion_y_anuncios():
     )
     assert anuncio_ok.status_code == 201
     assert anuncio_ok.json()["tipo"] == "Recordatorio"
+
+
+
+# Spec: seguimiento · Requirement: Tablero de inicio del apoderado y confirmación de lectura (RF01, RF25, DA05)
+def test_seguimiento_apoderado_inicio_multi_hijo_pertenencia_y_lectura():
+    client = crear_cliente(crear_app())
+
+    hijo_1 = client.get("/api/v1/seguimiento/apoderados/apo-demo-1/hijos/est-demo-1/inicio")
+    assert hijo_1.status_code == 200
+    body_1 = hijo_1.json()
+    assert body_1["estudiante_id"] == "est-demo-1"
+    assert "Luis Ángel" in body_1["estudiante_nombre"]
+    assert len(body_1["mensajes_bandeja"]) >= 4
+    assert len(body_1["proximas_entregas"]) >= 1
+
+    hijo_2 = client.get("/api/v1/seguimiento/apoderados/apo-demo-1/hijos/est-demo-2/inicio")
+    assert hijo_2.status_code == 200
+    body_2 = hijo_2.json()
+    assert body_2["estudiante_id"] == "est-demo-2"
+    assert "Sofía" in body_2["estudiante_nombre"]
+
+    ajeno = client.get("/api/v1/seguimiento/apoderados/apo-demo-1/hijos/est-ajeno/inicio")
+    assert ajeno.status_code == 403
+    assert ajeno.json()["status"] == 403
+
+    lectura = client.post(
+        "/api/v1/seguimiento/apoderados/apo-demo-1/comunicados/i1/confirmar-lectura"
+    )
+    assert lectura.status_code == 200
+    assert lectura.json()["ok"] is True
+
+    no_existe = client.post(
+        "/api/v1/seguimiento/apoderados/apo-demo-1/comunicados/no-existe/confirmar-lectura"
+    )
+    assert no_existe.status_code == 404
+
+
+
+# Spec: seguimiento · Requirement: Consulta multi-hijo de cursos y detalle de curso para el apoderado (RF04, HU12, DA05, RC08)
+def test_seguimiento_cursos_multi_hijo_y_pertenencia_apoderado():
+    client = crear_cliente(crear_app())
+
+    cursos_1 = client.get(
+        "/api/v1/seguimiento/estudiantes/est-demo-1/cursos?apoderado_id=apo-demo-1"
+    )
+    assert cursos_1.status_code == 200
+    assert cursos_1.json()["grado_seccion"] == "3.° de Secundaria B"
+
+    cursos_2 = client.get(
+        "/api/v1/seguimiento/estudiantes/est-demo-2/cursos?apoderado_id=apo-demo-1"
+    )
+    assert cursos_2.status_code == 200
+    assert cursos_2.json()["grado_seccion"] == "1.° de Secundaria A"
+    ids_2 = {c["asignatura_id"] for c in cursos_2.json()["cursos"]}
+    assert "cta" in ids_2
+
+    detalle_2 = client.get(
+        "/api/v1/seguimiento/estudiantes/est-demo-2/cursos/cta?apoderado_id=apo-demo-1"
+    )
+    assert detalle_2.status_code == 200
+    assert detalle_2.json()["asignatura_id"] == "cta"
+    assert detalle_2.json()["nombre"] == "Ciencia y Tecnología"
+
+    ajeno = client.get(
+        "/api/v1/seguimiento/estudiantes/est-ajeno/cursos?apoderado_id=apo-demo-1"
+    )
+    assert ajeno.status_code == 403
+    assert ajeno.json()["status"] == 403
+
+    detalle_ajeno = client.get(
+        "/api/v1/seguimiento/estudiantes/est-ajeno/cursos/mat?apoderado_id=apo-demo-1"
+    )
+    assert detalle_ajeno.status_code == 403
+    assert detalle_ajeno.json()["status"] == 403

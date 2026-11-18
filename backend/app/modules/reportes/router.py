@@ -3,6 +3,7 @@
 from fastapi import APIRouter
 
 from app.core.errores import ErrorAplicacion
+from app.core.pertenencia import validar_pertenencia_apoderado
 
 from .schemas import (
     AreaLibretaOut,
@@ -21,24 +22,54 @@ router = APIRouter(prefix="/reportes", tags=["reportes"])
 
 
 @router.get("/estudiantes/{estudiante_id}/libretas", response_model=LibretasOut)
-def obtener_libretas_estudiante(estudiante_id: str) -> LibretasOut:
-    """Devuelve las libretas trimestrales y situación final (contrato stub)."""
-    areas_demo = [
-        AreaLibretaOut(
-            nombre="Matemática",
-            competencias=[
-                FilaLibretaCompetenciaOut(
-                    competencia="Resuelve problemas de cantidad",
-                    nivel="A",
-                    conclusion="",
-                )
-            ],
-        )
-    ]
+def obtener_libretas_estudiante(
+    estudiante_id: str,
+    apoderado_id: str | None = None,
+) -> LibretasOut:
+    """Devuelve las libretas trimestrales y situación final (contrato stub, DA05)."""
+    validar_pertenencia_apoderado(apoderado_id, estudiante_id)
+    if estudiante_id == "est-demo-2":
+        areas_demo = [
+            AreaLibretaOut(
+                nombre="Ciencia y Tecnología",
+                competencias=[
+                    FilaLibretaCompetenciaOut(
+                        competencia="Indaga mediante métodos científicos",
+                        nivel="AD",
+                        conclusion="Sobresale en la formulación de hipótesis y experimentación.",
+                    )
+                ],
+            ),
+            AreaLibretaOut(
+                nombre="Matemática",
+                competencias=[
+                    FilaLibretaCompetenciaOut(
+                        competencia="Resuelve problemas de cantidad",
+                        nivel="A",
+                        conclusion="",
+                    )
+                ],
+            ),
+        ]
+        grado_seccion = "1.° Secundaria · A"
+    else:
+        areas_demo = [
+            AreaLibretaOut(
+                nombre="Matemática",
+                competencias=[
+                    FilaLibretaCompetenciaOut(
+                        competencia="Resuelve problemas de cantidad",
+                        nivel="A",
+                        conclusion="",
+                    )
+                ],
+            )
+        ]
+        grado_seccion = "3.° Secundaria · B"
     return LibretasOut(
         estudiante_id=estudiante_id,
         anio_escolar=2026,
-        grado_seccion="3.° Secundaria · B",
+        grado_seccion=grado_seccion,
         trimestres=[
             TrimestreLibretaOut(
                 trimestre_id=1,
@@ -74,9 +105,12 @@ def obtener_libretas_estudiante(estudiante_id: str) -> LibretasOut:
     response_model=UrlDescargaOut,
 )
 def obtener_url_descarga_libreta(
-    estudiante_id: str, trimestre_id: int
+    estudiante_id: str,
+    trimestre_id: int,
+    apoderado_id: str | None = None,
 ) -> UrlDescargaOut:
-    """Devuelve una URL firmada temporal de 15 min para descargar el PDF (RC05)."""
+    """Devuelve una URL firmada temporal de 15 min para descargar el PDF (RC05, DA05)."""
+    validar_pertenencia_apoderado(apoderado_id, estudiante_id)
     return UrlDescargaOut(
         url_firmada=f"https://storage.googleapis.com/portal-mariscal-stub/libreta-{estudiante_id}-t{trimestre_id}.pdf?X-Goog-Expires=900",
         expira_en_segundos=900,

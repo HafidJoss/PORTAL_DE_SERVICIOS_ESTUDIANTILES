@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 CodigoAsistencia = Literal["P", "T", "F", "FJ", "TJ", "FE", ""]
 
@@ -18,10 +18,33 @@ class DiaAsistenciaOut(BaseModel):
 class IncidenciaAsistenciaOut(BaseModel):
     """Detalle de tardanza, falta o justificación del mes."""
 
+    id: str = ""
     fecha: str
     codigo: Literal["T", "F", "FJ", "TJ", "FE"]
     nombre_estado: str
     detalle: str
+    puede_justificar: bool = False
+    justificacion_enviada: bool = False
+
+
+class JustificacionCreateIn(BaseModel):
+    """Solicitud escrita de justificación enviada por el apoderado (RF20, RC08)."""
+
+    incidencia_id: str = Field(..., min_length=1, max_length=60)
+    motivo: str = Field(..., min_length=2, max_length=80)
+    detalle: str = Field(..., min_length=5, max_length=500)
+
+
+class JustificacionOut(BaseModel):
+    """Respuesta al registrar una justificación de asistencia."""
+
+    id: str
+    incidencia_id: str
+    estudiante_id: str
+    estado: Literal["en_revision", "aprobada", "rechazada"]
+    motivo: str
+    detalle: str
+    mensaje: str
 
 
 class KpisAsistenciaOut(BaseModel):

@@ -39,6 +39,18 @@ class CambioContrasenaIn(BaseModel):
     nueva_contrasena: str = Field(..., min_length=8)
 
 
+class HijoVinculadoOut(BaseModel):
+    """Estudiante vinculado al perfil de un apoderado (relación N:M, RF01)."""
+
+    estudiante_id: str
+    codigo: str
+    nombres: str
+    apellidos: str
+    grado_seccion: str
+    iniciales: str
+    tutor: str
+
+
 class UsuarioSesionOut(BaseModel):
     """Resumen público del usuario autenticado."""
 
@@ -55,6 +67,8 @@ class UsuarioSesionOut(BaseModel):
     especialidad: str | None = None
     nivel_educativo: str | None = None
     secciones_a_cargo: list[str] | None = None
+    apoderado_id: str | None = None
+    hijos_vinculados: list[HijoVinculadoOut] = []
 
 
 class SesionOut(BaseModel):

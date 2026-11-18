@@ -622,7 +622,7 @@
           "seguimiento"
         ],
         "summary": "Listar Cursos Estudiante",
-        "description": "Devuelve la lista de cursos del estudiante (contrato stub).",
+        "description": "Devuelve la lista de cursos del estudiante contextualizada por menor (RF04, DA05).",
         "operationId": "listar_cursos_estudiante_api_v1_seguimiento_estudiantes__estudiante_id__cursos_get",
         "parameters": [
           {
@@ -632,6 +632,22 @@
             "schema": {
               "type": "string",
               "title": "Estudiante Id"
+            }
+          },
+          {
+            "name": "apoderado_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Apoderado Id"
             }
           }
         ],
@@ -695,7 +711,7 @@
           "seguimiento"
         ],
         "summary": "Obtener Detalle Curso",
-        "description": "Devuelve el detalle del curso con novedades, competencias y plana docente.",
+        "description": "Devuelve el detalle del curso con novedades, competencias y plana docente (RF04, DA05).",
         "operationId": "obtener_detalle_curso_api_v1_seguimiento_estudiantes__estudiante_id__cursos__asignatura_id__get",
         "parameters": [
           {
@@ -714,6 +730,22 @@
             "schema": {
               "type": "string",
               "title": "Asignatura Id"
+            }
+          },
+          {
+            "name": "apoderado_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Apoderado Id"
             }
           }
         ],
@@ -1338,13 +1370,177 @@
         }
       }
     },
+    "/api/v1/seguimiento/apoderados/{apoderado_id}/hijos/{estudiante_id}/inicio": {
+      "get": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Obtener Inicio Apoderado",
+        "description": "Devuelve bandeja, entregas y resumen de asistencia del hijo vinculado activo (RF01, DA05).",
+        "operationId": "obtener_inicio_apoderado_api_v1_seguimiento_apoderados__apoderado_id__hijos__estudiante_id__inicio_get",
+        "parameters": [
+          {
+            "name": "apoderado_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Apoderado Id"
+            }
+          },
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InicioApoderadoOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/seguimiento/apoderados/{apoderado_id}/comunicados/{comunicado_id}/confirmar-lectura": {
+      "post": {
+        "tags": [
+          "seguimiento"
+        ],
+        "summary": "Confirmar Lectura Comunicado Apoderado",
+        "description": "Registra la confirmación de lectura de un comunicado institucional (RF25, DA05).",
+        "operationId": "confirmar_lectura_comunicado_apoderado_api_v1_seguimiento_apoderados__apoderado_id__comunicados__comunicado_id__confirmar_lectura_post",
+        "parameters": [
+          {
+            "name": "apoderado_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Apoderado Id"
+            }
+          },
+          {
+            "name": "comunicado_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Comunicado Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionBandejaOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/evaluacion/estudiantes/{estudiante_id}/calificaciones": {
       "get": {
         "tags": [
           "evaluacion"
         ],
         "summary": "Obtener Calificaciones Estudiante",
-        "description": "Devuelve niveles por competencia, conclusiones y calificativos publicados.",
+        "description": "Devuelve niveles por competencia, conclusiones y calificativos publicados (RF08, DA05).",
         "operationId": "obtener_calificaciones_estudiante_api_v1_evaluacion_estudiantes__estudiante_id__calificaciones_get",
         "parameters": [
           {
@@ -1354,6 +1550,22 @@
             "schema": {
               "type": "string",
               "title": "Estudiante Id"
+            }
+          },
+          {
+            "name": "apoderado_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Apoderado Id"
             }
           }
         ],
@@ -1417,7 +1629,7 @@
           "evaluacion"
         ],
         "summary": "Listar Actividades Estudiante",
-        "description": "Lista trabajos y sesiones de clase (nota del día) del estudiante.",
+        "description": "Lista trabajos y sesiones de clase (nota del día) del estudiante (RF23, DA05).",
         "operationId": "listar_actividades_estudiante_api_v1_evaluacion_estudiantes__estudiante_id__actividades_get",
         "parameters": [
           {
@@ -1427,6 +1639,22 @@
             "schema": {
               "type": "string",
               "title": "Estudiante Id"
+            }
+          },
+          {
+            "name": "apoderado_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Apoderado Id"
             }
           }
         ],
@@ -1490,7 +1718,7 @@
           "evaluacion"
         ],
         "summary": "Listar Mensajes Estudiante",
-        "description": "Devuelve la bandeja de mensajes e hilos del estudiante.",
+        "description": "Devuelve la bandeja de mensajes e hilos del estudiante o apoderado (RF25, DA05).",
         "operationId": "listar_mensajes_estudiante_api_v1_evaluacion_estudiantes__estudiante_id__mensajes_get",
         "parameters": [
           {
@@ -1500,6 +1728,22 @@
             "schema": {
               "type": "string",
               "title": "Estudiante Id"
+            }
+          },
+          {
+            "name": "apoderado_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Apoderado Id"
             }
           }
         ],
@@ -2506,7 +2750,7 @@
           "asistencia"
         ],
         "summary": "Obtener Asistencia Mensual",
-        "description": "Devuelve KPIs, calendario mensual e incidencias de asistencia (stub).",
+        "description": "Devuelve KPIs, calendario mensual e incidencias de asistencia (RF20, DA05).",
         "operationId": "obtener_asistencia_mensual_api_v1_asistencia_estudiantes__estudiante_id__get",
         "parameters": [
           {
@@ -2540,6 +2784,22 @@
               "minimum": 2020,
               "default": 2026,
               "title": "Anio"
+            }
+          },
+          {
+            "name": "apoderado_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Apoderado Id"
             }
           }
         ],
@@ -2597,13 +2857,105 @@
         }
       }
     },
+    "/api/v1/asistencia/apoderados/{apoderado_id}/hijos/{estudiante_id}/justificaciones": {
+      "post": {
+        "tags": [
+          "asistencia"
+        ],
+        "summary": "Enviar Justificacion Asistencia",
+        "description": "Registra una justificación escrita enviada por el apoderado al auxiliar (RF20, RC08, DA05).",
+        "operationId": "enviar_justificacion_asistencia_api_v1_asistencia_apoderados__apoderado_id__hijos__estudiante_id__justificaciones_post",
+        "parameters": [
+          {
+            "name": "apoderado_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Apoderado Id"
+            }
+          },
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JustificacionCreateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JustificacionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/reportes/estudiantes/{estudiante_id}/libretas": {
       "get": {
         "tags": [
           "reportes"
         ],
         "summary": "Obtener Libretas Estudiante",
-        "description": "Devuelve las libretas trimestrales y situación final (contrato stub).",
+        "description": "Devuelve las libretas trimestrales y situación final (contrato stub, DA05).",
         "operationId": "obtener_libretas_estudiante_api_v1_reportes_estudiantes__estudiante_id__libretas_get",
         "parameters": [
           {
@@ -2613,6 +2965,22 @@
             "schema": {
               "type": "string",
               "title": "Estudiante Id"
+            }
+          },
+          {
+            "name": "apoderado_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Apoderado Id"
             }
           }
         ],
@@ -2676,7 +3044,7 @@
           "reportes"
         ],
         "summary": "Obtener Url Descarga Libreta",
-        "description": "Devuelve una URL firmada temporal de 15 min para descargar el PDF (RC05).",
+        "description": "Devuelve una URL firmada temporal de 15 min para descargar el PDF (RC05, DA05).",
         "operationId": "obtener_url_descarga_libreta_api_v1_reportes_estudiantes__estudiante_id__libretas__trimestre_id__descarga_get",
         "parameters": [
           {
@@ -2695,6 +3063,22 @@
             "schema": {
               "type": "integer",
               "title": "Trimestre Id"
+            }
+          },
+          {
+            "name": "apoderado_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Apoderado Id"
             }
           }
         ],
@@ -4384,8 +4768,57 @@
         "title": "FilaLibretaCompetenciaOut",
         "description": "Fila de competencia dentro de la libreta trimestral."
       },
+      "HijoVinculadoOut": {
+        "properties": {
+          "estudiante_id": {
+            "type": "string",
+            "title": "Estudiante Id"
+          },
+          "codigo": {
+            "type": "string",
+            "title": "Codigo"
+          },
+          "nombres": {
+            "type": "string",
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "type": "string",
+            "title": "Apellidos"
+          },
+          "grado_seccion": {
+            "type": "string",
+            "title": "Grado Seccion"
+          },
+          "iniciales": {
+            "type": "string",
+            "title": "Iniciales"
+          },
+          "tutor": {
+            "type": "string",
+            "title": "Tutor"
+          }
+        },
+        "type": "object",
+        "required": [
+          "estudiante_id",
+          "codigo",
+          "nombres",
+          "apellidos",
+          "grado_seccion",
+          "iniciales",
+          "tutor"
+        ],
+        "title": "HijoVinculadoOut",
+        "description": "Estudiante vinculado al perfil de un apoderado (relación N:M, RF01)."
+      },
       "IncidenciaAsistenciaOut": {
         "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "default": ""
+          },
           "fecha": {
             "type": "string",
             "title": "Fecha"
@@ -4408,6 +4841,16 @@
           "detalle": {
             "type": "string",
             "title": "Detalle"
+          },
+          "puede_justificar": {
+            "type": "boolean",
+            "title": "Puede Justificar",
+            "default": false
+          },
+          "justificacion_enviada": {
+            "type": "boolean",
+            "title": "Justificacion Enviada",
+            "default": false
           }
         },
         "type": "object",
@@ -4419,6 +4862,70 @@
         ],
         "title": "IncidenciaAsistenciaOut",
         "description": "Detalle de tardanza, falta o justificación del mes."
+      },
+      "InicioApoderadoOut": {
+        "properties": {
+          "apoderado_id": {
+            "type": "string",
+            "title": "Apoderado Id"
+          },
+          "estudiante_id": {
+            "type": "string",
+            "title": "Estudiante Id"
+          },
+          "estudiante_nombre": {
+            "type": "string",
+            "title": "Estudiante Nombre"
+          },
+          "grado_seccion": {
+            "type": "string",
+            "title": "Grado Seccion"
+          },
+          "sin_leer": {
+            "type": "integer",
+            "title": "Sin Leer"
+          },
+          "pendientes_total": {
+            "type": "integer",
+            "title": "Pendientes Total"
+          },
+          "asistencia_porcentaje": {
+            "type": "string",
+            "title": "Asistencia Porcentaje"
+          },
+          "mensajes_bandeja": {
+            "items": {
+              "$ref": "#/components/schemas/MensajeBandejaApoderadoOut"
+            },
+            "type": "array",
+            "title": "Mensajes Bandeja"
+          },
+          "proximas_entregas": {
+            "items": {
+              "$ref": "#/components/schemas/EntregaProximaOut"
+            },
+            "type": "array",
+            "title": "Proximas Entregas"
+          },
+          "resumen_asistencia": {
+            "$ref": "#/components/schemas/ResumenAsistenciaApoderadoOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "apoderado_id",
+          "estudiante_id",
+          "estudiante_nombre",
+          "grado_seccion",
+          "sin_leer",
+          "pendientes_total",
+          "asistencia_porcentaje",
+          "mensajes_bandeja",
+          "proximas_entregas",
+          "resumen_asistencia"
+        ],
+        "title": "InicioApoderadoOut",
+        "description": "Tablero inicial del apoderado filtrado para un hijo vinculado (RF01, DA05)."
       },
       "InicioDocenteOut": {
         "properties": {
@@ -4585,6 +5092,85 @@
         ],
         "title": "IntegranteEquipoOut",
         "description": "Docente, tutor o auxiliar vinculado al curso o sección."
+      },
+      "JustificacionCreateIn": {
+        "properties": {
+          "incidencia_id": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Incidencia Id"
+          },
+          "motivo": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 2,
+            "title": "Motivo"
+          },
+          "detalle": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 5,
+            "title": "Detalle"
+          }
+        },
+        "type": "object",
+        "required": [
+          "incidencia_id",
+          "motivo",
+          "detalle"
+        ],
+        "title": "JustificacionCreateIn",
+        "description": "Solicitud escrita de justificación enviada por el apoderado (RF20, RC08)."
+      },
+      "JustificacionOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "incidencia_id": {
+            "type": "string",
+            "title": "Incidencia Id"
+          },
+          "estudiante_id": {
+            "type": "string",
+            "title": "Estudiante Id"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "en_revision",
+              "aprobada",
+              "rechazada"
+            ],
+            "title": "Estado"
+          },
+          "motivo": {
+            "type": "string",
+            "title": "Motivo"
+          },
+          "detalle": {
+            "type": "string",
+            "title": "Detalle"
+          },
+          "mensaje": {
+            "type": "string",
+            "title": "Mensaje"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "incidencia_id",
+          "estudiante_id",
+          "estado",
+          "motivo",
+          "detalle",
+          "mensaje"
+        ],
+        "title": "JustificacionOut",
+        "description": "Respuesta al registrar una justificación de asistencia."
       },
       "KpiInicioOut": {
         "properties": {
@@ -4845,6 +5431,85 @@
         ],
         "title": "LoginIn",
         "description": "Credenciales para iniciar sesión por documento de identidad."
+      },
+      "MensajeBandejaApoderadoOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "origen": {
+            "type": "string",
+            "enum": [
+              "institucion",
+              "asistencia",
+              "docente"
+            ],
+            "title": "Origen"
+          },
+          "remitente": {
+            "type": "string",
+            "title": "Remitente"
+          },
+          "iniciales": {
+            "type": "string",
+            "title": "Iniciales",
+            "default": ""
+          },
+          "curso": {
+            "type": "string",
+            "title": "Curso",
+            "default": ""
+          },
+          "asunto": {
+            "type": "string",
+            "title": "Asunto"
+          },
+          "cuerpo": {
+            "type": "string",
+            "title": "Cuerpo"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          },
+          "leido": {
+            "type": "boolean",
+            "title": "Leido"
+          },
+          "requiere_confirmacion": {
+            "type": "boolean",
+            "title": "Requiere Confirmacion",
+            "default": false
+          },
+          "lectura_confirmada": {
+            "type": "boolean",
+            "title": "Lectura Confirmada",
+            "default": false
+          },
+          "etiqueta": {
+            "type": "string",
+            "title": "Etiqueta"
+          },
+          "ruta_destino": {
+            "type": "string",
+            "title": "Ruta Destino",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "origen",
+          "remitente",
+          "asunto",
+          "cuerpo",
+          "fecha",
+          "leido",
+          "etiqueta"
+        ],
+        "title": "MensajeBandejaApoderadoOut",
+        "description": "Mensaje o comunicado en la bandeja familiar del apoderado."
       },
       "MensajeBandejaDocenteOut": {
         "properties": {
@@ -5734,6 +6399,35 @@
         "title": "RespuestaMensajeIn",
         "description": "Payload para responder dentro de un hilo de mensaje."
       },
+      "ResumenAsistenciaApoderadoOut": {
+        "properties": {
+          "porcentaje": {
+            "type": "string",
+            "title": "Porcentaje"
+          },
+          "presentes": {
+            "type": "integer",
+            "title": "Presentes"
+          },
+          "tardanzas": {
+            "type": "integer",
+            "title": "Tardanzas"
+          },
+          "faltas": {
+            "type": "integer",
+            "title": "Faltas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "porcentaje",
+          "presentes",
+          "tardanzas",
+          "faltas"
+        ],
+        "title": "ResumenAsistenciaApoderadoOut",
+        "description": "Indicadores rápidos de asistencia del mes para el hijo seleccionado."
+      },
       "ResumenSiagieDocenteOut": {
         "properties": {
           "asignatura": {
@@ -6405,6 +7099,25 @@
               }
             ],
             "title": "Secciones A Cargo"
+          },
+          "apoderado_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apoderado Id"
+          },
+          "hijos_vinculados": {
+            "items": {
+              "$ref": "#/components/schemas/HijoVinculadoOut"
+            },
+            "type": "array",
+            "title": "Hijos Vinculados",
+            "default": []
           }
         },
         "type": "object",

@@ -260,3 +260,38 @@ def test_evaluacion_docente_mensajes_listar_enviar_y_validar():
         },
     )
     assert no_sec.status_code == 404
+
+
+
+# Spec: evaluacion · Requirement: Consulta multi-hijo de calificaciones cualitativas y trabajos para el apoderado (RF08, RF22, RF23, HU06, HU10, DA05, RC08)
+def test_evaluacion_multi_hijo_y_pertenencia_apoderado():
+    client = crear_cliente(crear_app())
+
+    calif_2 = client.get(
+        "/api/v1/evaluacion/estudiantes/est-demo-2/calificaciones?apoderado_id=apo-demo-1"
+    )
+    assert calif_2.status_code == 200
+    nombres_cursos = {c["nombre"] for c in calif_2.json()["cursos"]}
+    assert "Ciencia y Tecnología" in nombres_cursos
+
+    acts_2 = client.get(
+        "/api/v1/evaluacion/estudiantes/est-demo-2/actividades?apoderado_id=apo-demo-1"
+    )
+    assert acts_2.status_code == 200
+    titulos_2 = {a["titulo"] for a in acts_2.json()["actividades"]}
+    assert any("sistema solar" in t.lower() for t in titulos_2)
+
+    msgs_2 = client.get(
+        "/api/v1/evaluacion/estudiantes/est-demo-2/mensajes?apoderado_id=apo-demo-1"
+    )
+    assert msgs_2.status_code == 200
+    assert any("Sofía" in m["asunto"] or "Sofía" in m["cuerpo"] for m in msgs_2.json()["mensajes"])
+
+    for ruta in (
+        "/api/v1/evaluacion/estudiantes/est-ajeno/calificaciones?apoderado_id=apo-demo-1",
+        "/api/v1/evaluacion/estudiantes/est-ajeno/actividades?apoderado_id=apo-demo-1",
+        "/api/v1/evaluacion/estudiantes/est-ajeno/mensajes?apoderado_id=apo-demo-1",
+    ):
+        resp = client.get(ruta)
+        assert resp.status_code == 403
+        assert resp.json()["status"] == 403

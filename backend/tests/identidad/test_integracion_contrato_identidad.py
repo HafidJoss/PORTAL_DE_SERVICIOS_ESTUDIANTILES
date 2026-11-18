@@ -99,3 +99,23 @@ def test_identidad_login_docente_devuelve_perfil_y_secciones():
     assert usuario["especialidad"] == "Matemática"
     assert usuario["nivel_educativo"] == "Secundaria"
     assert len(usuario["secciones_a_cargo"]) >= 1
+
+
+
+# Spec: identidad · Scenario: Autenticación exitosa de apoderado con múltiples hijos vinculados (RF01, DA05)
+def test_identidad_login_apoderado_devuelve_perfil_y_hijos_vinculados():
+    client = crear_cliente(crear_app())
+
+    resp = client.post(
+        "/api/v1/identidad/login",
+        json={"dni": "40871256", "contrasena": "familia2026", "recordar": True},
+    )
+
+    assert resp.status_code == 200
+    usuario = resp.json()["usuario"]
+    assert usuario["dni"] == "40871256"
+    assert usuario["rol"] == "Apoderado"
+    assert usuario["apoderado_id"] == "apo-demo-1"
+    assert len(usuario["hijos_vinculados"]) == 2
+    assert usuario["hijos_vinculados"][0]["estudiante_id"] == "est-demo-1"
+    assert usuario["hijos_vinculados"][1]["estudiante_id"] == "est-demo-2"
