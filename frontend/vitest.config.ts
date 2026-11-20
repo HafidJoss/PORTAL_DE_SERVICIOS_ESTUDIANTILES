@@ -7,6 +7,11 @@ export default defineConfig({
   plugins: [react()] as UserConfig["plugins"],
   test: {
     environment: "jsdom",
+    environmentOptions: {
+      jsdom: {
+        url: "http://localhost:3000",
+      },
+    },
     globals: true,
     setupFiles: ["./src/testSetup/setup.ts"],
     css: true,

@@ -69,8 +69,23 @@ export const customFetch = async <T>(
     }
   }
 
-  const response = await fetch(url, {
-    ...options,
+  const origen =
+    typeof window !== "undefined" && window.location?.origin?.startsWith("http")
+      ? window.location.origin
+      : "";
+  const urlResuelta = url.startsWith("/") && origen ? `${origen}${url}` : url;
+
+  const { signal, ...restoOpciones } = options ?? {};
+  const esEntornoTest =
+    (import.meta as unknown as { env?: { MODE?: string } }).env?.MODE === "test";
+  const signalValido =
+    !esEntornoTest && typeof AbortSignal !== "undefined" && signal instanceof AbortSignal
+      ? signal
+      : undefined;
+
+  const response = await fetch(urlResuelta, {
+    ...restoOpciones,
+    ...(signalValido ? { signal: signalValido } : {}),
     method: metodo,
     credentials: options?.credentials ?? "include",
     headers,
