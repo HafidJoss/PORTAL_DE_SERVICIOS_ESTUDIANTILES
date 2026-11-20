@@ -3,6 +3,7 @@ import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import {
   BookOpenCheck,
   CalendarCheck,
+  CalendarRange,
   ClipboardList,
   FileSpreadsheet,
   FileText,
@@ -10,6 +11,8 @@ import {
   Library,
   Mail,
   NotebookPen,
+  ScrollText,
+  Users,
 } from "lucide-react";
 import {
   BrowserRouter,
@@ -27,6 +30,7 @@ import {
 import type { UsuarioSesionOut } from "../api/generated/model";
 import { setUnauthorizedHandler } from "../api/clienteHttp";
 import { AsistenciaVista } from "../features/asistencia/vistas/asistenciaVista";
+import { BitacoraAdminVista } from "../features/auditoria/vistas/bitacoraAdminVista";
 import { CalificacionesVista } from "../features/evaluacion/vistas/calificacionesVista";
 import { MensajesDocenteVista } from "../features/evaluacion/vistas/mensajesDocenteVista";
 import { MensajesVista } from "../features/evaluacion/vistas/mensajesVista";
@@ -34,6 +38,11 @@ import { NotaDelDiaVista } from "../features/evaluacion/vistas/notaDelDiaVista";
 import { TrabajosVista } from "../features/evaluacion/vistas/trabajosVista";
 import { ConfiguracionVista } from "../features/identidad/vistas/configuracionVista";
 import { IngresoVista } from "../features/identidad/vistas/ingresoVista";
+import { CatalogoAdminVista } from "../features/institucion/vistas/catalogoAdminVista";
+import { InicioAdminVista } from "../features/institucion/vistas/inicioAdminVista";
+import { TrimestresAdminVista } from "../features/institucion/vistas/trimestresAdminVista";
+import { PanelNominaSeccionAdmin } from "../features/matriculas/componentes/panelNominaSeccionAdmin";
+import { CuentasAdminVista } from "../features/personas/vistas/cuentasAdminVista";
 import { ExportarSiagieVista } from "../features/reportes/vistas/exportarSiagieVista";
 import { LibretaVista } from "../features/reportes/vistas/libretaVista";
 import { CursoDetalleVista } from "../features/seguimiento/vistas/cursoDetalleVista";
@@ -106,6 +115,22 @@ const NAV_APODERADO_MOVIL: readonly ElementoNavPortal[] = [
   { to: "/libreta", label: "Libreta", Icon: FileText },
 ];
 
+const NAV_ADMIN_ESCRITORIO: readonly ElementoNavPortal[] = [
+  { to: "/inicio", label: "Inicio", Icon: Home },
+  { to: "/trimestres", label: "Año y trimestres", Icon: CalendarRange },
+  { to: "/catalogo", label: "Catálogo escolar", Icon: Library },
+  { to: "/cuentas", label: "Cuentas y roles", Icon: Users },
+  { to: "/bitacora", label: "Bitácora", Icon: ScrollText },
+];
+
+const NAV_ADMIN_MOVIL: readonly ElementoNavPortal[] = [
+  { to: "/inicio", label: "Inicio", Icon: Home },
+  { to: "/trimestres", label: "Trimestres", Icon: CalendarRange },
+  { to: "/catalogo", label: "Catálogo", Icon: Library },
+  { to: "/cuentas", label: "Cuentas", Icon: Users },
+  { to: "/bitacora", label: "Bitácora", Icon: ScrollText },
+];
+
 function PortalAutenticado() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -126,6 +151,40 @@ function PortalAutenticado() {
     <RequiereSesion>
       {(usuario) => {
         const nombreCompleto = `${usuario.nombres} ${usuario.apellidos}`.trim();
+
+        if (usuario.rol === "Administrador") {
+          return (
+            <MarcoPortal
+              usuarioNombre={nombreCompleto}
+              usuarioDetalle="Administrador del portal"
+              subtituloPortal="Portal de Administración"
+              navItems={NAV_ADMIN_ESCRITORIO}
+              navMovilItems={NAV_ADMIN_MOVIL}
+              onLogout={manejarLogout}
+              cerrandoSesion={logoutMutation.isPending}
+            >
+              <Routes>
+                <Route path="/inicio" element={<InicioAdminVista />} />
+                <Route path="/trimestres" element={<TrimestresAdminVista />} />
+                <Route
+                  path="/catalogo"
+                  element={
+                    <CatalogoAdminVista
+                      renderPanelNomina={(props) => <PanelNominaSeccionAdmin {...props} />}
+                    />
+                  }
+                />
+                <Route path="/cuentas" element={<CuentasAdminVista />} />
+                <Route path="/bitacora" element={<BitacoraAdminVista />} />
+                <Route
+                  path="/configuracion"
+                  element={<ConfiguracionVista usuario={usuario} />}
+                />
+                <Route path="*" element={<Navigate to="/inicio" replace />} />
+              </Routes>
+            </MarcoPortal>
+          );
+        }
 
         if (usuario.rol === "Docente") {
           const detalleDocente = usuario.especialidad

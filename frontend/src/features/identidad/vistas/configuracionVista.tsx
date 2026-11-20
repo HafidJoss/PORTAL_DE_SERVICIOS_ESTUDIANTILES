@@ -1,5 +1,17 @@
 import { useState, type CSSProperties, type FormEvent } from "react";
-import { AlertCircle, Award, CalendarCheck, CheckCircle2, ClipboardList, Info, MessageSquare } from "lucide-react";
+import {
+  AlertCircle,
+  Award,
+  CalendarCheck,
+  CalendarRange,
+  CheckCircle2,
+  ClipboardList,
+  Inbox,
+  Info,
+  MessageSquare,
+  ScrollText,
+  ShieldAlert,
+} from "lucide-react";
 
 import { useCambiarContrasenaApiV1IdentidadCambiarContrasenaPost } from "../../../api/generated/identidad/identidad";
 import type { UsuarioSesionOut } from "../../../api/generated/model";
@@ -98,6 +110,41 @@ const AVISOS_DOCENTE = [
   },
 ];
 
+const AVISOS_ADMIN = [
+  {
+    id: "calif" as const,
+    label: "Solicitudes de Secretaría y Dirección",
+    sub: "Restablecimientos, reaperturas y asignaciones",
+    Icon: Inbox,
+    bg: "var(--color-primary-light)",
+    fg: "var(--color-primary)",
+  },
+  {
+    id: "tareas" as const,
+    label: "Fechas de cierre",
+    sub: "Cambios de estado de los trimestres",
+    Icon: CalendarRange,
+    bg: "var(--status-warning-bg)",
+    fg: "var(--status-warning-fg)",
+  },
+  {
+    id: "asist" as const,
+    label: "Alertas de seguridad",
+    sub: "Cuentas bloqueadas por intentos fallidos",
+    Icon: ShieldAlert,
+    bg: "var(--bg-subtle)",
+    fg: "var(--text-main)",
+  },
+  {
+    id: "obs" as const,
+    label: "Resumen semanal de la bitácora",
+    sub: "Eventos críticos de la semana",
+    Icon: ScrollText,
+    bg: "var(--status-info-bg)",
+    fg: "var(--status-info-fg)",
+  },
+];
+
 export function ConfiguracionVista({ usuario }: { usuario: UsuarioSesionOut }) {
   const { theme, setTheme } = useTema();
   const [avisos, setAvisos] = useState<PreferenciasAvisos>(leerPreferenciasAvisos);
@@ -110,14 +157,17 @@ export function ConfiguracionVista({ usuario }: { usuario: UsuarioSesionOut }) {
   const cambiarPassMutation = useCambiarContrasenaApiV1IdentidadCambiarContrasenaPost();
 
   const esDocente = usuario.rol === "Docente";
+  const esApoderado = usuario.rol === "Apoderado";
+  const esAdmin = usuario.rol === "Administrador";
   const nombreCompleto = `${usuario.nombres} ${usuario.apellidos}`.trim();
   const subtitulo = esDocente
     ? [nombreCompleto, usuario.rol, usuario.especialidad].filter(Boolean).join(" · ")
-    : usuario.grado_seccion
-      ? `${nombreCompleto} · ${usuario.rol} · ${usuario.grado_seccion}`
-      : `${nombreCompleto} · ${usuario.rol}`;
+    : esAdmin
+      ? `${nombreCompleto} · Administrador del portal`
+      : usuario.grado_seccion
+        ? `${nombreCompleto} · ${usuario.rol} · ${usuario.grado_seccion}`
+        : `${nombreCompleto} · ${usuario.rol}`;
 
-  const esApoderado = usuario.rol === "Apoderado";
   const hijosVinculados = usuario.hijos_vinculados ?? [];
 
   const datosPersonales = esDocente
@@ -137,16 +187,25 @@ export function ConfiguracionVista({ usuario }: { usuario: UsuarioSesionOut }) {
           ["Perfil", "Apoderado / Familia"],
           ["Menores vinculados", `${hijosVinculados.length}`],
         ]
-      : [
-          ["Nombres", usuario.nombres],
-          ["Apellidos", usuario.apellidos],
-          ["DNI", usuario.dni],
-          ["Código de estudiante", usuario.codigo_estudiante ?? "—"],
-          ["Grado y sección", usuario.grado_seccion ?? "—"],
-          ["Tutora / Tutor", usuario.tutor ?? "—"],
-        ];
+      : esAdmin
+        ? [
+            ["Nombres", usuario.nombres],
+            ["Apellidos", usuario.apellidos],
+            ["DNI", usuario.dni],
+            ["Rol", usuario.rol],
+            ["Institución", usuario.institucion ?? "G.U.E. Mariscal Cáceres"],
+            ["Alcance", usuario.alcance ?? "Primaria y Secundaria"],
+          ]
+        : [
+            ["Nombres", usuario.nombres],
+            ["Apellidos", usuario.apellidos],
+            ["DNI", usuario.dni],
+            ["Código de estudiante", usuario.codigo_estudiante ?? "—"],
+            ["Grado y sección", usuario.grado_seccion ?? "—"],
+            ["Tutora / Tutor", usuario.tutor ?? "—"],
+          ];
 
-  const avisosLista = esDocente ? AVISOS_DOCENTE : AVISOS_CONFIG;
+  const avisosLista = esDocente ? AVISOS_DOCENTE : esAdmin ? AVISOS_ADMIN : AVISOS_CONFIG;
 
   function alternarAviso(clave: keyof PreferenciasAvisos) {
     const siguiente = { ...avisos, [clave]: !avisos[clave] };
