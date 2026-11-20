@@ -149,3 +149,42 @@ El enrutador principal del portal MUST habilitar la vista real de `/asistencia` 
 - **GIVEN** un apoderado autenticado con dos menores vinculados navegando desde `/inicio` o la barra lateral/móvil hacia `/asistencia`
 - **WHEN** consulta y cambia entre sus menores vinculados en `/asistencia`
 - **THEN** visualiza la asistencia real del menor seleccionado sin ninguna pantalla de módulo en preparación (`Módulo en preparación`) y manteniendo el aislamiento de navegación respecto de `Estudiante` y `Docente`
+
+### Requirement: Navegación institucional responsiva y contratos OpenAPI del bloque base del Administrador (RC01, RC03, AC06, AC07)
+El shell responsivo del portal SHALL adaptar su navegación en escritorio y móvil (`360x640 px`) para sesiones con rol `Administrador` (con vistas puente para los Bloques 2 y 3), y la API SHALL declarar en OpenAPI los contratos tipados bajo `/api/v1/institucion/` para generar el cliente Orval.
+
+#### Scenario: Menú lateral e inferior para sesión Administrador sin desbordamiento (AC07)
+- **GIVEN** un usuario autenticado con rol `Administrador` navega en escritorio (`>= 1024 px`) o móvil (`360x640 px`)
+- **WHEN** se renderiza el marco principal del portal
+- **THEN** muestra el subtítulo `Portal de Administración`, los accesos administrativos correspondientes y el avatar de iniciales sin desbordamiento horizontal y sin afectar la navegación de `Estudiante`, `Docente` ni `Apoderado`
+
+#### Scenario: Esquema OpenAPI declara contratos administrativos bajo institucion (RC03, AC06)
+- **GIVEN** la API expone su esquema OpenAPI vigente
+- **WHEN** se inspeccionan las rutas registradas bajo `/api/v1/institucion/`
+- **THEN** están declarados `GET /api/v1/institucion/tablero-admin`, `PATCH /api/v1/institucion/solicitudes/{solicitud_id}/atender`, `GET /api/v1/institucion/trimestres`, `POST /api/v1/institucion/trimestres/{trimestre_id}/transicion` y `POST /api/v1/institucion/trimestres/{trimestre_id}/publicar-libreta` con validación de entrada y respuestas Problem Details
+
+### Requirement: Activación definitiva de Catálogo escolar para Administrador y contratos OpenAPI de institucion y matriculas (RC03, AC06, AC07)
+El enrutador del portal SHALL reemplazar la vista puente temporal `/catalogo` del rol `Administrador` por la vista operativa de `Catálogo escolar` con sus tres pestañas (`Secciones`, `Asignaturas y competencias` y `Asignaciones docentes`), conservando solo `/cuentas` y `/bitacora` como puentes hacia el Bloque 3, y la API SHALL exponer en OpenAPI los contratos tipados de secciones, asignaturas, asignaciones y matrículas.
+
+#### Scenario: Navegación administrativa hacia Catálogo escolar sin vista en preparación (AC07)
+- **GIVEN** un Administrador autenticado navega a `/catalogo` desde el menú lateral o desde una solicitud de Inicio
+- **WHEN** se renderiza la vista de `Catálogo escolar`
+- **THEN** muestra las tres pestañas operativas (`Secciones`, `Asignaturas y competencias`, `Asignaciones docentes`) con filtros responsivos sin marcadores de módulo en preparación
+
+#### Scenario: Esquema OpenAPI declara rutas de catálogo y matrículas bajo institucion y matriculas (RC03, AC06)
+- **GIVEN** la API expone su esquema OpenAPI vigente
+- **WHEN** se inspeccionan las rutas registradas bajo `/api/v1/institucion/` y `/api/v1/matriculas/`
+- **THEN** están declaradas todas las operaciones de secciones, asignaturas, asignaciones docentes, pool `sin-seccion`, estudiantes por sección, asignación, movimiento y cambio de estado con respuestas Problem Details
+
+### Requirement: Activación definitiva de Cuentas y Bitácora para Administrador y cierre de vistas puente de Fase 4 (RC03, AC06, AC07)
+El enrutador del portal MUST reemplazar las vistas puente temporales de `Administrador` en `/cuentas` y `/bitacora` por las vistas operativas reales de `Cuentas y roles` y `Bitácora de auditoría`, retirando todas las pantallas en preparación de la Fase 4 y exponiendo en OpenAPI/Orval los contratos de `personas` y `auditoria`.
+
+#### Scenario: Navegación completa del Portal de Administración sin vistas puente (AC07)
+- **GIVEN** un Administrador autenticado navega por `/inicio`, `/trimestres`, `/catalogo`, `/cuentas`, `/bitacora` y `/configuracion`
+- **WHEN** recorre cada ruta desde el menú lateral o móvil
+- **THEN** todas las rutas renderizan sus vistas operativas reales sin ningún marcador de módulo en preparación y manteniendo el aislamiento respecto de `Estudiante`, `Docente` y `Apoderado`
+
+#### Scenario: Esquema OpenAPI declara contratos de personas y auditoria (RC03, AC06)
+- **GIVEN** la API expone su esquema OpenAPI vigente
+- **WHEN** se inspeccionan las rutas registradas bajo `/api/v1/personas/` y `/api/v1/auditoria/`
+- **THEN** están declaradas todas las operaciones de cuentas (`GET`, `POST`, `PATCH`, `restablecer-codigo`, `estado`) y de auditoría (`eventos`, `eventos/exportar`) con validación de entrada y respuestas Problem Details
