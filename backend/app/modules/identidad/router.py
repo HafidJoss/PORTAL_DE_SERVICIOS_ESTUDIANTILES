@@ -18,6 +18,16 @@ router = APIRouter(prefix="/identidad", tags=["identidad"])
 
 
 def _usuario_demo(dni: str = "72458193") -> UsuarioSesionOut:
+    if dni == "10456723":
+        return UsuarioSesionOut(
+            id="adm-demo-1",
+            dni=dni,
+            nombres="Marco",
+            apellidos="Ayala Sulca",
+            rol="Administrador",
+            institucion="G.U.E. Mariscal Cáceres",
+            alcance="Primaria y Secundaria",
+        )
     if dni == "40871256":
         return UsuarioSesionOut(
             id="apo-demo-1",

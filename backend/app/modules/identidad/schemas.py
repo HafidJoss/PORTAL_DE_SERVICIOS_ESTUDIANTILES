@@ -69,6 +69,8 @@ class UsuarioSesionOut(BaseModel):
     secciones_a_cargo: list[str] | None = None
     apoderado_id: str | None = None
     hijos_vinculados: list[HijoVinculadoOut] = []
+    institucion: str | None = None
+    alcance: str | None = None
 
 
 class SesionOut(BaseModel):

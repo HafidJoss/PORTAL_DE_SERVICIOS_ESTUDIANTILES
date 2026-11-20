@@ -470,6 +470,2241 @@
         }
       }
     },
+    "/api/v1/institucion/tablero-admin": {
+      "get": {
+        "tags": [
+          "institucion"
+        ],
+        "summary": "Obtener Tablero Admin",
+        "description": "Devuelve KPIs, bandeja de solicitudes, trimestre actual y avance por sección.",
+        "operationId": "obtener_tablero_admin_api_v1_institucion_tablero_admin_get",
+        "parameters": [
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TableroAdminOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/institucion/solicitudes/{solicitud_id}/atender": {
+      "patch": {
+        "tags": [
+          "institucion"
+        ],
+        "summary": "Atender Solicitud Admin",
+        "description": "Marca una solicitud operativa como atendida.",
+        "operationId": "atender_solicitud_admin_api_v1_institucion_solicitudes__solicitud_id__atender_patch",
+        "parameters": [
+          {
+            "name": "solicitud_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Solicitud Id"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SolicitudAdminOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/institucion/trimestres": {
+      "get": {
+        "tags": [
+          "institucion"
+        ],
+        "summary": "Listar Trimestres Admin",
+        "description": "Lista los trimestres del año escolar 2026 y su estado vigente.",
+        "operationId": "listar_trimestres_admin_api_v1_institucion_trimestres_get",
+        "parameters": [
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListaTrimestresOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/institucion/trimestres/{trimestre_id}/transicion": {
+      "post": {
+        "tags": [
+          "institucion"
+        ],
+        "summary": "Ejecutar Transicion Trimestre",
+        "description": "Avanza o reabre un trimestre aplicando reglas puras y registrando auditoría (RF05, RF18, RF30).",
+        "operationId": "ejecutar_transicion_trimestre_api_v1_institucion_trimestres__trimestre_id__transicion_post",
+        "parameters": [
+          {
+            "name": "trimestre_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Trimestre Id"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransicionTrimestreIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrimestreAdminOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/institucion/trimestres/{trimestre_id}/publicar-libreta": {
+      "post": {
+        "tags": [
+          "institucion"
+        ],
+        "summary": "Publicar Libreta Trimestre",
+        "description": "Publica la libreta de un trimestre cerrado y registra auditoría (RF27, RF18).",
+        "operationId": "publicar_libreta_trimestre_api_v1_institucion_trimestres__trimestre_id__publicar_libreta_post",
+        "parameters": [
+          {
+            "name": "trimestre_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Trimestre Id"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrimestreAdminOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/institucion/secciones": {
+      "get": {
+        "tags": [
+          "institucion"
+        ],
+        "summary": "Listar Secciones Admin",
+        "description": "Lista secciones de un nivel y grado, letras libres A–P y opciones de personal.",
+        "operationId": "listar_secciones_admin_api_v1_institucion_secciones_get",
+        "parameters": [
+          {
+            "name": "nivel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "Primaria",
+                "Secundaria"
+              ],
+              "type": "string",
+              "default": "Secundaria",
+              "title": "Nivel"
+            }
+          },
+          {
+            "name": "grado",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 6,
+              "minimum": 1,
+              "default": 1,
+              "title": "Grado"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListaSeccionesOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "institucion"
+        ],
+        "summary": "Crear Seccion Admin",
+        "description": "Crea una nueva sección escolar validando letra disponible A–P (RF03, RF18).",
+        "operationId": "crear_seccion_admin_api_v1_institucion_secciones_post",
+        "parameters": [
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeccionCreateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeccionAdminOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/institucion/secciones/{seccion_id}": {
+      "patch": {
+        "tags": [
+          "institucion"
+        ],
+        "summary": "Actualizar Personal Seccion",
+        "description": "Actualiza el tutor(a) y/o auxiliar de una sección registrando auditoría.",
+        "operationId": "actualizar_personal_seccion_api_v1_institucion_secciones__seccion_id__patch",
+        "parameters": [
+          {
+            "name": "seccion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seccion Id"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeccionUpdateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeccionAdminOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "institucion"
+        ],
+        "summary": "Eliminar Seccion Admin",
+        "description": "Elimina una sección solo si no tiene estudiantes asignados (RF03, RF18).",
+        "operationId": "eliminar_seccion_admin_api_v1_institucion_secciones__seccion_id__delete",
+        "parameters": [
+          {
+            "name": "seccion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seccion Id"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EliminacionSeccionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/institucion/asignaturas": {
+      "get": {
+        "tags": [
+          "institucion"
+        ],
+        "summary": "Listar Asignaturas Cneb",
+        "description": "Devuelve las asignaturas oficiales y sus competencias CNEB por nivel (RF03).",
+        "operationId": "listar_asignaturas_cneb_api_v1_institucion_asignaturas_get",
+        "parameters": [
+          {
+            "name": "nivel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "Primaria",
+                "Secundaria",
+                "Transversales"
+              ],
+              "type": "string",
+              "default": "Secundaria",
+              "title": "Nivel"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogoAsignaturasOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/institucion/asignaciones": {
+      "get": {
+        "tags": [
+          "institucion"
+        ],
+        "summary": "Listar Asignaciones Docentes",
+        "description": "Lista la plana docente titular y suplente por asignatura de una sección.",
+        "operationId": "listar_asignaciones_docentes_api_v1_institucion_asignaciones_get",
+        "parameters": [
+          {
+            "name": "seccion_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "S3B",
+              "title": "Seccion Id"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListaAsignacionesOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "institucion"
+        ],
+        "summary": "Actualizar Asignacion Docente",
+        "description": "Actualiza el docente titular y/o suplente de una asignatura y registra auditoría.",
+        "operationId": "actualizar_asignacion_docente_api_v1_institucion_asignaciones_patch",
+        "parameters": [
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AsignacionDocenteUpdateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsignacionDocenteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/matriculas/sin-seccion": {
+      "get": {
+        "tags": [
+          "matriculas"
+        ],
+        "summary": "Listar Estudiantes Sin Seccion",
+        "description": "Devuelve los estudiantes de la nómina SIAGIE pendientes de asignación.",
+        "operationId": "listar_estudiantes_sin_seccion_api_v1_matriculas_sin_seccion_get",
+        "parameters": [
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PoolSinSeccionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/matriculas/secciones/{seccion_id}/estudiantes": {
+      "get": {
+        "tags": [
+          "matriculas"
+        ],
+        "summary": "Listar Estudiantes Seccion",
+        "description": "Devuelve la nómina ordenada de estudiantes de una sección con su resumen.",
+        "operationId": "listar_estudiantes_seccion_api_v1_matriculas_secciones__seccion_id__estudiantes_get",
+        "parameters": [
+          {
+            "name": "seccion_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seccion Id"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NominaSeccionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/matriculas/asignar": {
+      "post": {
+        "tags": [
+          "matriculas"
+        ],
+        "summary": "Asignar Estudiante Desde Pool",
+        "description": "Asigna un estudiante del pool Sin sección a una sección del grado correspondiente.",
+        "operationId": "asignar_estudiante_desde_pool_api_v1_matriculas_asignar_post",
+        "parameters": [
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AsignarDesdePoolIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstudianteNominaSeccionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/matriculas/estudiantes/{estudiante_id}/mover": {
+      "patch": {
+        "tags": [
+          "matriculas"
+        ],
+        "summary": "Mover Estudiante Seccion",
+        "description": "Mueve a un estudiante a otra sección del mismo grado o lo retira al pool ('__pool').",
+        "operationId": "mover_estudiante_seccion_api_v1_matriculas_estudiantes__estudiante_id__mover_patch",
+        "parameters": [
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MoverEstudianteIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MoverEstudianteOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/matriculas/estudiantes/{estudiante_id}/estado": {
+      "patch": {
+        "tags": [
+          "matriculas"
+        ],
+        "summary": "Cambiar Estado Estudiante",
+        "description": "Actualiza el estado (Activo, Retirado, Trasladado) de un estudiante en su sección.",
+        "operationId": "cambiar_estado_estudiante_api_v1_matriculas_estudiantes__estudiante_id__estado_patch",
+        "parameters": [
+          {
+            "name": "estudiante_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Estudiante Id"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CambiarEstadoEstudianteIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstudianteNominaSeccionOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/personas/cuentas": {
+      "get": {
+        "tags": [
+          "personas"
+        ],
+        "summary": "Listar Cuentas Personas",
+        "description": "Lista las cuentas filtradas por estado, rol y búsqueda por nombre o DNI.",
+        "operationId": "listar_cuentas_personas_api_v1_personas_cuentas_get",
+        "parameters": [
+          {
+            "name": "estado",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "todas",
+                "activa",
+                "pendiente",
+                "bloqueada"
+              ],
+              "type": "string",
+              "default": "todas",
+              "title": "Estado"
+            }
+          },
+          {
+            "name": "rol",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "Todos",
+              "title": "Rol"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Q"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListaCuentasPersonasOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "personas"
+        ],
+        "summary": "Crear Cuenta Persona",
+        "description": "Crea una cuenta en estado pendiente con código de activación de 6 caracteres.",
+        "operationId": "crear_cuenta_persona_api_v1_personas_cuentas_post",
+        "parameters": [
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CuentaPersonaCreateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuentaCodigoGeneradoOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/personas/cuentas/{cuenta_id}": {
+      "patch": {
+        "tags": [
+          "personas"
+        ],
+        "summary": "Editar Cuenta Persona",
+        "description": "Edita nombre, DNI o rol de una cuenta no administradora registrando auditoría.",
+        "operationId": "editar_cuenta_persona_api_v1_personas_cuentas__cuenta_id__patch",
+        "parameters": [
+          {
+            "name": "cuenta_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Cuenta Id"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CuentaPersonaUpdateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuentaPersonaOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/personas/cuentas/{cuenta_id}/restablecer-codigo": {
+      "post": {
+        "tags": [
+          "personas"
+        ],
+        "summary": "Restablecer Codigo Cuenta",
+        "description": "Genera un nuevo código de activación / restablece contraseña (solo Administrador).",
+        "operationId": "restablecer_codigo_cuenta_api_v1_personas_cuentas__cuenta_id__restablecer_codigo_post",
+        "parameters": [
+          {
+            "name": "cuenta_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Cuenta Id"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuentaCodigoGeneradoOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/personas/cuentas/{cuenta_id}/estado": {
+      "patch": {
+        "tags": [
+          "personas"
+        ],
+        "summary": "Cambiar Estado Cuenta Persona",
+        "description": "Bloquea o desbloquea una cuenta no administradora registrando auditoría.",
+        "operationId": "cambiar_estado_cuenta_persona_api_v1_personas_cuentas__cuenta_id__estado_patch",
+        "parameters": [
+          {
+            "name": "cuenta_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Cuenta Id"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CambiarEstadoCuentaIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuentaPersonaOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auditoria/eventos": {
+      "get": {
+        "tags": [
+          "auditoria"
+        ],
+        "summary": "Listar Eventos Bitacora",
+        "description": "Devuelve los eventos críticos registrados en la bitácora en orden cronológico inverso.",
+        "operationId": "listar_eventos_bitacora_api_v1_auditoria_eventos_get",
+        "parameters": [
+          {
+            "name": "tipo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "Todos",
+              "title": "Tipo"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListaEventosAuditoriaOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auditoria/eventos/exportar": {
+      "get": {
+        "tags": [
+          "auditoria"
+        ],
+        "summary": "Exportar Eventos Bitacora Csv",
+        "description": "Exporta los eventos filtrados de la bitácora en formato CSV UTF-8 con BOM.",
+        "operationId": "exportar_eventos_bitacora_csv_api_v1_auditoria_eventos_exportar_get",
+        "parameters": [
+          {
+            "name": "tipo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "Todos",
+              "title": "Tipo"
+            }
+          },
+          {
+            "name": "X-Rol-Usuario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "Administrador",
+              "title": "X-Rol-Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acceso denegado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/seguimiento/estudiantes/{estudiante_id}/inicio": {
       "get": {
         "tags": [
@@ -3644,6 +5879,142 @@
         "title": "AreaLibretaOut",
         "description": "Área curricular agrupada en el Informe de progreso."
       },
+      "AsignacionDocenteOut": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "asignatura": {
+            "type": "string",
+            "title": "Asignatura"
+          },
+          "titular": {
+            "type": "string",
+            "title": "Titular"
+          },
+          "suplente": {
+            "type": "string",
+            "title": "Suplente"
+          },
+          "alerta": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alerta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "asignatura",
+          "titular",
+          "suplente"
+        ],
+        "title": "AsignacionDocenteOut",
+        "description": "Asignación de docente titular y suplente para una asignatura en una sección."
+      },
+      "AsignacionDocenteUpdateIn": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Seccion Id"
+          },
+          "asignatura": {
+            "type": "string",
+            "minLength": 2,
+            "title": "Asignatura"
+          },
+          "titular": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Titular"
+          },
+          "suplente": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Suplente"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "asignatura"
+        ],
+        "title": "AsignacionDocenteUpdateIn",
+        "description": "Actualización de docente titular y/o suplente de una asignatura en una sección."
+      },
+      "AsignarDesdePoolIn": {
+        "properties": {
+          "estudiante_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Estudiante Id"
+          },
+          "seccion_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Seccion Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "estudiante_id",
+          "seccion_id"
+        ],
+        "title": "AsignarDesdePoolIn",
+        "description": "Solicitud para asignar un estudiante del pool a una sección."
+      },
+      "AsignaturaCatalogoOut": {
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "nivel": {
+            "type": "string",
+            "enum": [
+              "Primaria",
+              "Secundaria",
+              "Transversales"
+            ],
+            "title": "Nivel"
+          },
+          "competencias": {
+            "items": {
+              "$ref": "#/components/schemas/CompetenciaAreaCnebOut"
+            },
+            "type": "array",
+            "title": "Competencias"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombre",
+          "nivel",
+          "competencias"
+        ],
+        "title": "AsignaturaCatalogoOut",
+        "description": "Área curricular con sus competencias oficiales CNEB."
+      },
       "AsistenciaMesOut": {
         "properties": {
           "estudiante_id": {
@@ -3692,6 +6063,27 @@
         ],
         "title": "AsistenciaMesOut",
         "description": "Respuesta mensual de asistencia para un estudiante."
+      },
+      "AvanceSeccionOut": {
+        "properties": {
+          "seccion": {
+            "type": "string",
+            "title": "Seccion"
+          },
+          "porcentaje": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Porcentaje"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion",
+          "porcentaje"
+        ],
+        "title": "AvanceSeccionOut",
+        "description": "Porcentaje de competencias confirmadas en una sección (RF31)."
       },
       "AvisoPrivacidadOut": {
         "properties": {
@@ -3834,6 +6226,49 @@
         "title": "CalificativoPublicadoOut",
         "description": "Evidencia calificada (trabajo o sesión de clase) publicada."
       },
+      "CambiarEstadoCuentaIn": {
+        "properties": {
+          "estado": {
+            "type": "string",
+            "enum": [
+              "activa",
+              "bloqueada"
+            ],
+            "title": "Estado"
+          }
+        },
+        "type": "object",
+        "required": [
+          "estado"
+        ],
+        "title": "CambiarEstadoCuentaIn",
+        "description": "Solicitud para bloquear o desbloquear una cuenta."
+      },
+      "CambiarEstadoEstudianteIn": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Seccion Id"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "Activo",
+              "Retirado",
+              "Trasladado"
+            ],
+            "title": "Estado"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "estado"
+        ],
+        "title": "CambiarEstadoEstudianteIn",
+        "description": "Solicitud para cambiar el estado escolar en la sección."
+      },
       "CambioContrasenaIn": {
         "properties": {
           "contrasena_actual": {
@@ -3854,6 +6289,43 @@
         ],
         "title": "CambioContrasenaIn",
         "description": "Solicitud de actualización de contraseña propia."
+      },
+      "CatalogoAsignaturasOut": {
+        "properties": {
+          "nivel": {
+            "type": "string",
+            "enum": [
+              "Primaria",
+              "Secundaria",
+              "Transversales"
+            ],
+            "title": "Nivel"
+          },
+          "total_asignaturas": {
+            "type": "integer",
+            "title": "Total Asignaturas"
+          },
+          "total_competencias": {
+            "type": "integer",
+            "title": "Total Competencias"
+          },
+          "asignaturas": {
+            "items": {
+              "$ref": "#/components/schemas/AsignaturaCatalogoOut"
+            },
+            "type": "array",
+            "title": "Asignaturas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nivel",
+          "total_asignaturas",
+          "total_competencias",
+          "asignaturas"
+        ],
+        "title": "CatalogoAsignaturasOut",
+        "description": "Listado de asignaturas y competencias filtrado por nivel."
       },
       "ClaseHoyDocenteOut": {
         "properties": {
@@ -3914,6 +6386,25 @@
         ],
         "title": "ClaseHoyDocenteOut",
         "description": "Clase programada del día en el horario del docente."
+      },
+      "CompetenciaAreaCnebOut": {
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "title": "Codigo"
+          },
+          "descripcion": {
+            "type": "string",
+            "title": "Descripcion"
+          }
+        },
+        "type": "object",
+        "required": [
+          "codigo",
+          "descripcion"
+        ],
+        "title": "CompetenciaAreaCnebOut",
+        "description": "Competencia oficial CNEB perteneciente a una asignatura o transversal."
       },
       "CompetenciaCatalogoOut": {
         "properties": {
@@ -4117,6 +6608,172 @@
         ],
         "title": "ConfirmarCierreIn",
         "description": "Solicitud de confirmación de cierre de una competencia (RF22)."
+      },
+      "CuentaCodigoGeneradoOut": {
+        "properties": {
+          "cuenta": {
+            "$ref": "#/components/schemas/CuentaPersonaOut"
+          },
+          "codigo_activacion": {
+            "type": "string",
+            "title": "Codigo Activacion"
+          },
+          "mensaje": {
+            "type": "string",
+            "title": "Mensaje"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cuenta",
+          "codigo_activacion",
+          "mensaje"
+        ],
+        "title": "CuentaCodigoGeneradoOut",
+        "description": "Respuesta al crear cuenta o restablecer contraseña con código de un solo uso."
+      },
+      "CuentaPersonaCreateIn": {
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 3,
+            "title": "Nombre"
+          },
+          "dni": {
+            "type": "string",
+            "maxLength": 12,
+            "minLength": 1,
+            "title": "Dni"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "Administrador",
+              "Dirección",
+              "Secretaría Académica",
+              "Docente",
+              "Auxiliar",
+              "Apoderado",
+              "Estudiante"
+            ],
+            "title": "Rol"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombre",
+          "dni",
+          "rol"
+        ],
+        "title": "CuentaPersonaCreateIn",
+        "description": "Solicitud de alta de nueva cuenta por DNI."
+      },
+      "CuentaPersonaOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "dni": {
+            "type": "string",
+            "title": "Dni"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "Administrador",
+              "Dirección",
+              "Secretaría Académica",
+              "Docente",
+              "Auxiliar",
+              "Apoderado",
+              "Estudiante"
+            ],
+            "title": "Rol"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "activa",
+              "pendiente",
+              "bloqueada"
+            ],
+            "title": "Estado"
+          },
+          "ultimo_acceso": {
+            "type": "string",
+            "title": "Ultimo Acceso"
+          },
+          "extra": {
+            "type": "string",
+            "title": "Extra",
+            "default": ""
+          },
+          "codigo_activacion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Codigo Activacion"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "nombre",
+          "dni",
+          "rol",
+          "estado",
+          "ultimo_acceso"
+        ],
+        "title": "CuentaPersonaOut",
+        "description": "Resumen público de una cuenta del directorio administrativo."
+      },
+      "CuentaPersonaUpdateIn": {
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 3,
+            "title": "Nombre"
+          },
+          "dni": {
+            "type": "string",
+            "maxLength": 12,
+            "minLength": 1,
+            "title": "Dni"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "Administrador",
+              "Dirección",
+              "Secretaría Académica",
+              "Docente",
+              "Auxiliar",
+              "Apoderado",
+              "Estudiante"
+            ],
+            "title": "Rol"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombre",
+          "dni",
+          "rol"
+        ],
+        "title": "CuentaPersonaUpdateIn",
+        "description": "Solicitud de edición de datos básicos de una cuenta."
       },
       "CursoCalificacionesOut": {
         "properties": {
@@ -4573,6 +7230,30 @@
         "title": "ElementoStreamSeccionOut",
         "description": "Publicación en el flujo cronológico de Novedades de la sección docente."
       },
+      "EliminacionSeccionOut": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "eliminada": {
+            "type": "boolean",
+            "title": "Eliminada"
+          },
+          "mensaje": {
+            "type": "string",
+            "title": "Mensaje"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "eliminada",
+          "mensaje"
+        ],
+        "title": "EliminacionSeccionOut",
+        "description": "Confirmación de eliminación de una sección vacía."
+      },
       "EntregaProximaOut": {
         "properties": {
           "id": {
@@ -4612,6 +7293,44 @@
         "title": "EntregaProximaOut",
         "description": "Actividad pendiente próxima a vencer."
       },
+      "EstudianteNominaSeccionOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "codigo": {
+            "type": "string",
+            "title": "Codigo"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "Activo",
+              "Retirado",
+              "Trasladado"
+            ],
+            "title": "Estado"
+          },
+          "resumen": {
+            "$ref": "#/components/schemas/ResumenEstudianteSeccionOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "nombre",
+          "codigo",
+          "estado",
+          "resumen"
+        ],
+        "title": "EstudianteNominaSeccionOut",
+        "description": "Fila de estudiante dentro de la nómina de una sección."
+      },
       "EstudianteSeccionOut": {
         "properties": {
           "indice": {
@@ -4645,6 +7364,45 @@
         ],
         "title": "EstudianteSeccionOut",
         "description": "Estudiante matriculado en una sección asignada al docente."
+      },
+      "EstudianteSinSeccionOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "codigo": {
+            "type": "string",
+            "title": "Codigo"
+          },
+          "nivel": {
+            "type": "string",
+            "title": "Nivel"
+          },
+          "grado": {
+            "type": "integer",
+            "title": "Grado"
+          },
+          "nota": {
+            "type": "string",
+            "title": "Nota"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "nombre",
+          "codigo",
+          "nivel",
+          "grado",
+          "nota"
+        ],
+        "title": "EstudianteSinSeccionOut",
+        "description": "Estudiante de la nómina SIAGIE pendiente de asignación a sección."
       },
       "EtapaTrimestreOut": {
         "properties": {
@@ -4698,6 +7456,65 @@
         ],
         "title": "EventoAgendaOut",
         "description": "Evento puntual en la agenda semanal (variante C)."
+      },
+      "EventoAuditoriaOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          },
+          "hora": {
+            "type": "string",
+            "title": "Hora"
+          },
+          "usuario": {
+            "type": "string",
+            "title": "Usuario"
+          },
+          "rol": {
+            "type": "string",
+            "title": "Rol"
+          },
+          "tipo": {
+            "type": "string",
+            "title": "Tipo"
+          },
+          "entidad": {
+            "type": "string",
+            "title": "Entidad"
+          },
+          "antes": {
+            "type": "string",
+            "title": "Antes"
+          },
+          "despues": {
+            "type": "string",
+            "title": "Despues"
+          },
+          "ip": {
+            "type": "string",
+            "title": "Ip"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "fecha",
+          "hora",
+          "usuario",
+          "rol",
+          "tipo",
+          "entidad",
+          "antes",
+          "despues",
+          "ip"
+        ],
+        "title": "EventoAuditoriaOut",
+        "description": "Registro inmutable de un evento crítico del portal."
       },
       "FilaCierreIn": {
         "properties": {
@@ -5235,6 +8052,35 @@
         "title": "KpisAsistenciaOut",
         "description": "Resumen numérico mensual de asistencia."
       },
+      "KpisTableroAdminOut": {
+        "properties": {
+          "solicitudes_pendientes": {
+            "type": "integer",
+            "title": "Solicitudes Pendientes"
+          },
+          "cuentas_sin_activar": {
+            "type": "integer",
+            "title": "Cuentas Sin Activar"
+          },
+          "secciones_con_cierre": {
+            "type": "integer",
+            "title": "Secciones Con Cierre"
+          },
+          "total_secciones_seguimiento": {
+            "type": "integer",
+            "title": "Total Secciones Seguimiento"
+          }
+        },
+        "type": "object",
+        "required": [
+          "solicitudes_pendientes",
+          "cuentas_sin_activar",
+          "secciones_con_cierre",
+          "total_secciones_seguimiento"
+        ],
+        "title": "KpisTableroAdminOut",
+        "description": "Indicadores principales en la portada del Administrador."
+      },
       "LecturaConfirmadaOut": {
         "properties": {
           "mensaje_id": {
@@ -5317,6 +8163,107 @@
         "title": "ListaActividadesOut",
         "description": "Listado de trabajos y sesiones de clase del estudiante."
       },
+      "ListaAsignacionesOut": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "seccion_nombre": {
+            "type": "string",
+            "title": "Seccion Nombre"
+          },
+          "nivel": {
+            "type": "string",
+            "enum": [
+              "Primaria",
+              "Secundaria"
+            ],
+            "title": "Nivel"
+          },
+          "grado": {
+            "type": "integer",
+            "title": "Grado"
+          },
+          "tutor": {
+            "type": "string",
+            "title": "Tutor"
+          },
+          "auxiliar": {
+            "type": "string",
+            "title": "Auxiliar"
+          },
+          "alertas_pendientes": {
+            "type": "integer",
+            "title": "Alertas Pendientes"
+          },
+          "asignaciones": {
+            "items": {
+              "$ref": "#/components/schemas/AsignacionDocenteOut"
+            },
+            "type": "array",
+            "title": "Asignaciones"
+          },
+          "docentes_disponibles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Docentes Disponibles"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "seccion_nombre",
+          "nivel",
+          "grado",
+          "tutor",
+          "auxiliar",
+          "alertas_pendientes",
+          "asignaciones",
+          "docentes_disponibles"
+        ],
+        "title": "ListaAsignacionesOut",
+        "description": "Plana docente de una sección seleccionada."
+      },
+      "ListaCuentasPersonasOut": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "activas": {
+            "type": "integer",
+            "title": "Activas"
+          },
+          "pendientes": {
+            "type": "integer",
+            "title": "Pendientes"
+          },
+          "bloqueadas": {
+            "type": "integer",
+            "title": "Bloqueadas"
+          },
+          "cuentas": {
+            "items": {
+              "$ref": "#/components/schemas/CuentaPersonaOut"
+            },
+            "type": "array",
+            "title": "Cuentas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "activas",
+          "pendientes",
+          "bloqueadas",
+          "cuentas"
+        ],
+        "title": "ListaCuentasPersonasOut",
+        "description": "Listado filtrable de cuentas con contadores por estado."
+      },
       "ListaCursosOut": {
         "properties": {
           "grado_seccion": {
@@ -5343,6 +8290,33 @@
         ],
         "title": "ListaCursosOut",
         "description": "Listado de cursos del estudiante en el año lectivo."
+      },
+      "ListaEventosAuditoriaOut": {
+        "properties": {
+          "tipo_filtro": {
+            "type": "string",
+            "title": "Tipo Filtro"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "eventos": {
+            "items": {
+              "$ref": "#/components/schemas/EventoAuditoriaOut"
+            },
+            "type": "array",
+            "title": "Eventos"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tipo_filtro",
+          "total",
+          "eventos"
+        ],
+        "title": "ListaEventosAuditoriaOut",
+        "description": "Respuesta del listado cronológico inverso de la bitácora."
       },
       "ListaMensajesOut": {
         "properties": {
@@ -5402,6 +8376,93 @@
         ],
         "title": "ListaSeccionesDocenteOut",
         "description": "Listado de secciones a cargo del docente en Mis cursos."
+      },
+      "ListaSeccionesOut": {
+        "properties": {
+          "nivel": {
+            "type": "string",
+            "enum": [
+              "Primaria",
+              "Secundaria"
+            ],
+            "title": "Nivel"
+          },
+          "grado": {
+            "type": "integer",
+            "title": "Grado"
+          },
+          "total_en_nivel": {
+            "type": "integer",
+            "title": "Total En Nivel"
+          },
+          "secciones": {
+            "items": {
+              "$ref": "#/components/schemas/SeccionAdminOut"
+            },
+            "type": "array",
+            "title": "Secciones"
+          },
+          "letras_disponibles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Letras Disponibles"
+          },
+          "docentes_disponibles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Docentes Disponibles"
+          },
+          "auxiliares_disponibles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Auxiliares Disponibles"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nivel",
+          "grado",
+          "total_en_nivel",
+          "secciones",
+          "letras_disponibles",
+          "docentes_disponibles",
+          "auxiliares_disponibles"
+        ],
+        "title": "ListaSeccionesOut",
+        "description": "Respuesta del listado de secciones filtrado por nivel y grado."
+      },
+      "ListaTrimestresOut": {
+        "properties": {
+          "anio_lectivo": {
+            "type": "integer",
+            "title": "Anio Lectivo"
+          },
+          "trimestre_actual_corto": {
+            "type": "string",
+            "title": "Trimestre Actual Corto"
+          },
+          "trimestres": {
+            "items": {
+              "$ref": "#/components/schemas/TrimestreAdminOut"
+            },
+            "type": "array",
+            "title": "Trimestres"
+          }
+        },
+        "type": "object",
+        "required": [
+          "anio_lectivo",
+          "trimestre_actual_corto",
+          "trimestres"
+        ],
+        "title": "ListaTrimestresOut",
+        "description": "Listado de trimestres del año escolar."
       },
       "LoginIn": {
         "properties": {
@@ -5816,6 +8877,81 @@
         "title": "MensajeOut",
         "description": "Mensaje, recordatorio u observación con soporte de lectura e hilo."
       },
+      "MoverEstudianteIn": {
+        "properties": {
+          "seccion_origen_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Seccion Origen Id"
+          },
+          "seccion_destino_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Seccion Destino Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_origen_id",
+          "seccion_destino_id"
+        ],
+        "title": "MoverEstudianteIn",
+        "description": "Solicitud para mover un estudiante a otra sección o retirarlo al pool ('__pool')."
+      },
+      "MoverEstudianteOut": {
+        "properties": {
+          "estudiante_id": {
+            "type": "string",
+            "title": "Estudiante Id"
+          },
+          "seccion_origen_id": {
+            "type": "string",
+            "title": "Seccion Origen Id"
+          },
+          "seccion_destino_id": {
+            "type": "string",
+            "title": "Seccion Destino Id"
+          },
+          "mensaje": {
+            "type": "string",
+            "title": "Mensaje"
+          }
+        },
+        "type": "object",
+        "required": [
+          "estudiante_id",
+          "seccion_origen_id",
+          "seccion_destino_id",
+          "mensaje"
+        ],
+        "title": "MoverEstudianteOut",
+        "description": "Confirmación de traslado interno o retiro al pool."
+      },
+      "NivelAreaResumenOut": {
+        "properties": {
+          "area": {
+            "type": "string",
+            "title": "Area"
+          },
+          "nivel": {
+            "type": "string",
+            "enum": [
+              "AD",
+              "A",
+              "B",
+              "C"
+            ],
+            "title": "Nivel"
+          }
+        },
+        "type": "object",
+        "required": [
+          "area",
+          "nivel"
+        ],
+        "title": "NivelAreaResumenOut",
+        "description": "Último nivel registrado por área en el resumen del estudiante."
+      },
       "NivelGuardadoDocenteOut": {
         "properties": {
           "competencia": {
@@ -5856,6 +8992,56 @@
         ],
         "title": "NivelGuardadoDocenteOut",
         "description": "Estado guardado o confirmado de cierre por competencia."
+      },
+      "NominaSeccionOut": {
+        "properties": {
+          "seccion_id": {
+            "type": "string",
+            "title": "Seccion Id"
+          },
+          "seccion_nombre": {
+            "type": "string",
+            "title": "Seccion Nombre"
+          },
+          "nivel": {
+            "type": "string",
+            "title": "Nivel"
+          },
+          "grado": {
+            "type": "integer",
+            "title": "Grado"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "opciones_movimiento": {
+            "items": {
+              "$ref": "#/components/schemas/OpcionSeccionDestinoOut"
+            },
+            "type": "array",
+            "title": "Opciones Movimiento"
+          },
+          "estudiantes": {
+            "items": {
+              "$ref": "#/components/schemas/EstudianteNominaSeccionOut"
+            },
+            "type": "array",
+            "title": "Estudiantes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seccion_id",
+          "seccion_nombre",
+          "nivel",
+          "grado",
+          "total",
+          "opciones_movimiento",
+          "estudiantes"
+        ],
+        "title": "NominaSeccionOut",
+        "description": "Nómina completa de estudiantes de una sección y destinos de movimiento."
       },
       "NotaPendienteDocenteOut": {
         "properties": {
@@ -6107,6 +9293,25 @@
         "title": "ObservacionDocenteOut",
         "description": "Observación registrada para un estudiante y su apoderado."
       },
+      "OpcionSeccionDestinoOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "etiqueta": {
+            "type": "string",
+            "title": "Etiqueta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "etiqueta"
+        ],
+        "title": "OpcionSeccionDestinoOut",
+        "description": "Sección del mismo grado disponible para mover a un estudiante."
+      },
       "OperacionBandejaOut": {
         "properties": {
           "ok": {
@@ -6240,6 +9445,28 @@
         ],
         "title": "PendienteSeccionOut",
         "description": "Resumen breve de una sesión pendiente dentro de la tarjeta de sección."
+      },
+      "PoolSinSeccionOut": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "estudiantes": {
+            "items": {
+              "$ref": "#/components/schemas/EstudianteSinSeccionOut"
+            },
+            "type": "array",
+            "title": "Estudiantes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "estudiantes"
+        ],
+        "title": "PoolSinSeccionOut",
+        "description": "Listado de estudiantes sin sección asignada."
       },
       "ProblemDetail": {
         "properties": {
@@ -6428,6 +9655,82 @@
         "title": "ResumenAsistenciaApoderadoOut",
         "description": "Indicadores rápidos de asistencia del mes para el hijo seleccionado."
       },
+      "ResumenCuentasAdminOut": {
+        "properties": {
+          "activas": {
+            "type": "integer",
+            "title": "Activas"
+          },
+          "pendientes": {
+            "type": "integer",
+            "title": "Pendientes"
+          },
+          "bloqueadas": {
+            "type": "integer",
+            "title": "Bloqueadas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "activas",
+          "pendientes",
+          "bloqueadas"
+        ],
+        "title": "ResumenCuentasAdminOut",
+        "description": "Resumen por estado de cuentas del portal."
+      },
+      "ResumenEstudianteSeccionOut": {
+        "properties": {
+          "codigo_siagie": {
+            "type": "string",
+            "title": "Codigo Siagie"
+          },
+          "dni": {
+            "type": "string",
+            "title": "Dni"
+          },
+          "apoderado": {
+            "type": "string",
+            "title": "Apoderado"
+          },
+          "tutor": {
+            "type": "string",
+            "title": "Tutor"
+          },
+          "asistencia_pct": {
+            "type": "integer",
+            "title": "Asistencia Pct"
+          },
+          "pendientes": {
+            "type": "integer",
+            "title": "Pendientes"
+          },
+          "observaciones": {
+            "type": "integer",
+            "title": "Observaciones"
+          },
+          "areas": {
+            "items": {
+              "$ref": "#/components/schemas/NivelAreaResumenOut"
+            },
+            "type": "array",
+            "title": "Areas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "codigo_siagie",
+          "dni",
+          "apoderado",
+          "tutor",
+          "asistencia_pct",
+          "pendientes",
+          "observaciones",
+          "areas"
+        ],
+        "title": "ResumenEstudianteSeccionOut",
+        "description": "Ficha resumida desplegable de un estudiante dentro de una sección."
+      },
       "ResumenSiagieDocenteOut": {
         "properties": {
           "asignatura": {
@@ -6463,6 +9766,105 @@
         ],
         "title": "SaludOut",
         "description": "Respuesta del endpoint de verificación de salud."
+      },
+      "SeccionAdminOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "nivel": {
+            "type": "string",
+            "enum": [
+              "Primaria",
+              "Secundaria"
+            ],
+            "title": "Nivel"
+          },
+          "grado": {
+            "type": "integer",
+            "title": "Grado"
+          },
+          "letra": {
+            "type": "string",
+            "title": "Letra"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "tutor": {
+            "type": "string",
+            "title": "Tutor"
+          },
+          "auxiliar": {
+            "type": "string",
+            "title": "Auxiliar"
+          },
+          "cantidad_estudiantes": {
+            "type": "integer",
+            "title": "Cantidad Estudiantes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "nivel",
+          "grado",
+          "letra",
+          "nombre",
+          "tutor",
+          "auxiliar",
+          "cantidad_estudiantes"
+        ],
+        "title": "SeccionAdminOut",
+        "description": "Resumen de una sección escolar con su tutor, auxiliar y cantidad de estudiantes."
+      },
+      "SeccionCreateIn": {
+        "properties": {
+          "nivel": {
+            "type": "string",
+            "enum": [
+              "Primaria",
+              "Secundaria"
+            ],
+            "title": "Nivel"
+          },
+          "grado": {
+            "type": "integer",
+            "maximum": 6.0,
+            "minimum": 1.0,
+            "title": "Grado"
+          },
+          "letra": {
+            "type": "string",
+            "maxLength": 1,
+            "minLength": 1,
+            "title": "Letra"
+          },
+          "tutor": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Tutor"
+          },
+          "auxiliar": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Auxiliar"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nivel",
+          "grado",
+          "letra",
+          "tutor",
+          "auxiliar"
+        ],
+        "title": "SeccionCreateIn",
+        "description": "Solicitud para crear una nueva sección en una letra disponible A–P."
       },
       "SeccionDestinatariosOut": {
         "properties": {
@@ -6591,6 +9993,39 @@
         ],
         "title": "SeccionSiagieEstadoOut",
         "description": "Estado de preparación de una sección para exportación SIAGIE."
+      },
+      "SeccionUpdateIn": {
+        "properties": {
+          "tutor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tutor"
+          },
+          "auxiliar": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Auxiliar"
+          }
+        },
+        "type": "object",
+        "title": "SeccionUpdateIn",
+        "description": "Actualización del tutor y/o auxiliar de una sección."
       },
       "SesionClaseCreateIn": {
         "properties": {
@@ -6789,6 +10224,71 @@
         "title": "SituacionFinalOut",
         "description": "Resultado anual de promoción, permanencia o recuperación (RF28)."
       },
+      "SolicitudAdminOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "Cuenta",
+              "Asignación",
+              "Reapertura",
+              "Catálogo"
+            ],
+            "title": "Tipo"
+          },
+          "remitente": {
+            "type": "string",
+            "title": "Remitente"
+          },
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          },
+          "asunto": {
+            "type": "string",
+            "title": "Asunto"
+          },
+          "detalle": {
+            "type": "string",
+            "title": "Detalle"
+          },
+          "etiqueta_accion": {
+            "type": "string",
+            "title": "Etiqueta Accion"
+          },
+          "ruta_destino": {
+            "type": "string",
+            "title": "Ruta Destino"
+          },
+          "atendida": {
+            "type": "boolean",
+            "title": "Atendida"
+          },
+          "no_leida": {
+            "type": "boolean",
+            "title": "No Leida"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "tipo",
+          "remitente",
+          "fecha",
+          "asunto",
+          "detalle",
+          "etiqueta_accion",
+          "ruta_destino",
+          "atendida",
+          "no_leida"
+        ],
+        "title": "SolicitudAdminOut",
+        "description": "Elemento de la bandeja operativa de solicitudes del Administrador."
+      },
       "SolicitudDescargaSiagieIn": {
         "properties": {
           "trimestre_id": {
@@ -6868,6 +10368,172 @@
         ],
         "title": "StreamCursoOut",
         "description": "Elemento cronológico en la pestaña Novedades del curso."
+      },
+      "TableroAdminOut": {
+        "properties": {
+          "anio_lectivo": {
+            "type": "integer",
+            "title": "Anio Lectivo"
+          },
+          "fecha_actual_texto": {
+            "type": "string",
+            "title": "Fecha Actual Texto"
+          },
+          "saludo": {
+            "type": "string",
+            "title": "Saludo"
+          },
+          "periodo_texto": {
+            "type": "string",
+            "title": "Periodo Texto"
+          },
+          "kpis": {
+            "$ref": "#/components/schemas/KpisTableroAdminOut"
+          },
+          "solicitudes": {
+            "items": {
+              "$ref": "#/components/schemas/SolicitudAdminOut"
+            },
+            "type": "array",
+            "title": "Solicitudes"
+          },
+          "trimestre_actual": {
+            "$ref": "#/components/schemas/TrimestreAdminOut"
+          },
+          "avance_secciones": {
+            "items": {
+              "$ref": "#/components/schemas/AvanceSeccionOut"
+            },
+            "type": "array",
+            "title": "Avance Secciones"
+          },
+          "resumen_cuentas": {
+            "$ref": "#/components/schemas/ResumenCuentasAdminOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "anio_lectivo",
+          "fecha_actual_texto",
+          "saludo",
+          "periodo_texto",
+          "kpis",
+          "solicitudes",
+          "trimestre_actual",
+          "avance_secciones",
+          "resumen_cuentas"
+        ],
+        "title": "TableroAdminOut",
+        "description": "Respuesta agregada del tablero operativo de Inicio del Administrador."
+      },
+      "TransicionTrimestreIn": {
+        "properties": {
+          "accion": {
+            "type": "string",
+            "enum": [
+              "iniciar_evaluacion",
+              "cierre_preliminar",
+              "cerrar",
+              "reabrir"
+            ],
+            "title": "Accion"
+          },
+          "motivo": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Motivo"
+          },
+          "acta_emitida_siagie": {
+            "type": "boolean",
+            "title": "Acta Emitida Siagie",
+            "default": false
+          },
+          "documento_ugel": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Documento Ugel"
+          }
+        },
+        "type": "object",
+        "required": [
+          "accion"
+        ],
+        "title": "TransicionTrimestreIn",
+        "description": "Solicitud para avanzar o reabrir un trimestre (RF05, RF30)."
+      },
+      "TrimestreAdminOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "nombre": {
+            "type": "string",
+            "title": "Nombre"
+          },
+          "nombre_corto": {
+            "type": "string",
+            "title": "Nombre Corto"
+          },
+          "fechas": {
+            "type": "string",
+            "title": "Fechas"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "Aperturado",
+              "En Evaluación",
+              "Cierre Preliminar",
+              "Cerrado"
+            ],
+            "title": "Estado"
+          },
+          "libreta_publicada": {
+            "type": "boolean",
+            "title": "Libreta Publicada"
+          },
+          "reabierto": {
+            "type": "boolean",
+            "title": "Reabierto",
+            "default": false
+          },
+          "siguiente_hito": {
+            "type": "string",
+            "title": "Siguiente Hito"
+          },
+          "secciones_pendientes_cierre": {
+            "type": "integer",
+            "title": "Secciones Pendientes Cierre",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "nombre",
+          "nombre_corto",
+          "fechas",
+          "estado",
+          "libreta_publicada",
+          "siguiente_hito"
+        ],
+        "title": "TrimestreAdminOut",
+        "description": "Estado de un trimestre del año lectivo (RF05, RF27, RF30)."
       },
       "TrimestreLibretaOut": {
         "properties": {
@@ -7118,6 +10784,28 @@
             "type": "array",
             "title": "Hijos Vinculados",
             "default": []
+          },
+          "institucion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Institucion"
+          },
+          "alcance": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alcance"
           }
         },
         "type": "object",

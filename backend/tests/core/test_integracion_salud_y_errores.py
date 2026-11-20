@@ -59,6 +59,26 @@ def test_openapi_expone_las_18_rutas_base_de_estudiante_v2():
         "/api/v1/identidad/sesion",
         "/api/v1/identidad/cambiar-contrasena",
         "/api/v1/identidad/aviso-privacidad",
+        "/api/v1/institucion/tablero-admin",
+        "/api/v1/institucion/solicitudes/{solicitud_id}/atender",
+        "/api/v1/institucion/trimestres",
+        "/api/v1/institucion/trimestres/{trimestre_id}/transicion",
+        "/api/v1/institucion/trimestres/{trimestre_id}/publicar-libreta",
+        "/api/v1/institucion/secciones",
+        "/api/v1/institucion/secciones/{seccion_id}",
+        "/api/v1/institucion/asignaturas",
+        "/api/v1/institucion/asignaciones",
+        "/api/v1/matriculas/sin-seccion",
+        "/api/v1/matriculas/secciones/{seccion_id}/estudiantes",
+        "/api/v1/matriculas/asignar",
+        "/api/v1/matriculas/estudiantes/{estudiante_id}/mover",
+        "/api/v1/matriculas/estudiantes/{estudiante_id}/estado",
+        "/api/v1/personas/cuentas",
+        "/api/v1/personas/cuentas/{cuenta_id}",
+        "/api/v1/personas/cuentas/{cuenta_id}/restablecer-codigo",
+        "/api/v1/personas/cuentas/{cuenta_id}/estado",
+        "/api/v1/auditoria/eventos",
+        "/api/v1/auditoria/eventos/exportar",
         "/api/v1/seguimiento/estudiantes/{estudiante_id}/inicio",
         "/api/v1/seguimiento/estudiantes/{estudiante_id}/novedades/visto",
         "/api/v1/seguimiento/estudiantes/{estudiante_id}/cursos",
@@ -93,5 +113,5 @@ def test_openapi_expone_las_18_rutas_base_de_estudiante_v2():
         "/api/v1/reportes/docentes/{docente_id}/siagie/{seccion_id}/descarga",
     }
     assert rutas_esperadas.issubset(paths)
-    assert len(paths) == 39
+    assert len(paths) == 59
 

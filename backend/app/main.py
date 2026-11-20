@@ -5,8 +5,12 @@ from pydantic import BaseModel
 
 from app.core.errores import ProblemDetail, registrar_manejadores_error
 from app.modules.asistencia.router import router as asistencia_router
+from app.modules.auditoria.router import router as auditoria_router
 from app.modules.evaluacion.router import router as evaluacion_router
 from app.modules.identidad.router import router as identidad_router
+from app.modules.institucion.router import router as institucion_router
+from app.modules.matriculas.router import router as matriculas_router
+from app.modules.personas.router import router as personas_router
 from app.modules.reportes.router import router as reportes_router
 from app.modules.seguimiento.router import router as seguimiento_router
 
@@ -40,6 +44,10 @@ def crear_app() -> FastAPI:
         return SaludOut(status="ok")
 
     api_v1.include_router(identidad_router)
+    api_v1.include_router(institucion_router)
+    api_v1.include_router(matriculas_router)
+    api_v1.include_router(personas_router)
+    api_v1.include_router(auditoria_router)
     api_v1.include_router(seguimiento_router)
     api_v1.include_router(evaluacion_router)
     api_v1.include_router(asistencia_router)

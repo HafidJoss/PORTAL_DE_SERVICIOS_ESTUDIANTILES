@@ -119,3 +119,20 @@ def test_identidad_login_apoderado_devuelve_perfil_y_hijos_vinculados():
     assert len(usuario["hijos_vinculados"]) == 2
     assert usuario["hijos_vinculados"][0]["estudiante_id"] == "est-demo-1"
     assert usuario["hijos_vinculados"][1]["estudiante_id"] == "est-demo-2"
+
+
+# Spec: identidad · Scenario: Autenticación exitosa de Administrador con DNI y contraseña válidos (RF14, AC04)
+def test_identidad_login_administrador_devuelve_perfil_institucional():
+    client = crear_cliente(crear_app())
+
+    resp = client.post(
+        "/api/v1/identidad/login",
+        json={"dni": "10456723", "contrasena": "admin2026", "recordar": True},
+    )
+
+    assert resp.status_code == 200
+    usuario = resp.json()["usuario"]
+    assert usuario["dni"] == "10456723"
+    assert usuario["rol"] == "Administrador"
+    assert usuario["institucion"] == "G.U.E. Mariscal Cáceres"
+    assert usuario["alcance"] == "Primaria y Secundaria"
